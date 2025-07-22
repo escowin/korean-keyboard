@@ -14,7 +14,7 @@ void TestJamoComposition() {
     std::vector<std::pair<std::wstring, std::wstring>> testCases = {
         {L"ㆆㆍㄴ", L"ᅙᆞᆫ"},  // Archaic initial + archaic vowel + final
         {L"ㅸㅏㄴ", L"ᄫᅡᆫ"},  // Archaic initial + modern vowel + final
-        {L"ㅿㅡㄹ", L"ᄼᅳᆯ"},  // Archaic initial + modern vowel + final
+        {L"ㅿㅡㄹ", L"ᅀᅳᆯ"},  // Archaic initial + modern vowel + final
         {L"ㄱㅏㄴ", L"간"},   // Modern Korean
         {L"ㅎㅏㄴ", L"한"},   // Modern Korean
         {L"ㆍ", L"ㆍ"},       // Single archaic vowel
