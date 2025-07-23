@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <msctf.h>
 #include <memory>
+#include <wincrypt.h>
 #include "TSFManager.h"
 #include "JamoProcessor.h"
 
@@ -87,7 +88,7 @@ __declspec(dllexport) HRESULT TestKoreanComposition(const wchar_t* input, wchar_
     std::wstring result = processor->processInput(input);
     
     if (result.length() >= static_cast<size_t>(outputSize)) {
-        return E_BUFFER_TOO_SMALL;
+        return HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER);
     }
     
     wcscpy_s(output, outputSize, result.c_str());

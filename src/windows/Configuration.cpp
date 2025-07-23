@@ -32,7 +32,7 @@ void Configuration::InitializeDefaults() {
 }
 
 bool Configuration::LoadConfiguration(const std::wstring& filename) {
-    std::wifstream file(filename);
+    std::wifstream file(filename.c_str());
     if (!file.is_open()) {
         return false;
     }
@@ -45,7 +45,7 @@ bool Configuration::LoadConfiguration(const std::wstring& filename) {
 }
 
 bool Configuration::SaveConfiguration(const std::wstring& filename) {
-    std::wofstream file(filename);
+    std::wofstream file(filename.c_str());
     if (!file.is_open()) {
         return false;
     }

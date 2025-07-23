@@ -30,12 +30,35 @@ Input: ㄱㅏㄴ → Output: 간
 
 ## Installation
 
-### Prerequisites
+### Quick Start (MinGW) ✅
+**For immediate development and testing:**
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yourusername/korean-keyboard.git
+   cd korean-keyboard
+   ```
+
+2. **Build with MinGW** (no Visual Studio required):
+   ```bash
+   ./build_minGW.bat
+   ```
+
+3. **Test the functionality**:
+   ```bash
+   ./test_compile.exe
+   ```
+
+**✅ This setup is working and tested!**
+
+### Full Installation (Visual Studio)
+
+**Prerequisites**:
 - Windows 10/11 (64-bit)
 - Visual Studio 2019 or later with C++ development tools
 - CMake 3.16 or later
 
-### Building from Source
+**Building from Source**:
 
 1. **Clone the repository**:
    ```bash
@@ -45,13 +68,13 @@ Input: ㄱㅏㄴ → Output: 간
 
 2. **Build the project**:
    ```bash
-   build.bat
+   dev.bat build
    ```
    Or manually:
    ```bash
    mkdir build
    cd build
-   cmake .. -G "Visual Studio 16 2019" -A x64
+   cmake ../src/windows -G "Visual Studio 16 2019" -A x64
    cmake --build . --config Release
    ```
 

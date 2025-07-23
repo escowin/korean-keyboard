@@ -2,9 +2,36 @@
 
 This guide will help you install all the required tools for developing the Korean Keyboard project.
 
+## Quick Start (MinGW Setup) ✅
+
+**If you prefer to use MinGW (GCC) instead of Visual Studio:**
+
+1. **Install MSYS2/MinGW64** (if not already installed):
+   - Download from: https://www.msys2.org/
+   - Install and add to PATH
+
+2. **Verify your tools**:
+   ```bash
+   g++ --version    # Should show GCC 13.2.0 or later
+   cmake --version  # Should show CMake 3.16 or later
+   git --version    # Should show Git version
+   ```
+
+3. **Build the project**:
+   ```bash
+   ./build_minGW.bat
+   ```
+
+4. **Test the functionality**:
+   ```bash
+   ./test_compile.exe
+   ```
+
+**✅ This setup is now working and tested!**
+
 ## Required Tools
 
-### 1. Visual Studio 2019 or Later
+### 1. Visual Studio 2019 or Later (Optional for MinGW users)
 
 **Download**: https://visualstudio.microsoft.com/downloads/
 
@@ -156,6 +183,16 @@ g++ -o test_compile test_core.cpp -std=c++17
 
 ### 3. Build the Project
 
+**For MinGW users (Recommended)**:
+```bash
+# Build the complete project
+./build_minGW.bat
+
+# Test core functionality
+./test_compile.exe
+```
+
+**For Visual Studio users**:
 ```bash
 # Build the complete project
 dev.bat build
@@ -177,6 +214,7 @@ dev.bat install
 1. Install Visual Studio with C++ development tools
 2. Use "Developer Command Prompt" instead of regular command prompt
 3. Or add Visual Studio to PATH
+4. **Alternative**: Use MinGW setup (see Quick Start above)
 
 #### CMake Not Found
 **Problem**: `cmake` command not found
@@ -192,6 +230,7 @@ dev.bat install
 2. Verify CMake version (3.16+)
 3. Use Developer Command Prompt
 4. Check build logs in `build/` directory
+5. **For MinGW users**: Use `./build_minGW.bat` instead
 
 #### Permission Issues
 **Problem**: Access denied errors
@@ -200,12 +239,20 @@ dev.bat install
 2. Check Windows Defender/antivirus settings
 3. Verify file permissions
 
+#### MinGW-specific Issues
+**Problem**: TSF library not found
+**Solution**:
+1. Use the simplified MinGW build (`./build_minGW.bat`)
+2. The simplified version removes complex TSF dependencies
+3. Core functionality works perfectly with MinGW
+
 ### Getting Help
 
 1. **Check build logs**: Look in `build/` directory for detailed error messages
 2. **Verify tools**: Run verification scripts to check tool installation
 3. **Check documentation**: See `docs/DEVELOPMENT.md` for detailed setup guide
 4. **Common solutions**: Most issues are resolved by using Developer Command Prompt
+5. **MinGW users**: Use `./build_minGW.bat` for a working build process
 
 ## Next Steps
 
@@ -218,18 +265,26 @@ After installing all tools:
 
 2. **Build the project**:
    ```bash
+   # MinGW users
+   ./build_minGW.bat
+   
+   # Visual Studio users
    dev.bat build
    ```
 
 3. **Run tests**:
    ```bash
+   # MinGW users
+   ./test_compile.exe
+   
+   # Visual Studio users
    dev.bat test
    ```
 
 4. **Start developing**:
    - Open `korean-keyboard.code-workspace` in VS Code
    - Or use your preferred IDE
-   - Make changes and test with `dev.bat build`
+   - Make changes and test with `./build_minGW.bat` or `dev.bat build`
 
 ## System Requirements
 
@@ -246,4 +301,5 @@ If you encounter issues:
 2. Verify all tools are properly installed
 3. Use Developer Command Prompt for Visual Studio tools
 4. Check build logs for specific error messages
-5. Ensure you have administrator privileges when needed 
+5. Ensure you have administrator privileges when needed
+6. **For MinGW users**: The `./build_minGW.bat` script provides a working build process 

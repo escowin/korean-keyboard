@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <windows.h>
 #include "../include/JamoProcessor.h"
 
 using namespace KoreanKeyboard;

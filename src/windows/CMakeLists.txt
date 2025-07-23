@@ -16,16 +16,14 @@ endif()
 find_package(PkgConfig REQUIRED)
 
 # Include directories
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/../../include)
+include_directories(${CMAKE_SOURCE_DIR}/../../src)
 
 # Source files
 set(SOURCES
     main.cpp
     TSFManager.cpp
     JamoProcessor.cpp
-    UnicodeMapper.cpp
-    KeyboardLayout.cpp
     Configuration.cpp
 )
 
@@ -37,7 +35,6 @@ target_link_libraries(KoreanArchaicKeyboard
     ole32
     oleaut32
     uuid
-    msctf
     user32
     kernel32
 )
