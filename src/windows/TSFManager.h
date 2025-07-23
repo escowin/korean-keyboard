@@ -50,10 +50,12 @@ class JamoProcessor;
 
 // Input combination types for archaic letters
 enum class InputCombinationType {
-    SINGLE_KEY,      // Single key press
-    SHIFT_COMBO,     // Shift + key
-    DOUBLE_PRESS,    // Same key pressed twice
-    KEY_COMBO        // Two different keys pressed together
+    SINGLE_KEY,           // Single key press
+    SHIFT_COMBO,          // Shift + key
+    DOUBLE_PRESS,         // Same key pressed twice
+    KEY_COMBO,            // Two different keys pressed together
+    ALTGR_COMBO,          // Right Alt (AltGr) + key
+    ALTGR_SHIFT_COMBO     // Right Alt (AltGr) + Shift + key
 };
 
 // Input combination structure
@@ -115,6 +117,9 @@ private:
     // Process key combinations
     wchar_t ProcessKeyCombination(WPARAM wParam);
     
+    // Process AltGr combinations
+    wchar_t ProcessAltGrCombination(WPARAM wParam);
+    
     // Check for key state
     bool IsKeyPressed(int virtualKey);
     
@@ -130,6 +135,7 @@ private:
     bool m_archaicMode;
     bool m_functionKeyPressed;
     bool m_shiftKeyPressed;
+    bool m_altGrKeyPressed;
     std::wstring m_inputBuffer;
     
     // Key tracking for combinations

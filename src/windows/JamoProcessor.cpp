@@ -38,32 +38,24 @@
 
 namespace KoreanKeyboard {
 
-// Define archaic jamos
+// Define archaic jamos - Microsoft Old Hangul keyboard mapping
 const std::vector<wchar_t> JamoProcessor::archaicJamos = {
     0x1197, // ㆍ (아래아)
     0x113F, // ㅿ (반시옷)
     0x1146, // ㆆ (여린히읗)
     0x1170, // ㅸ (쌍비읍)
-    0x1140, // ᅀ (반시옷)
-    0x1159, // ᅙ (여린히읗)
-    0x119E, // ᆞ (아래아)
     0x1154, // ᄔ (쌍니은)
     0x1147, // ᅇ (쌍이응)
     0x1159, // ᄙ (쌍리을)
-    0x1158, // ᅘ (쌍히읗)
     0x113C, // ᄼ (반치읓)
     0x113E, // ᄾ (반치읓)
     0x114E, // ᅎ (반치읓)
     0x1150, // ᅐ (반치읓)
     0x1154, // ᅔ (반치읓)
     0x1155, // ᅕ (반치읓)
-    0x113D, // ᄽ (반치읓)
-    0x113F, // ᅏ (반치읓)
-    0x114F, // ᅑ (반치읓)
-    0x116B, // ᄫ (쌍비읍)
-    0x116C, // ᄬ (쌍비읍)
-    0x1157, // ᅗ (쌍비읍)
-    0x115D  // ᄝ (쌍비읍)
+    0x1140, // ᅀ (반시옷)
+    0x1159, // ᅙ (여린히읗)
+    0x119E  // ᆞ (아래아)
 };
 
 JamoProcessor::JamoProcessor() {
@@ -126,33 +118,25 @@ void JamoProcessor::initializeJamoMappings() {
     jamoMap[L'ㅍ'] = {0x11C3, JamoType::CONSONANT, JamoPosition::FINAL, L"피읖", false};
     jamoMap[L'ㅎ'] = {0x11C6, JamoType::CONSONANT, JamoPosition::FINAL, L"히읗", false};
 
-    // Archaic jamos - Complete mapping
+    // Archaic jamos - Microsoft Old Hangul keyboard mapping
     jamoMap[L'ㆍ'] = {0x1197, JamoType::VOWEL, JamoPosition::MEDIAL, L"아래아", true};
     jamoMap[L'ㅿ'] = {0x113F, JamoType::CONSONANT, JamoPosition::INITIAL, L"반시옷", true};
     jamoMap[L'ㆆ'] = {0x1146, JamoType::CONSONANT, JamoPosition::INITIAL, L"여린히읗", true};
     jamoMap[L'ㅸ'] = {0x1170, JamoType::CONSONANT, JamoPosition::INITIAL, L"쌍비읍", true};
     
-    // Additional archaic letters from comprehensive mapping
-    jamoMap[L'ᅀ'] = {0x1140, JamoType::CONSONANT, JamoPosition::INITIAL, L"반시옷", true};
-    jamoMap[L'ᅙ'] = {0x1159, JamoType::CONSONANT, JamoPosition::INITIAL, L"여린히읗", true};
-    jamoMap[L'ᆞ'] = {0x119E, JamoType::VOWEL, JamoPosition::MEDIAL, L"아래아", true};
+    // Additional Microsoft Old Hangul characters
     jamoMap[L'ᄔ'] = {0x1154, JamoType::CONSONANT, JamoPosition::INITIAL, L"쌍니은", true};
     jamoMap[L'ᅇ'] = {0x1147, JamoType::CONSONANT, JamoPosition::INITIAL, L"쌍이응", true};
     jamoMap[L'ᄙ'] = {0x1159, JamoType::CONSONANT, JamoPosition::INITIAL, L"쌍리을", true};
-    jamoMap[L'ᅘ'] = {0x1158, JamoType::CONSONANT, JamoPosition::INITIAL, L"쌍히읗", true};
     jamoMap[L'ᄼ'] = {0x113C, JamoType::CONSONANT, JamoPosition::INITIAL, L"반치읓", true};
     jamoMap[L'ᄾ'] = {0x113E, JamoType::CONSONANT, JamoPosition::INITIAL, L"반치읓", true};
     jamoMap[L'ᅎ'] = {0x114E, JamoType::CONSONANT, JamoPosition::INITIAL, L"반치읓", true};
     jamoMap[L'ᅐ'] = {0x1150, JamoType::CONSONANT, JamoPosition::INITIAL, L"반치읓", true};
     jamoMap[L'ᅔ'] = {0x1154, JamoType::CONSONANT, JamoPosition::INITIAL, L"반치읓", true};
     jamoMap[L'ᅕ'] = {0x1155, JamoType::CONSONANT, JamoPosition::INITIAL, L"반치읓", true};
-    jamoMap[L'ᄽ'] = {0x113D, JamoType::CONSONANT, JamoPosition::INITIAL, L"반치읓", true};
-    jamoMap[L'ᅏ'] = {0x113F, JamoType::CONSONANT, JamoPosition::INITIAL, L"반치읓", true};
-    jamoMap[L'ᅑ'] = {0x114F, JamoType::CONSONANT, JamoPosition::INITIAL, L"반치읓", true};
-    jamoMap[L'ᄫ'] = {0x116B, JamoType::CONSONANT, JamoPosition::INITIAL, L"쌍비읍", true};
-    jamoMap[L'ᄬ'] = {0x116C, JamoType::CONSONANT, JamoPosition::INITIAL, L"쌍비읍", true};
-    jamoMap[L'ᅗ'] = {0x1157, JamoType::CONSONANT, JamoPosition::INITIAL, L"쌍비읍", true};
-    jamoMap[L'ᄝ'] = {0x115D, JamoType::CONSONANT, JamoPosition::INITIAL, L"쌍비읍", true};
+    jamoMap[L'ᅀ'] = {0x1140, JamoType::CONSONANT, JamoPosition::INITIAL, L"반시옷", true};
+    jamoMap[L'ᅙ'] = {0x1159, JamoType::CONSONANT, JamoPosition::INITIAL, L"여린히읗", true};
+    jamoMap[L'ᆞ'] = {0x119E, JamoType::VOWEL, JamoPosition::MEDIAL, L"아래아", true};
 }
 
 std::wstring JamoProcessor::processInput(const std::wstring& input) {

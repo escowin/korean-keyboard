@@ -44,6 +44,7 @@ TSFManager::TSFManager()
     : m_archaicMode(false)
     , m_functionKeyPressed(false)
     , m_shiftKeyPressed(false)
+    , m_altGrKeyPressed(false)
     , m_lastKeyTime(0)
     , m_jamoProcessor(std::make_unique<JamoProcessor>()) {
     m_inputBuffer.clear();
@@ -60,6 +61,7 @@ HRESULT TSFManager::Initialize() {
     m_archaicMode = false;
     m_functionKeyPressed = false;
     m_shiftKeyPressed = false;
+    m_altGrKeyPressed = false;
     m_inputBuffer.clear();
     m_keyHistory.clear();
     m_lastKeyTime = 0;
@@ -73,37 +75,29 @@ void TSFManager::Cleanup() {
 }
 
 void TSFManager::InitializeArchaicMappings() {
-    // Initialize comprehensive archaic input mappings based on user's system
+    // Initialize Microsoft Old Hangul keyboard mappings
     
-    // Shift key combinations
-    m_archaicMappings[L"SHIFT+M"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+M", L'ᅀ', L"반시옷 (Shift + M)"};
-    m_archaicMappings[L"SHIFT+H"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+H", L'ᅙ', L"여린히읗 (Shift + H)"};
-    m_archaicMappings[L"SHIFT+A"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+A", L'ᆞ', L"아래아 (Shift + A)"};
+    // Right Alt (AltGr) combinations for archaic characters
+    m_archaicMappings[L"ALTGR+A"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+A", L'ㆍ', L"아래아 (AltGr + A)"};
+    m_archaicMappings[L"ALTGR+S"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+S", L'ㅿ', L"반시옷 (AltGr + S)"};
+    m_archaicMappings[L"ALTGR+H"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+H", L'ㆆ', L"여린히읗 (AltGr + H)"};
+    m_archaicMappings[L"ALTGR+B"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+B", L'ㅸ', L"쌍비읍 (AltGr + B)"};
     
-    // Double key presses
-    m_archaicMappings[L"NN"] = {InputCombinationType::DOUBLE_PRESS, L"NN", L'ᄔ', L"쌍니은 (N + N)"};
-    m_archaicMappings[L"OO"] = {InputCombinationType::DOUBLE_PRESS, L"OO", L'ᅇ', L"쌍이응 (O + O)"};
-    m_archaicMappings[L"LL"] = {InputCombinationType::DOUBLE_PRESS, L"LL", L'ᄙ', L"쌍리을 (L + L)"};
-    m_archaicMappings[L"HH"] = {InputCombinationType::DOUBLE_PRESS, L"HH", L'ᅘ', L"쌍히읗 (H + H)"};
+    // Additional Microsoft Old Hangul mappings
+    m_archaicMappings[L"ALTGR+N"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+N", L'ᄔ', L"쌍니은 (AltGr + N)"};
+    m_archaicMappings[L"ALTGR+O"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+O", L'ᅇ', L"쌍이응 (AltGr + O)"};
+    m_archaicMappings[L"ALTGR+L"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+L", L'ᄙ', L"쌍리을 (AltGr + L)"};
+    m_archaicMappings[L"ALTGR+K"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+K", L'ᄼ', L"반치읓 (AltGr + K)"};
+    m_archaicMappings[L"ALTGR+T"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+T", L'ᄾ', L"반치읓 (AltGr + T)"};
+    m_archaicMappings[L"ALTGR+C"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+C", L'ᅎ', L"반치읓 (AltGr + C)"};
+    m_archaicMappings[L"ALTGR+P"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+P", L'ᅐ', L"반치읓 (AltGr + P)"};
+    m_archaicMappings[L"ALTGR+U"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+U", L'ᅔ', L"반치읓 (AltGr + U)"};
+    m_archaicMappings[L"ALTGR+W"] = {InputCombinationType::ALTGR_COMBO, L"ALTGR+W", L'ᅕ', L"반치읓 (AltGr + W)"};
     
-    // Shift + key combinations for 반치읓 series
-    m_archaicMappings[L"SHIFT+K"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+K", L'ᄼ', L"반치읓 (Shift + K)"};
-    m_archaicMappings[L"SHIFT+T"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+T", L'ᄾ', L"반치읓 (Shift + T)"};
-    m_archaicMappings[L"SHIFT+C"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+C", L'ᅎ', L"반치읓 (Shift + C)"};
-    m_archaicMappings[L"SHIFT+P"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+P", L'ᅐ', L"반치읓 (Shift + P)"};
-    m_archaicMappings[L"SHIFT+U"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+U", L'ᅔ', L"반치읓 (Shift + U)"};
-    m_archaicMappings[L"SHIFT+W"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+W", L'ᅕ', L"반치읓 (Shift + W)"};
-    
-    // Double key presses for 반치읓 series
-    m_archaicMappings[L"KK"] = {InputCombinationType::DOUBLE_PRESS, L"KK", L'ᄽ', L"반치읓 (K + K)"};
-    m_archaicMappings[L"CC"] = {InputCombinationType::DOUBLE_PRESS, L"CC", L'ᅏ', L"반치읓 (C + C)"};
-    m_archaicMappings[L"PP"] = {InputCombinationType::DOUBLE_PRESS, L"PP", L'ᅑ', L"반치읓 (P + P)"};
-    
-    // Key combinations for 쌍비읍 series
-    m_archaicMappings[L"BO"] = {InputCombinationType::KEY_COMBO, L"BO", L'ᄫ', L"쌍비읍 (B + O)"};
-    m_archaicMappings[L"BBO"] = {InputCombinationType::KEY_COMBO, L"BBO", L'ᄬ', L"쌍비읍 (BB + O)"};
-    m_archaicMappings[L"PO"] = {InputCombinationType::KEY_COMBO, L"PO", L'ᅗ', L"쌍비읍 (P + O)"};
-    m_archaicMappings[L"MO"] = {InputCombinationType::KEY_COMBO, L"MO", L'ᄝ', L"쌍비읍 (M + O)"};
+    // Microsoft Old Hangul specific combinations
+    m_archaicMappings[L"ALTGR+SHIFT+M"] = {InputCombinationType::ALTGR_SHIFT_COMBO, L"ALTGR+SHIFT+M", L'ᅀ', L"반시옷 (AltGr + Shift + M)"};
+    m_archaicMappings[L"ALTGR+SHIFT+H"] = {InputCombinationType::ALTGR_SHIFT_COMBO, L"ALTGR+SHIFT+H", L'ᅙ', L"여린히읗 (AltGr + Shift + H)"};
+    m_archaicMappings[L"ALTGR+SHIFT+A"] = {InputCombinationType::ALTGR_SHIFT_COMBO, L"ALTGR+SHIFT+A", L'ᆞ', L"아래아 (AltGr + Shift + A)"};
 }
 
 HRESULT TSFManager::ProcessKeyInput(WPARAM wParam, LPARAM lParam) {
@@ -114,6 +108,12 @@ HRESULT TSFManager::ProcessKeyInput(WPARAM wParam, LPARAM lParam) {
     // Handle shift key state
     if (wParam == VK_SHIFT) {
         m_shiftKeyPressed = isKeyDown;
+        return S_OK;
+    }
+    
+    // Handle AltGr key state (Right Alt)
+    if (wParam == VK_RMENU) {
+        m_altGrKeyPressed = isKeyDown;
         return S_OK;
     }
     
@@ -138,8 +138,13 @@ HRESULT TSFManager::ProcessKeyInput(WPARAM wParam, LPARAM lParam) {
     // Check for archaic key combinations
     wchar_t archaicChar = 0;
     
-    // Try shift combinations first
-    if (m_shiftKeyPressed) {
+    // Try AltGr combinations first (Microsoft Old Hangul style)
+    if (m_altGrKeyPressed) {
+        archaicChar = ProcessAltGrCombination(wParam);
+    }
+    
+    // Try shift combinations
+    if (!archaicChar && m_shiftKeyPressed) {
         archaicChar = ProcessShiftCombination(wParam);
     }
     
@@ -227,6 +232,26 @@ HRESULT TSFManager::ProcessArchaicKey(WPARAM wParam, LPARAM lParam) {
 wchar_t TSFManager::ProcessShiftCombination(WPARAM wParam) {
     std::wstring combo = L"SHIFT+";
     combo += static_cast<wchar_t>(wParam);
+    
+    auto it = m_archaicMappings.find(combo);
+    if (it != m_archaicMappings.end()) {
+        return it->second.result;
+    }
+    
+    return 0;
+}
+
+wchar_t TSFManager::ProcessAltGrCombination(WPARAM wParam) {
+    std::wstring combo;
+    
+    // Check for AltGr + Shift combination
+    if (m_shiftKeyPressed) {
+        combo = L"ALTGR+SHIFT+";
+        combo += static_cast<wchar_t>(wParam);
+    } else {
+        combo = L"ALTGR+";
+        combo += static_cast<wchar_t>(wParam);
+    }
     
     auto it = m_archaicMappings.find(combo);
     if (it != m_archaicMappings.end()) {

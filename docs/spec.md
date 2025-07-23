@@ -2,16 +2,21 @@
 
 ## Overview
 
-A keyboard application that enables typing in Korean with support for archaic Korean jamo/letters (옛한글). The application will handle both modern Korean input and archaic character composition, automatically mapping input sequences to appropriate Unicode syllabic blocks based on character positioning rules.
+A keyboard application that enables typing in Korean with support for archaic Korean jamo/letters (옛한글) using the Microsoft Old Hangul keyboard mapping system. The application will handle both modern Korean input and archaic character composition, automatically mapping input sequences to appropriate Unicode syllabic blocks based on character positioning rules.
 
 ## Core Features
 
 ### 1. Archaic Korean Letters Support
-The keyboard will support the following archaic Korean letters:
+The keyboard will support the following archaic Korean letters following the Microsoft Old Hangul keyboard standard:
 - **ㆍ** (아래아) - archaic vowel
 - **ㅿ** (반시옷) - archaic consonant
 - **ㆆ** (여린히읗) - archaic consonant  
 - **ㅸ** (쌍비읍) - archaic consonant
+- **ᄔ** (쌍니은) - archaic consonant
+- **ᅇ** (쌍이응) - archaic consonant
+- **ᄙ** (쌍리을) - archaic consonant
+- **ᄼ, ᄾ, ᅎ, ᅐ, ᅔ, ᅕ** (반치읓 series) - archaic consonants
+- **ᅀ, ᅙ, ᆞ** (additional variants) - archaic characters
 
 ### 2. Syllabic Block Composition
 The application will algorithmically compose syllabic blocks from individual jamo input:
@@ -39,34 +44,27 @@ The system will automatically determine character positioning:
 - **Language**: C++ with COM interfaces
 - **Architecture**: IME (Input Method Editor) component
 
-#### Key Mapping System
+#### Key Mapping System - Microsoft Old Hangul Keyboard
 ```
 Archaic Letter Input Combinations:
-ㆍ = [Fn] + [K] (closest to ㅏ)
-ㅿ = [Fn] + [T] (closest to ㅅ) 
-ㆆ = [Fn] + [G] (closest to ㅎ)
-ㅸ = [Fn] + [Q] (closest to ㅂ)
+ㆍ = [AltGr] + [A] (아래아)
+ㅿ = [AltGr] + [S] (반시옷)
+ㆆ = [AltGr] + [H] (여린히읗)
+ㅸ = [AltGr] + [B] (쌍비읍)
+ᄔ = [AltGr] + [N] (쌍니은)
+ᅇ = [AltGr] + [O] (쌍이응)
+ᄙ = [AltGr] + [L] (쌍리을)
+ᄼ = [AltGr] + [K] (반치읓)
+ᄾ = [AltGr] + [T] (반치읓)
+ᅎ = [AltGr] + [C] (반치읓)
+ᅐ = [AltGr] + [P] (반치읓)
+ᅔ = [AltGr] + [U] (반치읓)
+ᅕ = [AltGr] + [W] (반치읓)
 
-Alternative Input Methods:
-- [Ctrl] + [Alt] + [Letter] combinations
-- [Right Alt] + [Letter] combinations
-- Custom modifier key combinations
-```
-
-#### Unicode Mapping Algorithm
-```cpp
-// Pseudo-code for syllabic composition
-struct JamoPosition {
-    enum Position { INITIAL, MEDIAL, FINAL };
-    Position pos;
-    uint32_t unicode;
-};
-
-class SyllabicComposer {
-    vector<JamoPosition> parseInput(string input);
-    uint32_t composeSyllable(vector<JamoPosition> jamos);
-    bool isValidCombination(vector<JamoPosition> jamos);
-};
+Additional Combinations:
+ᅀ = [AltGr] + [Shift] + [M] (반시옷)
+ᅙ = [AltGr] + [Shift] + [H] (여린히읗)
+ᆞ = [AltGr] + [Shift] + [A] (아래아)
 ```
 
 ### Mobile Implementation

@@ -115,18 +115,38 @@ class KoreanJamoProcessor {
         jamoMap["ㅢ"] = JamoCharacter(unicode: "ᅴ", type: .vowel, position: .medial, name: "의", isArchaic: false)
         jamoMap["ㅣ"] = JamoCharacter(unicode: "ᅵ", type: .vowel, position: .medial, name: "이", isArchaic: false)
         
-        // Archaic jamos
+        // Archaic jamos - Microsoft Old Hangul keyboard mapping
         jamoMap["ㆍ"] = JamoCharacter(unicode: "ᆞ", type: .vowel, position: .medial, name: "아래아", isArchaic: true)
         jamoMap["ㅿ"] = JamoCharacter(unicode: "ᅀ", type: .consonant, position: .initial, name: "반시옷", isArchaic: true)
         jamoMap["ㆆ"] = JamoCharacter(unicode: "ᅙ", type: .consonant, position: .initial, name: "여린히읗", isArchaic: true)
         jamoMap["ㅸ"] = JamoCharacter(unicode: "ᄫ", type: .consonant, position: .initial, name: "쌍비읍", isArchaic: true)
+        
+        // Additional Microsoft Old Hangul characters
+        jamoMap["ᄔ"] = JamoCharacter(unicode: "ᄔ", type: .consonant, position: .initial, name: "쌍니은", isArchaic: true)
+        jamoMap["ᅇ"] = JamoCharacter(unicode: "ᅇ", type: .consonant, position: .initial, name: "쌍이응", isArchaic: true)
+        jamoMap["ᄙ"] = JamoCharacter(unicode: "ᄙ", type: .consonant, position: .initial, name: "쌍리을", isArchaic: true)
+        jamoMap["ᄼ"] = JamoCharacter(unicode: "ᄼ", type: .consonant, position: .initial, name: "반치읓", isArchaic: true)
+        jamoMap["ᄾ"] = JamoCharacter(unicode: "ᄾ", type: .consonant, position: .initial, name: "반치읓", isArchaic: true)
+        jamoMap["ᅎ"] = JamoCharacter(unicode: "ᅎ", type: .consonant, position: .initial, name: "반치읓", isArchaic: true)
+        jamoMap["ᅐ"] = JamoCharacter(unicode: "ᅐ", type: .consonant, position: .initial, name: "반치읓", isArchaic: true)
+        jamoMap["ᅔ"] = JamoCharacter(unicode: "ᅔ", type: .consonant, position: .initial, name: "반치읓", isArchaic: true)
+        jamoMap["ᅕ"] = JamoCharacter(unicode: "ᅕ", type: .consonant, position: .initial, name: "반치읓", isArchaic: true)
+        jamoMap["ᅀ"] = JamoCharacter(unicode: "ᅀ", type: .consonant, position: .initial, name: "반시옷", isArchaic: true)
+        jamoMap["ᅙ"] = JamoCharacter(unicode: "ᅙ", type: .consonant, position: .initial, name: "여린히읗", isArchaic: true)
+        jamoMap["ᆞ"] = JamoCharacter(unicode: "ᆞ", type: .vowel, position: .medial, name: "아래아", isArchaic: true)
     }
     
     private func initializeArchaicMappings() {
-        // Shift key combinations
-        shiftCombinations["M"] = "ᅀ" // 반시옷
-        shiftCombinations["H"] = "ᅙ" // 여린히읗
-        shiftCombinations["A"] = "ᆞ" // 아래아
+        // Microsoft Old Hangul keyboard mappings
+        
+        // AltGr equivalent combinations (using special modifier)
+        shiftCombinations["A"] = "ㆍ" // 아래아
+        shiftCombinations["S"] = "ㅿ" // 반시옷
+        shiftCombinations["H"] = "ㆆ" // 여린히읗
+        shiftCombinations["B"] = "ㅸ" // 쌍비읍
+        shiftCombinations["N"] = "ᄔ" // 쌍니은
+        shiftCombinations["O"] = "ᅇ" // 쌍이응
+        shiftCombinations["L"] = "ᄙ" // 쌍리을
         shiftCombinations["K"] = "ᄼ" // 반치읓
         shiftCombinations["T"] = "ᄾ" // 반치읓
         shiftCombinations["C"] = "ᅎ" // 반치읓
@@ -134,20 +154,10 @@ class KoreanJamoProcessor {
         shiftCombinations["U"] = "ᅔ" // 반치읓
         shiftCombinations["W"] = "ᅕ" // 반치읓
         
-        // Double key presses
-        doublePressCombinations["N"] = "ᄔ" // 쌍니은
-        doublePressCombinations["O"] = "ᅇ" // 쌍이응
-        doublePressCombinations["L"] = "ᄙ" // 쌍리을
-        doublePressCombinations["H"] = "ᅘ" // 쌍히읗
-        doublePressCombinations["K"] = "ᄽ" // 반치읓
-        doublePressCombinations["C"] = "ᅏ" // 반치읓
-        doublePressCombinations["P"] = "ᅑ" // 반치읓
-        
-        // Key combinations
-        keyCombinations["BO"] = "ᄫ" // 쌍비읍
-        keyCombinations["BBO"] = "ᄬ" // 쌍비읍
-        keyCombinations["PO"] = "ᅗ" // 쌍비읍
-        keyCombinations["MO"] = "ᄝ" // 쌍비읍
+        // Additional Microsoft Old Hangul characters
+        shiftCombinations["M"] = "ᅀ" // 반시옷 (AltGr + Shift + M)
+        shiftCombinations["H_SHIFT"] = "ᅙ" // 여린히읗 (AltGr + Shift + H)
+        shiftCombinations["A_SHIFT"] = "ᆞ" // 아래아 (AltGr + Shift + A)
     }
     
     // MARK: - Public Methods

@@ -1,41 +1,35 @@
 # Korean Archaic Keyboard for iOS
 
-A comprehensive iOS keyboard extension that provides Korean input with support for archaic Korean characters (옛한글) using an advanced mapping system.
+A comprehensive iOS keyboard extension that provides Korean input with support for archaic Korean characters (옛한글) using the Microsoft Old Hangul keyboard mapping system.
 
 ## Features
 
-### 🎯 **Comprehensive Archaic Character Support**
-- **20+ archaic letters** including 반시옷, 여린히읗, 아래아, 쌍니은, and more
-- **Multiple input methods** for easy access to archaic characters
+### 🎯 **Microsoft Old Hangul Keyboard Support**
+- **16 archaic letters** following the Microsoft Old Hangul keyboard standard
+- **AltGr-style combinations** for easy access to archaic characters
 - **Unicode-compliant** implementation following Korean language standards
 
-### ⌨️ **Advanced Input Methods**
+### ⌨️ **Microsoft Old Hangul Input Methods**
 
-#### **Shift Key Combinations**
-- `Shift + M` → ᅀ (반시옷)
-- `Shift + H` → ᅙ (여린히읗)
-- `Shift + A` → ᆞ (아래아)
-- `Shift + K` → ᄼ (반치읓)
-- `Shift + T` → ᄾ (반치읓)
-- `Shift + C` → ᅎ (반치읓)
-- `Shift + P` → ᅐ (반치읓)
-- `Shift + U` → ᅔ (반치읓)
-- `Shift + W` → ᅕ (반치읓)
+#### **AltGr Key Combinations**
+- `AltGr + A` → ㆍ (아래아)
+- `AltGr + S` → ㅿ (반시옷)
+- `AltGr + H` → ㆆ (여린히읗)
+- `AltGr + B` → ㅸ (쌍비읍)
+- `AltGr + N` → ᄔ (쌍니은)
+- `AltGr + O` → ᅇ (쌍이응)
+- `AltGr + L` → ᄙ (쌍리을)
+- `AltGr + K` → ᄼ (반치읓)
+- `AltGr + T` → ᄾ (반치읓)
+- `AltGr + C` → ᅎ (반치읓)
+- `AltGr + P` → ᅐ (반치읓)
+- `AltGr + U` → ᅔ (반치읓)
+- `AltGr + W` → ᅕ (반치읓)
 
-#### **Double Key Presses**
-- `N + N` → ᄔ (쌍니은)
-- `O + O` → ᅇ (쌍이응)
-- `L + L` → ᄙ (쌍리을)
-- `H + H` → ᅘ (쌍히읗)
-- `K + K` → ᄽ (반치읓)
-- `C + C` → ᅏ (반치읓)
-- `P + P` → ᅑ (반치읓)
-
-#### **Key Combinations**
-- `B + O` → ᄫ (쌍비읍)
-- `BB + O` → ᄬ (쌍비읍)
-- `P + O` → ᅗ (쌍비읍)
-- `M + O` → ᄝ (쌍비읍)
+#### **AltGr + Shift Combinations**
+- `AltGr + Shift + M` → ᅀ (반시옷)
+- `AltGr + Shift + H` → ᅙ (여린히읗)
+- `AltGr + Shift + A` → ᆞ (아래아)
 
 ### 🎨 **Modern iOS Design**
 - **Native iOS keyboard appearance** with system colors and fonts
@@ -96,27 +90,25 @@ A comprehensive iOS keyboard extension that provides Korean input with support f
 
 ### Archaic Character Input
 
-#### **Method 1: Shift Combinations**
-1. Press and hold the **Shift** button (⇧)
+#### **Method 1: AltGr Combinations (Microsoft Old Hangul Style)**
+1. Press and hold the **AltGr** button (Right Alt)
 2. Press the corresponding letter key
 3. Release both keys
 
-#### **Method 2: Double Press**
-1. Press the same key twice quickly (within 300ms)
-2. The archaic character will appear
+#### **Method 2: AltGr + Shift Combinations**
+1. Press and hold the **AltGr** button (Right Alt)
+2. Press and hold the **Shift** button
+3. Press the corresponding letter key
+4. Release all keys
 
-#### **Method 3: Key Combinations**
-1. Press the first key
-2. Quickly press the second key
-3. The combination will produce the archaic character
-
-#### **Method 4: Archaic Mode**
+#### **Method 3: Archaic Mode**
 1. Tap the **옛** button to enable archaic mode
 2. Type normally - all input will be processed for archaic characters
 3. Tap **옛** again to return to normal mode
 
 ### Keyboard Controls
-- **⇧** - Shift key for capital letters and archaic combinations
+- **⇧** - Shift key for capital letters and AltGr combinations
+- **AltGr** - Right Alt key for archaic character combinations
 - **⌫** - Backspace to delete characters
 - **space** - Insert space character
 - **return** - Insert newline

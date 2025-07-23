@@ -38,12 +38,21 @@
 
 namespace KoreanKeyboard {
 
-// Default key mappings
+// Default key mappings - Microsoft Old Hangul keyboard style
 const std::vector<KeyMapping> Configuration::DEFAULT_KEY_MAPPINGS = {
-    {L'K', L'ㆍ', L"아래아 (아래아)"},
-    {L'T', L'ㅿ', L"반시옷 (반시옷)"},
-    {L'G', L'ㆆ', L"여린히읗 (여린히읗)"},
-    {L'Q', L'ㅸ', L"쌍비읍 (쌍비읍)"}
+    {L'A', L'ㆍ', L"아래아 (AltGr + A)"},
+    {L'S', L'ㅿ', L"반시옷 (AltGr + S)"},
+    {L'H', L'ㆆ', L"여린히읗 (AltGr + H)"},
+    {L'B', L'ㅸ', L"쌍비읍 (AltGr + B)"},
+    {L'N', L'ᄔ', L"쌍니은 (AltGr + N)"},
+    {L'O', L'ᅇ', L"쌍이응 (AltGr + O)"},
+    {L'L', L'ᄙ', L"쌍리을 (AltGr + L)"},
+    {L'K', L'ᄼ', L"반치읓 (AltGr + K)"},
+    {L'T', L'ᄾ', L"반치읓 (AltGr + T)"},
+    {L'C', L'ᅎ', L"반치읓 (AltGr + C)"},
+    {L'P', L'ᅐ', L"반치읓 (AltGr + P)"},
+    {L'U', L'ᅔ', L"반치읓 (AltGr + U)"},
+    {L'W', L'ᅕ', L"반치읓 (AltGr + W)"}
 };
 
 Configuration::Configuration() {
@@ -51,8 +60,8 @@ Configuration::Configuration() {
 }
 
 void Configuration::InitializeDefaults() {
-    // Set default settings
-    m_settings.modifierKey = ModifierKey::FN;
+    // Set default settings - Microsoft Old Hangul keyboard style
+    m_settings.modifierKey = ModifierKey::RIGHT_ALT;
     m_settings.compositionStyle = CompositionStyle::IMMEDIATE;
     m_settings.visualFeedback = true;
     m_settings.archaicModeEnabled = true;
