@@ -6,6 +6,10 @@ add_executable(TestJamoProcessor
     test_jamo_processor.cpp
 )
 
+add_executable(TestComprehensiveMapping
+    test_comprehensive_mapping.cpp
+)
+
 # Link with the main library
 target_link_libraries(TestJamoProcessor
     KoreanArchaicKeyboard

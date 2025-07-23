@@ -43,8 +43,12 @@ namespace KoreanKeyboard {
 TSFManager::TSFManager() 
     : m_archaicMode(false)
     , m_functionKeyPressed(false)
+    , m_shiftKeyPressed(false)
+    , m_lastKeyTime(0)
     , m_jamoProcessor(std::make_unique<JamoProcessor>()) {
     m_inputBuffer.clear();
+    m_keyHistory.clear();
+    InitializeArchaicMappings();
 }
 
 TSFManager::~TSFManager() {
@@ -55,34 +59,115 @@ HRESULT TSFManager::Initialize() {
     // Simplified initialization - just set up basic state
     m_archaicMode = false;
     m_functionKeyPressed = false;
+    m_shiftKeyPressed = false;
     m_inputBuffer.clear();
+    m_keyHistory.clear();
+    m_lastKeyTime = 0;
     return S_OK;
 }
 
 void TSFManager::Cleanup() {
     // Simplified cleanup
     m_inputBuffer.clear();
+    m_keyHistory.clear();
+}
+
+void TSFManager::InitializeArchaicMappings() {
+    // Initialize comprehensive archaic input mappings based on user's system
+    
+    // Shift key combinations
+    m_archaicMappings[L"SHIFT+M"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+M", L'ᅀ', L"반시옷 (Shift + M)"};
+    m_archaicMappings[L"SHIFT+H"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+H", L'ᅙ', L"여린히읗 (Shift + H)"};
+    m_archaicMappings[L"SHIFT+A"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+A", L'ᆞ', L"아래아 (Shift + A)"};
+    
+    // Double key presses
+    m_archaicMappings[L"NN"] = {InputCombinationType::DOUBLE_PRESS, L"NN", L'ᄔ', L"쌍니은 (N + N)"};
+    m_archaicMappings[L"OO"] = {InputCombinationType::DOUBLE_PRESS, L"OO", L'ᅇ', L"쌍이응 (O + O)"};
+    m_archaicMappings[L"LL"] = {InputCombinationType::DOUBLE_PRESS, L"LL", L'ᄙ', L"쌍리을 (L + L)"};
+    m_archaicMappings[L"HH"] = {InputCombinationType::DOUBLE_PRESS, L"HH", L'ᅘ', L"쌍히읗 (H + H)"};
+    
+    // Shift + key combinations for 반치읓 series
+    m_archaicMappings[L"SHIFT+K"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+K", L'ᄼ', L"반치읓 (Shift + K)"};
+    m_archaicMappings[L"SHIFT+T"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+T", L'ᄾ', L"반치읓 (Shift + T)"};
+    m_archaicMappings[L"SHIFT+C"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+C", L'ᅎ', L"반치읓 (Shift + C)"};
+    m_archaicMappings[L"SHIFT+P"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+P", L'ᅐ', L"반치읓 (Shift + P)"};
+    m_archaicMappings[L"SHIFT+U"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+U", L'ᅔ', L"반치읓 (Shift + U)"};
+    m_archaicMappings[L"SHIFT+W"] = {InputCombinationType::SHIFT_COMBO, L"SHIFT+W", L'ᅕ', L"반치읓 (Shift + W)"};
+    
+    // Double key presses for 반치읓 series
+    m_archaicMappings[L"KK"] = {InputCombinationType::DOUBLE_PRESS, L"KK", L'ᄽ', L"반치읓 (K + K)"};
+    m_archaicMappings[L"CC"] = {InputCombinationType::DOUBLE_PRESS, L"CC", L'ᅏ', L"반치읓 (C + C)"};
+    m_archaicMappings[L"PP"] = {InputCombinationType::DOUBLE_PRESS, L"PP", L'ᅑ', L"반치읓 (P + P)"};
+    
+    // Key combinations for 쌍비읍 series
+    m_archaicMappings[L"BO"] = {InputCombinationType::KEY_COMBO, L"BO", L'ᄫ', L"쌍비읍 (B + O)"};
+    m_archaicMappings[L"BBO"] = {InputCombinationType::KEY_COMBO, L"BBO", L'ᄬ', L"쌍비읍 (BB + O)"};
+    m_archaicMappings[L"PO"] = {InputCombinationType::KEY_COMBO, L"PO", L'ᅗ', L"쌍비읍 (P + O)"};
+    m_archaicMappings[L"MO"] = {InputCombinationType::KEY_COMBO, L"MO", L'ᄝ', L"쌍비읍 (M + O)"};
 }
 
 HRESULT TSFManager::ProcessKeyInput(WPARAM wParam, LPARAM lParam) {
-    // Check for function key combinations
-    if (IsArchaicKeyCombination(wParam, lParam)) {
-        return ProcessArchaicKey(wParam, lParam);
+    // Track key state
+    bool isKeyDown = (lParam & 0x80000000) == 0;
+    bool isKeyUp = (lParam & 0x80000000) != 0;
+    
+    // Handle shift key state
+    if (wParam == VK_SHIFT) {
+        m_shiftKeyPressed = isKeyDown;
+        return S_OK;
+    }
+    
+    // Only process key down events
+    if (!isKeyDown) {
+        return S_OK;
+    }
+    
+    // Add to key history
+    DWORD currentTime = GetTickCount();
+    if (currentTime - m_lastKeyTime > DOUBLE_PRESS_TIMEOUT) {
+        m_keyHistory.clear();
+    }
+    m_keyHistory.push_back(wParam);
+    m_lastKeyTime = currentTime;
+    
+    // Keep only recent keys
+    if (m_keyHistory.size() > MAX_KEY_HISTORY) {
+        m_keyHistory.erase(m_keyHistory.begin());
+    }
+    
+    // Check for archaic key combinations
+    wchar_t archaicChar = 0;
+    
+    // Try shift combinations first
+    if (m_shiftKeyPressed) {
+        archaicChar = ProcessShiftCombination(wParam);
+    }
+    
+    // Try double press combinations
+    if (!archaicChar) {
+        archaicChar = ProcessDoublePress(wParam);
+    }
+    
+    // Try key combinations
+    if (!archaicChar) {
+        archaicChar = ProcessKeyCombination(wParam);
+    }
+    
+    // If we found an archaic character, process it
+    if (archaicChar) {
+        m_inputBuffer += archaicChar;
+        std::wstring result = m_jamoProcessor->processInput(m_inputBuffer);
+        ClearInputBuffer();
+        return S_OK;
     }
     
     // Handle regular input
     if (m_archaicMode) {
-        // In archaic mode, process all input through jamo processor
         wchar_t ch = static_cast<wchar_t>(wParam);
         if (ch >= 32 && ch <= 126) { // Basic ASCII range
             m_inputBuffer += ch;
-            
-            // Process the input
             std::wstring result = m_jamoProcessor->processInput(m_inputBuffer);
-            
-            // For now, just clear buffer after processing
             ClearInputBuffer();
-            
             return S_OK;
         }
     }
@@ -139,8 +224,61 @@ HRESULT TSFManager::ProcessArchaicKey(WPARAM wParam, LPARAM lParam) {
     return S_OK;
 }
 
+wchar_t TSFManager::ProcessShiftCombination(WPARAM wParam) {
+    std::wstring combo = L"SHIFT+";
+    combo += static_cast<wchar_t>(wParam);
+    
+    auto it = m_archaicMappings.find(combo);
+    if (it != m_archaicMappings.end()) {
+        return it->second.result;
+    }
+    
+    return 0;
+}
+
+wchar_t TSFManager::ProcessDoublePress(WPARAM wParam) {
+    if (m_keyHistory.size() < 2) {
+        return 0;
+    }
+    
+    // Check if the same key was pressed twice
+    if (m_keyHistory[m_keyHistory.size() - 1] == wParam && 
+        m_keyHistory[m_keyHistory.size() - 2] == wParam) {
+        
+        std::wstring combo;
+        combo += static_cast<wchar_t>(wParam);
+        combo += static_cast<wchar_t>(wParam);
+        
+        auto it = m_archaicMappings.find(combo);
+        if (it != m_archaicMappings.end()) {
+            return it->second.result;
+        }
+    }
+    
+    return 0;
+}
+
+wchar_t TSFManager::ProcessKeyCombination(WPARAM wParam) {
+    if (m_keyHistory.size() < 2) {
+        return 0;
+    }
+    
+    // Check for key combinations (e.g., B+O, P+O, M+O)
+    std::wstring combo;
+    for (size_t i = m_keyHistory.size() - 2; i < m_keyHistory.size(); ++i) {
+        combo += static_cast<wchar_t>(m_keyHistory[i]);
+    }
+    
+    auto it = m_archaicMappings.find(combo);
+    if (it != m_archaicMappings.end()) {
+        return it->second.result;
+    }
+    
+    return 0;
+}
+
 wchar_t TSFManager::VirtualKeyToArchaicJamo(WPARAM wParam) {
-    // Map virtual keys to archaic jamos based on spec
+    // Legacy function key mapping (kept for backward compatibility)
     switch (wParam) {
         case 'K': // Fn + K for ㆍ (아래아)
             return L'ㆍ';
@@ -177,6 +315,18 @@ HRESULT TSFManager::InsertText(const std::wstring& text) {
     // Simplified text insertion - just return success for now
     // In a real implementation, this would use TSF APIs to insert text
     return S_OK;
+}
+
+bool TSFManager::IsKeyPressed(int virtualKey) {
+    return (GetAsyncKeyState(virtualKey) & 0x8000) != 0;
+}
+
+std::wstring TSFManager::GetCurrentKeyCombination() {
+    std::wstring combo;
+    for (WPARAM key : m_keyHistory) {
+        combo += static_cast<wchar_t>(key);
+    }
+    return combo;
 }
 
 void TSFManager::ClearInputBuffer() {
