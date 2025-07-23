@@ -183,6 +183,10 @@ TestJamoProcessor.exe
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+**Copyright (c) 2025 Korean Keyboard Project Contributors**
+
+All source files include copyright headers with detailed licensing information and contributor acknowledgments.
+
 ## Acknowledgments
 
 - Unicode Consortium for Korean character standards
