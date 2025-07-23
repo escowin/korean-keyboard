@@ -286,7 +286,7 @@ echo.
 
 REM Check if we can compile a simple test
 echo Compiling test program...
-g++ -o build\test_compile test_core.cpp -std=c++17
+g++ -o build\test_compile tests\test_core.cpp -std=c++17
 if %ERRORLEVEL% neq 0 (
   echo ✗ Compilation test failed
   echo Please check your C++ compiler installation

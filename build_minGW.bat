@@ -32,7 +32,7 @@ echo.
 REM Test the core functionality
 echo Testing core functionality...
 cd ..
-g++ -o test_compile test_core.cpp -std=c++17
+g++ -o test_compile tests\test_core.cpp -std=c++17
 if %ERRORLEVEL% equ 0 (
     echo Core test compilation successful!
     echo Running core test...

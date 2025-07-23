@@ -11,7 +11,7 @@ Run the simplified test that verifies the core jamo processing logic:
 
 ```bash
 # Compile the test
-g++ -o test_core test_core.cpp -std=c++17
+g++ -o test_core tests\test_core.cpp -std=c++17
 
 # Run the test
 ./test_core
@@ -32,7 +32,7 @@ If you have Visual Studio and CMake installed:
 build.bat
 
 # Run comprehensive tests
-test.bat
+tests\test.bat
 ```
 
 ### 3. **Manual Testing Scenarios**
@@ -144,7 +144,7 @@ test.bat
 
 ### Full Testing Process
 1. **Build**: Run `build.bat`
-2. **Test**: Run `test.bat`
+2. **Test**: Run `tests\test.bat`
 3. **Install**: Run `install.bat` (as administrator)
 4. **Configure**: Add keyboard layout in Windows settings
 5. **Use**: Test actual typing with archaic jamos

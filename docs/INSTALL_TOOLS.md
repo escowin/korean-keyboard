@@ -177,7 +177,7 @@ setup_dev_environment.bat
 verify_build.bat
 
 # Or manually test compilation
-g++ -o test_compile test_core.cpp -std=c++17
+g++ -o test_compile tests\test_core.cpp -std=c++17
 ./test_compile
 ```
 
