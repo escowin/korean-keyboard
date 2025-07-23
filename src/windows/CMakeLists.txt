@@ -54,4 +54,4 @@ install(TARGETS KoreanArchaicKeyboard
 )
 
 # Add test subdirectory
-add_subdirectory(../../../tests ${CMAKE_BINARY_DIR}/tests) 
+add_subdirectory(../../tests ${CMAKE_BINARY_DIR}/tests) 

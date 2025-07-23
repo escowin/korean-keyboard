@@ -1,222 +1,253 @@
-# Korean Keyboard with Archaic Jamo Support
+# Korean Archaic Keyboard for iOS
 
-A Windows keyboard extension that enables typing in Korean with support for archaic Korean jamo/letters (옛한글). The application handles both modern Korean input and archaic character composition, automatically mapping input sequences to appropriate Unicode syllabic blocks.
+A comprehensive iOS keyboard extension that provides Korean input with support for archaic Korean characters (옛한글) using an advanced mapping system.
 
 ## Features
 
-### Core Functionality
-- **Archaic Korean Letters Support**: Type the four main archaic jamos (ㆍ, ㅿ, ㆆ, ㅸ)
-- **Syllabic Block Composition**: Automatically compose syllabic blocks from individual jamo input
-- **Position-Aware Mapping**: Intelligently determine character positioning (initial, medial, final)
-- **Unicode Integration**: Proper Unicode mapping for both modern and archaic Korean characters
+### 🎯 **Comprehensive Archaic Character Support**
+- **20+ archaic letters** including 반시옷, 여린히읗, 아래아, 쌍니은, and more
+- **Multiple input methods** for easy access to archaic characters
+- **Unicode-compliant** implementation following Korean language standards
 
-### Input Methods
-- **Function Key Combinations**: Use [Fn] + key combinations for archaic letters
-  - `[Fn] + K` → ㆍ (아래아)
-  - `[Fn] + T` → ㅿ (반시옷)
-  - `[Fn] + G` → ㆆ (여린히읗)
-  - `[Fn] + Q` → ㅸ (쌍비읍)
-- **Alternative Shortcuts**: 
-  - `[Ctrl] + [Alt] + A` to toggle archaic mode
-  - `[Fn] + [Space]` to toggle archaic mode
+### ⌨️ **Advanced Input Methods**
 
-### Examples
-```
-Input: ㆆㆍㄴ → Output: ᅙᆞᆫ
-Input: ㅸㅏㄴ → Output: ᄫᅡᆫ
-Input: ㅿㅡㄹ → Output: ᅀᅳᆯ
-Input: ㄱㅏㄴ → Output: 간
-```
+#### **Shift Key Combinations**
+- `Shift + M` → ᅀ (반시옷)
+- `Shift + H` → ᅙ (여린히읗)
+- `Shift + A` → ᆞ (아래아)
+- `Shift + K` → ᄼ (반치읓)
+- `Shift + T` → ᄾ (반치읓)
+- `Shift + C` → ᅎ (반치읓)
+- `Shift + P` → ᅐ (반치읓)
+- `Shift + U` → ᅔ (반치읓)
+- `Shift + W` → ᅕ (반치읓)
+
+#### **Double Key Presses**
+- `N + N` → ᄔ (쌍니은)
+- `O + O` → ᅇ (쌍이응)
+- `L + L` → ᄙ (쌍리을)
+- `H + H` → ᅘ (쌍히읗)
+- `K + K` → ᄽ (반치읓)
+- `C + C` → ᅏ (반치읓)
+- `P + P` → ᅑ (반치읓)
+
+#### **Key Combinations**
+- `B + O` → ᄫ (쌍비읍)
+- `BB + O` → ᄬ (쌍비읍)
+- `P + O` → ᅗ (쌍비읍)
+- `M + O` → ᄝ (쌍비읍)
+
+### 🎨 **Modern iOS Design**
+- **Native iOS keyboard appearance** with system colors and fonts
+- **Responsive layout** supporting both iPhone and iPad
+- **Accessibility support** for users with disabilities
+- **Dark mode support** with automatic theme switching
+
+### 🔧 **Technical Features**
+- **Swift 5.0** implementation with modern iOS APIs
+- **iOS 17.0+** support with latest keyboard extension features
+- **Memory efficient** with optimized character processing
+- **Fast response times** with efficient input handling
 
 ## Installation
 
-### Quick Start (MinGW) ✅
-**For immediate development and testing:**
+### Prerequisites
+- **Xcode 15.0+** with iOS 17.0+ SDK
+- **iOS device** or **simulator** running iOS 17.0+
+- **Apple Developer Account** (for device deployment)
 
-1. **Clone the repository**:
+### Build Instructions
+
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/korean-keyboard.git
-   cd korean-keyboard
+   git clone <repository-url>
+   cd ios-keyboard
    ```
 
-2. **Build with MinGW** (no Visual Studio required):
+2. **Open in Xcode**
    ```bash
-   ./build_minGW.bat
+   open KoreanArchaicKeyboard.xcodeproj
    ```
 
-3. **Test the functionality**:
-   ```bash
-   ./test_compile.exe
-   ```
+3. **Configure signing**
+   - Select your development team in project settings
+   - Update bundle identifier if needed
 
-**✅ This setup is working and tested!**
+4. **Build and run**
+   - Select your target device/simulator
+   - Press `Cmd + R` to build and run
 
-### Full Installation (Visual Studio)
+### Installation on Device
 
-**Prerequisites**:
-- Windows 10/11 (64-bit)
-- Visual Studio 2019 or later with C++ development tools
-- CMake 3.16 or later
-
-**Building from Source**:
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/yourusername/korean-keyboard.git
-   cd korean-keyboard
-   ```
-
-2. **Build the project**:
-   ```bash
-   dev.bat build
-   ```
-   Or manually:
-   ```bash
-   mkdir build
-   cd build
-   cmake ../src/windows -G "Visual Studio 16 2019" -A x64
-   cmake --build . --config Release
-   ```
-
-3. **Install the keyboard extension** (requires administrator privileges):
-   ```bash
-   # Copy DLL to system directory
-   copy build\bin\Release\KoreanArchaicKeyboard.dll C:\Windows\System32\
-   
-   # Register the DLL
-   regsvr32 KoreanArchaicKeyboard.dll
-   ```
-
-4. **Add keyboard layout in Windows**:
-   - Go to Settings → Time & Language → Language
-   - Add Korean language if not already added
-   - Click on Korean → Options → Add a keyboard
-   - Select "Korean Archaic Keyboard"
+1. **Build the project** in Xcode
+2. **Install on device** via Xcode or TestFlight
+3. **Enable keyboard** in iOS Settings:
+   - Settings → General → Keyboard → Keyboards
+   - Add New Keyboard → Korean Archaic
+4. **Grant permissions** when prompted
+5. **Switch to keyboard** using the globe button (🌐)
 
 ## Usage
 
-### Basic Typing
-1. **Modern Korean**: Type normally using standard Korean input
-2. **Archaic Letters**: Use function key combinations to input archaic jamos
-3. **Mixed Input**: Combine modern and archaic jamos in the same syllable
+### Basic Korean Input
+- Type normally using the Korean jamo layout
+- Characters automatically compose into syllables
+- Standard Korean input works as expected
 
-### Mode Switching
-- **Toggle Archaic Mode**: Press `[Ctrl] + [Alt] + A` or `[Fn] + [Space]`
-- **Visual Indicator**: Status bar shows current mode (Modern/Archaic)
+### Archaic Character Input
 
-### Configuration
-The keyboard extension supports customization through configuration files:
-- **Modifier Key**: Choose between Fn, Ctrl+Alt, Right Alt, or custom
-- **Composition Style**: Immediate or delayed composition
-- **Visual Feedback**: Enable/disable input preview
-- **Key Mappings**: Customize archaic letter assignments
+#### **Method 1: Shift Combinations**
+1. Press and hold the **Shift** button (⇧)
+2. Press the corresponding letter key
+3. Release both keys
+
+#### **Method 2: Double Press**
+1. Press the same key twice quickly (within 300ms)
+2. The archaic character will appear
+
+#### **Method 3: Key Combinations**
+1. Press the first key
+2. Quickly press the second key
+3. The combination will produce the archaic character
+
+#### **Method 4: Archaic Mode**
+1. Tap the **옛** button to enable archaic mode
+2. Type normally - all input will be processed for archaic characters
+3. Tap **옛** again to return to normal mode
+
+### Keyboard Controls
+- **⇧** - Shift key for capital letters and archaic combinations
+- **⌫** - Backspace to delete characters
+- **space** - Insert space character
+- **return** - Insert newline
+- **🌐** - Switch to next keyboard
+- **옛** - Toggle archaic mode
+
+## Architecture
+
+### Core Components
+
+#### **KoreanArchaicKeyboardViewController**
+- Main keyboard controller implementing `UIInputViewController`
+- Handles input processing and text insertion
+- Manages keyboard state and mode switching
+
+#### **KoreanJamoProcessor**
+- Processes Korean jamo input and composition
+- Implements archaic character mapping system
+- Handles Unicode conversion and positioning
+
+#### **KoreanArchaicKeyboardView**
+- Custom keyboard UI implementation
+- Provides touch interface for key input
+- Manages visual feedback and state display
+
+### Data Flow
+1. **User Input** → Keyboard View
+2. **Key Processing** → View Controller
+3. **Jamo Processing** → Jamo Processor
+4. **Text Output** → Text Document Proxy
 
 ## Development
 
 ### Project Structure
 ```
-korean-keyboard/
-├── src/windows/          # Windows TSF implementation
-│   ├── main.cpp          # DLL entry point
-│   ├── TSFManager.cpp    # Text Services Framework manager
-│   ├── JamoProcessor.cpp # Jamo processing engine
-│   └── Configuration.cpp # Configuration management
-├── include/              # Header files
-├── tests/                # Test applications
-├── docs/                 # Documentation
-└── build.bat            # Build script
+KoreanArchaicKeyboard/
+├── KoreanArchaicKeyboardViewController.swift  # Main controller
+├── KoreanJamoProcessor.swift                  # Jamo processing logic
+├── KoreanArchaicKeyboard.swift                # Keyboard UI
+├── Info.plist                                 # Extension configuration
+└── KoreanArchaicKeyboard.xcodeproj/          # Xcode project
 ```
 
-### Key Components
+### Adding New Archaic Characters
 
-#### JamoProcessor
-- Handles archaic Korean jamo input and processing
-- Implements syllabic composition algorithm
-- Manages Unicode mapping for all jamo positions
+1. **Update JamoProcessor.swift**
+   ```swift
+   // Add to initializeArchaicMappings()
+   shiftCombinations["NEW_KEY"] = "NEW_UNICODE"
+   ```
 
-#### TSFManager
-- Windows Text Services Framework integration
-- Handles keyboard input and text insertion
-- Manages archaic mode toggling
+2. **Update keyboard layout** if needed
+3. **Test thoroughly** with various input combinations
 
-#### Configuration
-- User preferences and settings management
-- Customizable key mappings
-- Configuration file I/O
+### Customization
 
-### Testing
-Run the test application to verify functionality:
-```bash
-cd build/bin/Release
-TestJamoProcessor.exe
-```
+#### **Keyboard Layout**
+- Modify `KoreanArchaicKeyboardView.swift`
+- Update key arrays in `createKeyRow()` methods
+- Adjust button styling in `createKeyButton()`
 
-## Technical Details
+#### **Input Methods**
+- Extend `KoreanJamoProcessor.swift`
+- Add new combination types
+- Update processing logic in view controller
 
-### Unicode Support
-- **Initial Consonants**: 0x1100 - 0x1112 (modern) + archaic extensions
-- **Medial Vowels**: 0x1161 - 0x1175 (modern) + 0x1197 (ㆍ)
-- **Final Consonants**: 0x11A8 - 0x11C6 (modern) + archaic extensions
-- **Syllable Base**: 0xAC00 (가)
+#### **Visual Design**
+- Customize colors, fonts, and spacing
+- Add custom button backgrounds
+- Implement custom animations
 
-### Archaic Jamos
-- **ㆍ** (아래아): 0x1197 - archaic vowel
-- **ㅿ** (반시옷): 0x113F - archaic consonant
-- **ㆆ** (여린히읗): 0x1146 - archaic consonant
-- **ㅸ** (쌍비읍): 0x1170 - archaic consonant
+## Testing
 
-### Performance
-- **Key Input**: < 50ms latency
-- **Composition**: < 100ms for syllabic blocks
-- **Mode Switching**: < 200ms
-- **Memory Usage**: < 10MB RAM
+### Unit Tests
+- Test jamo processing logic
+- Verify archaic character mappings
+- Validate input combination detection
+
+### Integration Tests
+- Test keyboard extension functionality
+- Verify text insertion in various apps
+- Test mode switching and state management
+
+### User Testing
+- Test on different iOS devices
+- Verify accessibility features
+- Test with various Korean text input scenarios
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+### Development Guidelines
+- Follow Swift style guidelines
+- Add comprehensive comments
+- Include unit tests for new features
+- Update documentation for changes
+
+### Code Review Process
+1. Create feature branch
+2. Implement changes with tests
+3. Submit pull request
+4. Address review feedback
+5. Merge after approval
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-**Copyright (c) 2025 Korean Keyboard Project Contributors**
-
-All source files include copyright headers with detailed licensing information and contributor acknowledgments.
-
 ## Acknowledgments
 
-- Unicode Consortium for Korean character standards
-- Microsoft for Windows Text Services Framework
-- Korean linguistics community for archaic jamo research
+- **Korean linguistics research community** for character mappings
+- **Unicode Consortium** for Korean character standards
+- **Apple** for iOS Keyboard Extension framework
+- **Contributors** who have helped improve this project
 
 ## Support
 
-For issues and questions:
-- Create an issue on GitHub
-- Check the [documentation](docs/spec.md)
-- Review the [technical specification](docs/spec.md)
+### Issues and Bug Reports
+- Use GitHub Issues for bug reports
+- Include device information and iOS version
+- Provide steps to reproduce the issue
 
-## Roadmap
+### Feature Requests
+- Submit feature requests via GitHub Issues
+- Include use case and expected behavior
+- Consider implementation complexity
 
-### Phase 1: Windows Keyboard Extension ✅
-- [x] Windows TSF implementation
-- [x] Basic archaic letter input
-- [x] Syllabic composition algorithm
-- [x] User interface and configuration
-- [x] Testing and debugging
+### Community
+- Join discussions in GitHub Discussions
+- Share tips and usage examples
+- Help other users with questions
 
-### Phase 2: Mobile Applications (Future)
-- [ ] iOS keyboard extension
-- [ ] Android IME implementation
-- [ ] Long-press functionality
-- [ ] Cross-platform consistency
+---
 
-### Phase 3: Advanced Features (Future)
-- [ ] Web browser extension
-- [ ] Advanced composition rules
-- [ ] User dictionary and learning
-- [ ] Performance optimization
+**Korean Archaic Keyboard** - Bringing the beauty of 옛한글 to modern iOS devices.
