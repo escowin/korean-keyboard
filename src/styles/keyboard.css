@@ -1,0 +1,236 @@
+/* Korean Keyboard Styles */
+
+.korean-keyboard {
+  background: var(--color-bg-secondary);
+  border-top: 1px solid #444;
+  padding: var(--space-sm);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.keyboard-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.keyboard-row {
+  display: flex;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+  justify-content: center;
+}
+
+.keyboard-row:last-child {
+  margin-bottom: 0;
+}
+
+.key {
+  background: var(--color-bg-tertiary);
+  border: 1px solid #444;
+  border-radius: var(--border-radius-sm);
+  min-height: 48px;
+  min-width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+}
+
+.key:hover {
+  background: #4a4a4a;
+}
+
+.key:active,
+.key--pressed {
+  background: var(--color-accent);
+  transform: scale(0.95);
+}
+
+.key--empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+
+.key--empty:hover {
+  background: transparent;
+  transform: none;
+}
+
+/* Special key styles */
+.key--shift {
+  background: var(--color-bg-tertiary);
+  min-width: 60px;
+}
+
+.key--shift.key--active {
+  background: var(--color-accent);
+}
+
+.key--backspace {
+  background: var(--color-bg-tertiary);
+  min-width: 60px;
+}
+
+.key--space {
+  background: var(--color-bg-tertiary);
+  flex: 1;
+  min-width: 200px;
+}
+
+.key--enter {
+  background: var(--color-bg-tertiary);
+  min-width: 60px;
+}
+
+.key--numbers,
+.key--emoji {
+  background: var(--color-bg-tertiary);
+  min-width: 60px;
+  font-size: var(--font-size-sm);
+}
+
+/* Row-specific adjustments */
+.row1 .key,
+.row2 .key {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.row3 .key {
+  min-width: 48px;
+  min-height: 48px;
+}
+
+.row4 .key {
+  min-width: 60px;
+  min-height: 44px;
+}
+
+/* Korean text styling */
+.korean-text {
+  font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', sans-serif;
+  font-weight: 500;
+}
+
+/* Archaic popup styles */
+.archaic-popup {
+  background: var(--color-bg-primary);
+  border: 1px solid #444;
+  border-radius: var(--border-radius);
+  padding: var(--space-xs);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  gap: var(--space-xs);
+  animation: popup-appear 0.2s ease-out;
+}
+
+@keyframes popup-appear {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.archaic-variant {
+  background: var(--color-bg-tertiary);
+  border: 1px solid #444;
+  border-radius: var(--border-radius-sm);
+  min-width: 40px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-lg);
+}
+
+.archaic-variant:hover {
+  background: var(--color-accent);
+  transform: scale(1.05);
+}
+
+.archaic-variant:active {
+  transform: scale(0.95);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .korean-keyboard {
+    padding: var(--space-xs);
+  }
+  
+  .key {
+    min-height: 44px;
+    min-width: 44px;
+    font-size: var(--font-size);
+  }
+  
+  .row1 .key,
+  .row2 .key {
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  .row3 .key {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .row4 .key {
+    min-width: 50px;
+    min-height: 40px;
+  }
+  
+  .key--space {
+    min-width: 150px;
+  }
+  
+  .archaic-variant {
+    min-width: 36px;
+    min-height: 36px;
+    font-size: var(--font-size);
+  }
+}
+
+@media (max-width: 480px) {
+  .keyboard-row {
+    gap: 2px;
+  }
+  
+  .key {
+    min-height: 40px;
+    min-width: 40px;
+    font-size: var(--font-size-sm);
+  }
+  
+  .row1 .key,
+  .row2 .key {
+    min-width: 36px;
+    min-height: 36px;
+  }
+  
+  .row3 .key {
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  .row4 .key {
+    min-width: 44px;
+    min-height: 36px;
+  }
+  
+  .key--space {
+    min-width: 120px;
+  }
+}

@@ -1,0 +1,158 @@
+/* CSS Custom Properties */
+:root {
+  /* Spacing scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  
+  /* Color palette */
+  --color-bg-primary: #1a1a1a;
+  --color-bg-secondary: #2a2a2a;
+  --color-bg-tertiary: #3a3a3a;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #cccccc;
+  --color-text-muted: #888888;
+  --color-accent: #4a9eff;
+  --color-accent-hover: #3a8eef;
+  --color-success: #4caf50;
+  --color-warning: #ff9800;
+  --color-error: #f44336;
+  
+  /* Border radius */
+  --border-radius-sm: 0.25rem;
+  --border-radius: 0.5rem;
+  --border-radius-lg: 0.75rem;
+  
+  /* Typography */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition: 0.2s ease;
+  --transition-slow: 0.3s ease;
+}
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility classes */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.gap-sm { gap: var(--space-sm); }
+.gap { gap: var(--space); }
+.gap-lg { gap: var(--space-lg); }
+
+.p-sm { padding: var(--space-sm); }
+.p { padding: var(--space); }
+.p-lg { padding: var(--space-lg); }
+
+.m-sm { margin: var(--space-sm); }
+.m { margin: var(--space); }
+.m-lg { margin: var(--space-lg); }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+.text-center { text-align: center; }
+.text-sm { font-size: var(--font-size-sm); }
+.text-lg { font-size: var(--font-size-lg); }
+
+/* Component base styles */
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--space);
+}
+
+.section {
+  padding: var(--space-lg) 0;
+}
+
+.card {
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius);
+  padding: var(--space);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.button {
+  background: var(--color-accent);
+  color: var(--color-text-primary);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: var(--space-sm) var(--space);
+  font-size: var(--font-size);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.button:hover {
+  background: var(--color-accent-hover);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button--secondary {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+.button--secondary:hover {
+  background: #4a4a4a;
+}
+
+.input {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border: 1px solid #444;
+  border-radius: var(--border-radius);
+  padding: var(--space-sm) var(--space);
+  font-size: var(--font-size);
+  transition: border-color var(--transition);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+/* Korean text styling */
+.korean-text {
+  font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', sans-serif;
+  font-size: var(--font-size-lg);
+  line-height: 1.6;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--space-sm);
+  }
+  
+  .section {
+    padding: var(--space) 0;
+  }
+}

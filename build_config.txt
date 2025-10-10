@@ -1,6 +1,0 @@
-# Build configuration for Korean Keyboard
-BUILD_TYPE=Release
-CMAKE_GENERATOR=Visual Studio 16 2019
-CMAKE_ARCHITECTURE=x64
-ENABLE_TESTS=ON
-ENABLE_DOCUMENTATION=ON
