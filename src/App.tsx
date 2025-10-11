@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import KoreanKeyboard from './components/KoreanKeyboard.tsx'
-import { processKoreanInput } from './utils/koreanKeyboard.js'
-import type { Note, KeyboardEventHandlers } from './types/korean.js'
+import { processKoreanCharacter, completeCurrentComposition, resetCompositionState } from './utils/koreanKeyboard.js'
+import type { Note } from './types/korean.js'
 
 function App() {
   const [notes, setNotes] = useState<Note[]>([])
@@ -126,8 +126,20 @@ function App() {
           const end = textarea.selectionEnd
           
           if (start === end && start > 0) {
+            // Complete any pending composition first
+            const completedText = completeCurrentComposition()
+            if (completedText) {
+              resetCompositionState()
+            }
+            
             return prev.substring(0, start - 1) + prev.substring(end)
           } else if (start !== end) {
+            // Complete any pending composition when deleting selection
+            const completedText = completeCurrentComposition()
+            if (completedText) {
+              resetCompositionState()
+            }
+            
             return prev.substring(0, start) + prev.substring(end)
           }
         }
@@ -145,13 +157,13 @@ function App() {
         const before = prev.substring(0, start)
         const after = prev.substring(end)
         
-        // Process Korean input for syllable composition
-        const processedText = processKoreanInput(text)
-        const newContent = before + processedText + after
+        // Process Korean input character by character for proper composition
+        const processedText = processKoreanCharacter(text)
+        const newContent = before + processedText.text + after
         
         // Update cursor position after React re-renders
         setTimeout(() => {
-          const newPosition = start + processedText.length
+          const newPosition = start + processedText.text.length
           textarea.setSelectionRange(newPosition, newPosition)
           textarea.focus()
         }, 0)

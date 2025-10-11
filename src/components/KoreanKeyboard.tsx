@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { KEYBOARD_LAYOUT, getArchaicVariants } from '../utils/koreanKeyboard.js'
 
 const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
@@ -7,6 +7,25 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
   const [currentKey, setCurrentKey] = useState(null)
   const longPressTimer = useRef(null)
   const longPressDelay = 500 // ms
+
+  // Handle clicking outside popup to close it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popup && !event.target.closest('.archaic-popup') && !event.target.closest('.key')) {
+        hideArchaicPopup()
+      }
+    }
+
+    if (popup) {
+      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('touchstart', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+    }
+  }, [popup])
 
   const getKeyClass = (key) => {
     const classes = ['key']
@@ -75,9 +94,8 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
       longPressTimer.current = null
     }
     
-    // Hide popup if it exists
+    // Don't process key press if popup is showing - let user select variant
     if (popup) {
-      hideArchaicPopup()
       return
     }
     
@@ -138,11 +156,12 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     hideArchaicPopup() // Hide any existing popup
     
     const rect = keyElement.getBoundingClientRect()
+    const popupWidth = variants.length * 40 + 20 // Approximate width
     const popupElement = {
       keyValue,
       variants,
       position: {
-        left: rect.left,
+        left: Math.max(10, Math.min(rect.left - popupWidth / 2 + rect.width / 2, window.innerWidth - popupWidth - 10)),
         bottom: window.innerHeight - rect.top + 10
       }
     }
@@ -157,6 +176,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
   const handleVariantClick = (variant) => {
     onTextInput(variant)
     hideArchaicPopup()
+    setCurrentKey(null)
   }
 
   const renderRow = (keys, rowClass) => {
@@ -198,7 +218,14 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
             position: 'fixed',
             left: `${popup.position.left}px`,
             bottom: `${popup.position.bottom}px`,
-            zIndex: 1000
+            zIndex: 1000,
+            display: 'flex',
+            gap: '4px',
+            padding: '8px',
+            backgroundColor: 'var(--color-background-secondary, #2a2a2a)',
+            border: '1px solid var(--color-border, #444)',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
           }}
         >
           {popup.variants.map((variant, index) => (
@@ -206,6 +233,25 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
               key={index}
               className="archaic-variant"
               onClick={() => handleVariantClick(variant)}
+              style={{
+                padding: '8px 12px',
+                backgroundColor: 'var(--color-background-primary, #333)',
+                border: '1px solid var(--color-border, #555)',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '18px',
+                minWidth: '32px',
+                textAlign: 'center',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'var(--color-accent, #007acc)'
+                e.target.style.color = 'white'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'var(--color-background-primary, #333)'
+                e.target.style.color = 'inherit'
+              }}
             >
               <span className="korean-text">{variant}</span>
             </div>

@@ -7,11 +7,6 @@ import type {
   KeyboardLayout, 
   ArchaicMappings, 
   KoreanUnicodeRanges, 
-  KoreanCharacter, 
-  SyllableComposition,
-  KoreanInputResult,
-  KoreanInputError,
-  KoreanInputErrorDetails,
   CompositionState
 } from '../types/korean.js';
 
@@ -52,8 +47,8 @@ export const ARCHAIC_MAPPINGS: ArchaicMappings = {
   'ㅠ': ['ㅠ'],
   'ㅡ': ['ㅡ'],
   'ㅣ': ['ㅣ'],
-  'ㅐ': ['ㅐ'],
-  'ㅔ': ['ㅔ'],
+  'ㅐ': ['ㅐ', 'ㅒ'],
+  'ㅔ': ['ㅔ', 'ㅖ'],
   'ㅚ': ['ㅚ'],
   'ㅟ': ['ㅟ'],
   'ㅢ': ['ㅢ'],
@@ -159,8 +154,126 @@ export function getArchaicVariants(char: string): string[] {
   return ARCHAIC_MAPPINGS[char] || [char]
 }
 
+// Global composition state for Korean input
+let compositionState: CompositionState = {
+  currentSyllable: { initial: '', medial: '', final: '' },
+  buffer: '',
+  isComposing: false,
+  lastChar: null
+}
+
 /**
- * Process Korean input and compose syllables
+ * Reset the composition state
+ */
+export function resetCompositionState(): void {
+  compositionState = {
+    currentSyllable: { initial: '', medial: '', final: '' },
+    buffer: '',
+    isComposing: false,
+    lastChar: null
+  }
+}
+
+/**
+ * Get the current composition state
+ */
+export function getCompositionState(): CompositionState {
+  return { ...compositionState }
+}
+
+/**
+ * Process a single Korean character and update composition state
+ * @param char - Single Korean character to process
+ * @returns Object with processed text and composition status
+ */
+export function processKoreanCharacter(char: string): { text: string; isComposing: boolean; completedSyllable?: string } {
+  if (!char) return { text: '', isComposing: false }
+  
+  // Handle non-Korean characters
+  if (!isConsonant(char) && !isVowel(char)) {
+    // Complete any pending composition
+    const result = completeCurrentComposition()
+    resetCompositionState()
+    return { text: result + char, isComposing: false }
+  }
+  
+  compositionState.lastChar = char
+  compositionState.isComposing = true
+  
+  if (isConsonant(char)) {
+    return processConsonant(char)
+  } else if (isVowel(char)) {
+    return processVowel(char)
+  }
+  
+  return { text: '', isComposing: false }
+}
+
+/**
+ * Process a consonant character
+ */
+function processConsonant(char: string): { text: string; isComposing: boolean; completedSyllable?: string } {
+  const { currentSyllable } = compositionState
+  
+  if (currentSyllable.initial && currentSyllable.medial) {
+    // We have initial + medial, this could be final consonant
+    if (currentSyllable.final) {
+      // Already have final, complete current syllable and start new one
+      const completedSyllable = composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
+      compositionState.currentSyllable = { initial: char, medial: '', final: '' }
+      return { text: completedSyllable, isComposing: true, completedSyllable }
+    } else {
+      // This is the final consonant
+      compositionState.currentSyllable.final = char
+      return { text: '', isComposing: true }
+    }
+  } else if (currentSyllable.initial && !currentSyllable.medial) {
+    // We have initial but no medial, this could be a double consonant
+    // For now, treat as new initial (could be enhanced for double consonants)
+    const result = currentSyllable.initial
+    compositionState.currentSyllable = { initial: char, medial: '', final: '' }
+    return { text: result, isComposing: true }
+  } else {
+    // This is the initial consonant
+    compositionState.currentSyllable.initial = char
+    return { text: '', isComposing: true }
+  }
+}
+
+/**
+ * Process a vowel character
+ */
+function processVowel(char: string): { text: string; isComposing: boolean; completedSyllable?: string } {
+  const { currentSyllable } = compositionState
+  
+  if (currentSyllable.initial && currentSyllable.medial) {
+    // We have initial + medial, complete current syllable and start new one
+    const completedSyllable = composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
+    compositionState.currentSyllable = { initial: '', medial: char, final: '' }
+    return { text: completedSyllable, isComposing: true, completedSyllable }
+  } else if (currentSyllable.initial) {
+    // This is the medial vowel
+    compositionState.currentSyllable.medial = char
+    return { text: '', isComposing: true }
+  } else {
+    // Standalone vowel
+    return { text: char, isComposing: false }
+  }
+}
+
+/**
+ * Complete the current composition and return the result
+ */
+export function completeCurrentComposition(): string {
+  const { currentSyllable } = compositionState
+  if (currentSyllable.initial) {
+    return composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
+  }
+  return ''
+}
+
+/**
+ * Process Korean input and compose syllables (legacy function for backward compatibility)
  * @param input - Raw input string
  * @returns Processed string with composed syllables
  */
