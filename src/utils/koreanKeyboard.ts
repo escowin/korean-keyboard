@@ -396,6 +396,40 @@ export function getCurrentCompositionDisplay(): string {
 }
 
 /**
+ * Check if a character is a composed Hangul syllable
+ * @param char - Character to check
+ * @returns True if the character is a composed Hangul syllable
+ */
+function isComposedHangulSyllable(char: string): boolean {
+  const code = char.charCodeAt(0)
+  // Hangul Syllables range: 0xAC00-0xD7AF
+  return code >= 0xAC00 && code <= 0xD7AF
+}
+
+/**
+ * Decompose a composed Hangul syllable into its components
+ * @param syllable - Composed Hangul syllable
+ * @returns Object with initial, medial, final components
+ */
+function decomposeHangulSyllable(syllable: string): { initial: string, medial: string, final: string } {
+  const code = syllable.charCodeAt(0)
+  const base = 0xAC00
+  const initialOffset = Math.floor((code - base) / (21 * 28))
+  const medialOffset = Math.floor(((code - base) % (21 * 28)) / 28)
+  const finalOffset = (code - base) % 28
+  
+  const initialCode = 0x1100 + initialOffset
+  const medialCode = 0x1161 + medialOffset
+  const finalCode = finalOffset > 0 ? 0x11A7 + finalOffset : null
+  
+  return {
+    initial: String.fromCharCode(initialCode),
+    medial: String.fromCharCode(medialCode),
+    final: finalCode ? String.fromCharCode(finalCode) : ''
+  }
+}
+
+/**
  * Process Korean input and compose syllables (legacy function for backward compatibility)
  * @param input - Raw input string
  * @returns Processed string with composed syllables
@@ -409,10 +443,34 @@ export function processKoreanInput(input: string): string {
   
   for (let i = 0; i < input.length; i++) {
     const char = input[i]
-    console.log(`🔍 Processing char ${i}: "${char}" (${isConsonant(char) ? 'consonant' : isVowel(char) ? 'vowel' : 'other'})`)
+    console.log(`🔍 Processing char ${i}: "${char}" (${isConsonant(char) ? 'consonant' : isVowel(char) ? 'vowel' : isComposedHangulSyllable(char) ? 'composed-syllable' : 'other'})`)
     console.log(`   Current syllable:`, currentSyllable)
     
-    if (isConsonant(char)) {
+    if (isComposedHangulSyllable(char)) {
+      // Handle composed Hangul syllable
+      console.log(`   ✅ Composed syllable "${char}", decomposing and handling`)
+      
+      // Complete any current syllable first
+      if (currentSyllable.initial) {
+        result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
+        currentSyllable = { initial: '', medial: '', final: '' }
+      }
+      
+      // Decompose the syllable
+      const decomposed = decomposeHangulSyllable(char)
+      console.log(`   📝 Decomposed "${char}" to:`, decomposed)
+      
+      // If it has no final, we can add a final consonant to it
+      if (!decomposed.final) {
+        // This syllable can accept a final consonant
+        currentSyllable = decomposed
+        console.log(`   ✅ Syllable "${char}" can accept final consonant`)
+      } else {
+        // This syllable already has a final, add it to result
+        result += char
+        console.log(`   ✅ Syllable "${char}" already complete, adding to result`)
+      }
+    } else if (isConsonant(char)) {
       if (currentSyllable.initial && currentSyllable.medial) {
         // We have initial + medial, this could be final consonant
         if (currentSyllable.final) {
