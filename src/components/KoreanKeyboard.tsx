@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react'
-import { KEYBOARD_LAYOUT, getArchaicVariants } from '../utils/koreanKeyboard.js'
+import { KEYBOARD_LAYOUT, getArchaicVariants, getShiftedCharacter } from '../utils/koreanKeyboard.js'
 
 const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
   const [isShiftPressed, setIsShiftPressed] = useState(false)
@@ -68,7 +68,9 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
       case 'emoji':
         return <span>😊</span>
       default:
-        return <span className="korean-text">{key}</span>
+        // Show shifted character if shift is pressed and mapping exists
+        const displayChar = isShiftPressed ? getShiftedCharacter(key) : key
+        return <span className="korean-text">{displayChar}</span>
     }
   }
 
@@ -83,6 +85,8 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
         showArchaicPopup(keyValue, variants, event.target)
       }, longPressDelay)
     }
+    
+    // Don't process the key immediately - wait for click or key up
   }, [])
 
   const handleKeyUp = useCallback((keyValue, event) => {
@@ -94,15 +98,10 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
       longPressTimer.current = null
     }
     
-    // Don't process key press if popup is showing - let user select variant
-    if (popup) {
-      return
-    }
-    
-    // Handle key press
-    processKeyPress(keyValue)
+    // Don't process key press automatically - only on click
+    // This prevents immediate input on hover
     setCurrentKey(null)
-  }, [popup])
+  }, [])
 
   const handleKeyClick = useCallback((keyValue, event) => {
     event.preventDefault()
@@ -147,7 +146,9 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
         break
       default:
         if (keyValue && keyValue.length === 1) {
-          onTextInput(keyValue)
+          // Use shifted character if shift is pressed
+          const inputChar = isShiftPressed ? getShiftedCharacter(keyValue) : keyValue
+          onTextInput(inputChar)
         }
     }
   }
@@ -162,7 +163,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
       variants,
       position: {
         left: Math.max(10, Math.min(rect.left - popupWidth / 2 + rect.width / 2, window.innerWidth - popupWidth - 10)),
-        bottom: window.innerHeight - rect.top + 10
+        bottom: window.innerHeight - rect.top + 5 // Closer to the key
       }
     }
     

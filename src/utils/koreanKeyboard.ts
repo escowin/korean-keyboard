@@ -18,6 +18,16 @@ export const KEYBOARD_LAYOUT: KeyboardLayout = {
   row4: ['123', 'emoji', 'space', 'enter']
 }
 
+// Shift mappings for Dubeolsik layout
+export const SHIFT_MAPPINGS: Record<string, string> = {
+  // Standard Dubeolsik shift mappings
+  'ㅂ': 'ㅃ', 'ㅈ': 'ㅉ', 'ㄷ': 'ㄸ', 'ㄱ': 'ㄲ', 'ㅅ': 'ㅆ',
+  'ㅐ': 'ㅒ', 'ㅔ': 'ㅖ',
+  
+  // Archaic variants unique to this keyboard
+  'ㄴ': 'ᄔ', 'ㄹ': 'ᄙ', 'ㅇ': 'ᅇ', 'ㅎ': 'ᅘ', 'ㆍ': 'ᆢ'
+}
+
 // Archaic letter mappings for long-press functionality
 export const ARCHAIC_MAPPINGS: ArchaicMappings = {
   // Consonants with archaic variants
@@ -58,20 +68,24 @@ export const ARCHAIC_MAPPINGS: ArchaicMappings = {
   'ㅞ': ['ㅞ'],
   'ㅒ': ['ㅒ'],
   'ㅖ': ['ㅖ'],
-  'ᆞ': ['ᆞ', 'ᆢ']
+  'ㆍ': ['ㆍ', 'ᆢ']
 }
 
 // Unicode ranges for Korean characters
 export const UNICODE_RANGES: KoreanUnicodeRanges = {
-  // Initial consonants (초성)
+  // Initial consonants (초성) - Modern Korean only
   INITIAL_CONSONANTS: {
     'ㄱ': 0x1100, 'ㄲ': 0x1101, 'ㄴ': 0x1102, 'ㄷ': 0x1103, 'ㄸ': 0x1104,
     'ㄹ': 0x1105, 'ㅁ': 0x1106, 'ㅂ': 0x1107, 'ㅃ': 0x1108, 'ㅅ': 0x1109,
     'ㅆ': 0x110A, 'ㅇ': 0x110B, 'ㅈ': 0x110C, 'ㅉ': 0x110D, 'ㅊ': 0x110E,
-    'ㅋ': 0x110F, 'ㅌ': 0x1110, 'ㅍ': 0x1111, 'ㅎ': 0x1112, 'ㅸ': 0x1170,
-    'ㅿ': 0x113F, 'ㆆ': 0x1146, 'ᅎ': 0x114E, 'ᅏ': 0x114F, 'ᅐ': 0x1150,
-    'ᅑ': 0x1151, 'ᄔ': 0x1114, 'ᅇ': 0x1115, 'ᄙ': 0x1116, 'ᄼ': 0x113C,
-    'ᄾ': 0x113E, 'ᅙ': 0x1155
+    'ㅋ': 0x110F, 'ㅌ': 0x1110, 'ㅍ': 0x1111, 'ㅎ': 0x1112
+  },
+  
+  // Archaic initial consonants (not used in modern syllable composition)
+  ARCHAIC_INITIAL_CONSONANTS: {
+    'ㅸ': 0x1170, 'ㅿ': 0x113F, 'ㆆ': 0x1146, 'ᅎ': 0x114E, 'ᅏ': 0x114F, 
+    'ᅐ': 0x1150, 'ᅑ': 0x1151, 'ᄔ': 0x1114, 'ᅇ': 0x1115, 'ᄙ': 0x1116, 
+    'ᄼ': 0x113C, 'ᄾ': 0x113E, 'ᅙ': 0x1155
   },
   
   // Medial vowels (중성)
@@ -80,7 +94,7 @@ export const UNICODE_RANGES: KoreanUnicodeRanges = {
     'ㅔ': 0x1166, 'ㅕ': 0x1167, 'ㅖ': 0x1168, 'ㅗ': 0x1169, 'ㅘ': 0x116A,
     'ㅙ': 0x116B, 'ㅚ': 0x116C, 'ㅛ': 0x116D, 'ㅜ': 0x116E, 'ㅝ': 0x116F,
     'ㅞ': 0x1170, 'ㅟ': 0x1171, 'ㅠ': 0x1172, 'ㅡ': 0x1173, 'ㅢ': 0x1174,
-    'ㅣ': 0x1175, 'ㆍ': 0x1197
+    'ㅣ': 0x1175, 'ㆍ': 0x1197, 'ᆢ': 0x11A2
   },
   
   // Final consonants (종성)
@@ -128,11 +142,20 @@ export function composeSyllable(initial: string, medial: string, final: string =
 }
 
 /**
- * Check if a character is a Korean consonant
+ * Check if a character is a Korean consonant (modern or archaic)
  * @param char - Character to check
  * @returns Whether the character is a Korean consonant
  */
 export function isConsonant(char: string): boolean {
+  return char in UNICODE_RANGES.INITIAL_CONSONANTS || char in UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS
+}
+
+/**
+ * Check if a character is a modern Korean consonant (can be used in syllable composition)
+ * @param char - Character to check
+ * @returns Whether the character is a modern Korean consonant
+ */
+export function isModernConsonant(char: string): boolean {
   return char in UNICODE_RANGES.INITIAL_CONSONANTS
 }
 
@@ -152,6 +175,15 @@ export function isVowel(char: string): boolean {
  */
 export function getArchaicVariants(char: string): string[] {
   return ARCHAIC_MAPPINGS[char] || [char]
+}
+
+/**
+ * Get the shifted character for a given key
+ * @param char - Base character
+ * @returns Shifted character or the original if no shift mapping exists
+ */
+export function getShiftedCharacter(char: string): string {
+  return SHIFT_MAPPINGS[char] || char
 }
 
 // Global composition state for Korean input
@@ -214,6 +246,14 @@ export function processKoreanCharacter(char: string): { text: string; isComposin
  */
 function processConsonant(char: string): { text: string; isComposing: boolean; completedSyllable?: string } {
   const { currentSyllable } = compositionState
+  
+  // If this is an archaic consonant, don't use it in syllable composition
+  if (!isModernConsonant(char)) {
+    // Complete any pending composition first
+    const completedText = completeCurrentComposition()
+    resetCompositionState()
+    return { text: completedText + char, isComposing: false }
+  }
   
   if (currentSyllable.initial && currentSyllable.medial) {
     // We have initial + medial, this could be final consonant

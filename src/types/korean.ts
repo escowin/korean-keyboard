@@ -42,6 +42,7 @@ export interface SyllableComposition {
 // Unicode ranges for Korean characters
 export interface KoreanUnicodeRanges {
   INITIAL_CONSONANTS: Record<string, number>;
+  ARCHAIC_INITIAL_CONSONANTS: Record<string, number>;
   MEDIAL_VOWELS: Record<string, number>;
   FINAL_CONSONANTS: Record<string, number>;
 }
