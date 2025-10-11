@@ -489,6 +489,7 @@ function canFormComplexMedial(first: string, second: string): string | null {
  */
 function canFormComplexFinal(first: string, second: string): string | null {
   console.log(`🔍 canFormComplexFinal called with: "${first}" + "${second}"`)
+  console.log(`   🔍 First char code: ${first.charCodeAt(0)}, Second char code: ${second.charCodeAt(0)}`)
   
   const complexFinals: { [key: string]: string } = {
     [String.fromCharCode(0x11AF) + String.fromCharCode(0x11A8)]: 'ᆪ',  // ㄹ + ㄱ = ㄺ
@@ -530,11 +531,14 @@ function decomposeHangulSyllable(syllable: string): { initial: string, medial: s
   console.log(`🔍 Decomposing "${syllable}" (${code}):`)
   console.log(`   Offsets: initial=${initialOffset}, medial=${medialOffset}, final=${finalOffset}`)
   
-  return {
+  const result = {
     initial: String.fromCharCode(initialCode),
     medial: String.fromCharCode(medialCode),
     final: finalCode ? String.fromCharCode(finalCode) : ''
   }
+  
+  console.log(`   🔍 Decomposed result:`, result)
+  return result
 }
 
 /**
