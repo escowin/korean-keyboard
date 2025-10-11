@@ -1,0 +1,41 @@
+{
+  "name": "@korean-keyboard/core",
+  "version": "1.0.0",
+  "description": "Core Korean input processing logic for multi-platform keyboard applications",
+  "main": "index.ts",
+  "types": "index.ts",
+  "files": [
+    "*.ts",
+    "*.js",
+    "*.d.ts"
+  ],
+  "keywords": [
+    "korean",
+    "keyboard",
+    "input",
+    "hangul",
+    "archaic",
+    "unicode",
+    "syllable",
+    "composition"
+  ],
+  "author": "Korean Keyboard PWA",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "import": "./index.ts"
+    },
+    "./processor": {
+      "types": "./KoreanInputProcessor.ts",
+      "import": "./KoreanInputProcessor.ts"
+    },
+    "./types": {
+      "types": "../types/korean.ts",
+      "import": "../types/korean.ts"
+    }
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

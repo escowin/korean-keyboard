@@ -1,5 +1,7 @@
 {
   "name": "korean-keyboard-pwa",
+  "homepage": "https://escowin.github.io/korean-keyboard-pwa",
+  "repository": "https://github.com/escowin/korean-keyboard-pwa",
   "version": "1.0.0",
   "type": "module",
   "description": "A PWA notetaking app with built-in Korean keyboard supporting archaic letters",
@@ -18,10 +20,14 @@
     "hangul",
     "archaic"
   ],
-  "author": "Korean Keyboard PWA",
+  "author": "Edwin Escobar",
   "license": "MIT",
   "devDependencies": {
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
     "@vitejs/plugin-react": "^5.0.4",
+    "@vitejs/plugin-react-swc": "^4.1.0",
+    "typescript": "^5.9.3",
     "vite": "^5.0.0",
     "vite-plugin-pwa": "^0.17.0"
   },

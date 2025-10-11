@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import KoreanKeyboard from './components/KoreanKeyboard.jsx'
+import KoreanKeyboard from './components/KoreanKeyboard.tsx'
 import { processKoreanInput } from './utils/koreanKeyboard.js'
+import type { Note, KeyboardEventHandlers } from './types/korean.js'
 
 function App() {
-  const [notes, setNotes] = useState([])
-  const [currentNote, setCurrentNote] = useState(null)
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(true)
-  const [noteTitle, setNoteTitle] = useState('')
-  const [noteContent, setNoteContent] = useState('')
+  const [notes, setNotes] = useState<Note[]>([])
+  const [currentNote, setCurrentNote] = useState<Note | null>(null)
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState<boolean>(true)
+  const [noteTitle, setNoteTitle] = useState<string>('')
+  const [noteContent, setNoteContent] = useState<string>('')
 
   // Load notes from localStorage on mount
   useEffect(() => {
@@ -42,7 +43,7 @@ function App() {
     }
   }
 
-  const saveNotes = (notesToSave) => {
+  const saveNotes = (notesToSave: Note[]) => {
     try {
       localStorage.setItem('korean-notes', JSON.stringify(notesToSave))
     } catch (error) {
@@ -67,7 +68,7 @@ function App() {
     saveNotes(updatedNotes)
   }
 
-  const selectNote = (noteId) => {
+  const selectNote = (noteId: string) => {
     const note = notes.find(n => n.id === noteId)
     if (note) {
       setCurrentNote(note)
@@ -116,10 +117,10 @@ function App() {
     setIsKeyboardVisible(!isKeyboardVisible)
   }
 
-  const handleKeyboardKey = useCallback((key) => {
+  const handleKeyboardKey = useCallback((key: string) => {
     if (key === 'backspace') {
       setNoteContent(prev => {
-        const textarea = document.querySelector('#note-content')
+        const textarea = document.querySelector('#note-content') as HTMLTextAreaElement
         if (textarea) {
           const start = textarea.selectionStart
           const end = textarea.selectionEnd
@@ -135,9 +136,9 @@ function App() {
     }
   }, [])
 
-  const handleKeyboardText = useCallback((text) => {
+  const handleKeyboardText = useCallback((text: string) => {
     setNoteContent(prev => {
-      const textarea = document.querySelector('#note-content')
+      const textarea = document.querySelector('#note-content') as HTMLTextAreaElement
       if (textarea) {
         const start = textarea.selectionStart
         const end = textarea.selectionEnd
@@ -236,7 +237,7 @@ function App() {
               value={noteContent}
               onChange={(e) => setNoteContent(e.target.value)}
               placeholder="Start typing your note here..."
-              rows="10"
+              rows={10}
             />
           </div>
         </div>

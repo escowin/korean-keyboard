@@ -3,8 +3,20 @@
  * Handles Dubeolsik layout, archaic letters, and syllable composition
  */
 
+import type { 
+  KeyboardLayout, 
+  ArchaicMappings, 
+  KoreanUnicodeRanges, 
+  KoreanCharacter, 
+  SyllableComposition,
+  KoreanInputResult,
+  KoreanInputError,
+  KoreanInputErrorDetails,
+  CompositionState
+} from '../types/korean.js';
+
 // Dubeolsik keyboard layout based on the image
-export const KEYBOARD_LAYOUT = {
+export const KEYBOARD_LAYOUT: KeyboardLayout = {
   row1: ['ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅛ', 'ㅕ', 'ㅑ', 'ㅐ', 'ㅔ'],
   row2: ['ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ', 'ㆍ'],
   row3: ['shift', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅠ', 'ㅜ', 'ㅡ', 'backspace'],
@@ -12,7 +24,7 @@ export const KEYBOARD_LAYOUT = {
 }
 
 // Archaic letter mappings for long-press functionality
-export const ARCHAIC_MAPPINGS = {
+export const ARCHAIC_MAPPINGS: ArchaicMappings = {
   // Consonants with archaic variants
   'ㅂ': ['ㅂ', 'ㅃ', 'ㅸ', 'ㅹ'],
   'ㅈ': ['ㅈ', 'ㅉ', 'ᅎ', 'ᅐ', 'ᅏ', 'ᅑ'],
@@ -55,7 +67,7 @@ export const ARCHAIC_MAPPINGS = {
 }
 
 // Unicode ranges for Korean characters
-export const UNICODE_RANGES = {
+export const UNICODE_RANGES: KoreanUnicodeRanges = {
   // Initial consonants (초성)
   INITIAL_CONSONANTS: {
     'ㄱ': 0x1100, 'ㄲ': 0x1101, 'ㄴ': 0x1102, 'ㄷ': 0x1103, 'ㄸ': 0x1104,
@@ -89,12 +101,12 @@ export const UNICODE_RANGES = {
 
 /**
  * Calculate Unicode for a Korean syllable block
- * @param {string} initial - Initial consonant
- * @param {string} medial - Medial vowel
- * @param {string} final - Final consonant (optional)
- * @returns {string} Composed syllable
+ * @param initial - Initial consonant
+ * @param medial - Medial vowel
+ * @param final - Final consonant (optional)
+ * @returns Composed syllable
  */
-export function composeSyllable(initial, medial, final = '') {
+export function composeSyllable(initial: string, medial: string, final: string = ''): string {
   // Handle edge cases
   if (!initial && !medial && !final) return ''
   if (!initial && !medial) return final
@@ -122,37 +134,37 @@ export function composeSyllable(initial, medial, final = '') {
 
 /**
  * Check if a character is a Korean consonant
- * @param {string} char - Character to check
- * @returns {boolean}
+ * @param char - Character to check
+ * @returns Whether the character is a Korean consonant
  */
-export function isConsonant(char) {
+export function isConsonant(char: string): boolean {
   return char in UNICODE_RANGES.INITIAL_CONSONANTS
 }
 
 /**
  * Check if a character is a Korean vowel
- * @param {string} char - Character to check
- * @returns {boolean}
+ * @param char - Character to check
+ * @returns Whether the character is a Korean vowel
  */
-export function isVowel(char) {
+export function isVowel(char: string): boolean {
   return char in UNICODE_RANGES.MEDIAL_VOWELS
 }
 
 /**
  * Get archaic variants for a character
- * @param {string} char - Base character
- * @returns {string[]} Array of variants including the base character
+ * @param char - Base character
+ * @returns Array of variants including the base character
  */
-export function getArchaicVariants(char) {
+export function getArchaicVariants(char: string): string[] {
   return ARCHAIC_MAPPINGS[char] || [char]
 }
 
 /**
  * Process Korean input and compose syllables
- * @param {string} input - Raw input string
- * @returns {string} Processed string with composed syllables
+ * @param input - Raw input string
+ * @returns Processed string with composed syllables
  */
-export function processKoreanInput(input) {
+export function processKoreanInput(input: string): string {
   if (!input) return ''
   
   let result = ''

@@ -1,12 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
+import App from './App.tsx'
 import './styles/main.css'
 import './styles/keyboard.css'
 import './styles/noteapp.css'
 
 // Initialize the React app
-const root = ReactDOM.createRoot(document.getElementById('app'))
+const appElement = document.getElementById('app')
+if (!appElement) {
+  throw new Error('App element not found')
+}
+
+const root = ReactDOM.createRoot(appElement)
 root.render(<App />)
 
 // Register service worker for PWA functionality
