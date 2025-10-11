@@ -130,14 +130,14 @@ export function composeSyllable(initial: string, medial: string, final: string =
   if (!initial && !final) return medial
   if (!medial && !final) return initial
   
-  // Get Unicode codes using the new helper function
-  const initialCode = initial ? getJamoUnicodeCode(initial) : null
-  const medialCode = medial ? getJamoUnicodeCode(medial) : null
-  const finalCode = final ? getJamoUnicodeCode(final) : null
+  // Get Unicode codes using the specific helper functions
+  const initialCode = initial ? getInitialConsonantCode(initial) : null
+  const medialCode = medial ? getMedialVowelCode(medial) : null
+  const finalCode = final ? getFinalConsonantCode(final) : null
   
   console.log('🔤 composeSyllable called with:', { initial, medial, final })
   console.log('   Unicode codes:', { initialCode, medialCode, finalCode })
-  console.log('   Using getJamoUnicodeCode for all jamo characters')
+  console.log('   Using specific helper functions for each jamo type')
   
   // If we don't have both initial and medial, return as-is
   if (!initialCode || !medialCode) {
@@ -403,29 +403,52 @@ function isComposedHangulSyllable(char: string): boolean {
 }
 
 /**
- * Get the Unicode code for a Jamo character (either Compatibility or Jamo)
+ * Get the Unicode code for an initial consonant
  * @param char - Jamo character
  * @returns Unicode code or null if not found
  */
-function getJamoUnicodeCode(char: string): number | null {
-  // First try to find in our existing mappings (Compatibility Jamo)
+function getInitialConsonantCode(char: string): number | null {
+  // Try modern initial consonants first
   if (UNICODE_RANGES.INITIAL_CONSONANTS[char]) {
     return UNICODE_RANGES.INITIAL_CONSONANTS[char]
   }
+  // Try archaic initial consonants
   if (UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS[char]) {
     return UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS[char]
   }
+  // If not found, return the character's Unicode code directly
+  const code = char.charCodeAt(0)
+  console.log(`🔍 getInitialConsonantCode: "${char}" not in mappings, using direct code: ${code}`)
+  return code
+}
+
+/**
+ * Get the Unicode code for a medial vowel
+ * @param char - Jamo character
+ * @returns Unicode code or null if not found
+ */
+function getMedialVowelCode(char: string): number | null {
   if (UNICODE_RANGES.MEDIAL_VOWELS[char]) {
     return UNICODE_RANGES.MEDIAL_VOWELS[char]
   }
+  // If not found, return the character's Unicode code directly
+  const code = char.charCodeAt(0)
+  console.log(`🔍 getMedialVowelCode: "${char}" not in mappings, using direct code: ${code}`)
+  return code
+}
+
+/**
+ * Get the Unicode code for a final consonant
+ * @param char - Jamo character
+ * @returns Unicode code or null if not found
+ */
+function getFinalConsonantCode(char: string): number | null {
   if (UNICODE_RANGES.FINAL_CONSONANTS[char]) {
     return UNICODE_RANGES.FINAL_CONSONANTS[char]
   }
-  
   // If not found, return the character's Unicode code directly
-  // This handles cases where we have actual Jamo characters
   const code = char.charCodeAt(0)
-  console.log(`🔍 getJamoUnicodeCode: "${char}" not in mappings, using direct code: ${code}`)
+  console.log(`🔍 getFinalConsonantCode: "${char}" not in mappings, using direct code: ${code}`)
   return code
 }
 
@@ -470,8 +493,8 @@ export function processKoreanInput(input: string): string {
   
   for (let i = 0; i < input.length; i++) {
     const char = input[i]
-    console.log(`🔍 Processing char ${i}: "${char}" (${isConsonant(char) ? 'consonant' : isVowel(char) ? 'vowel' : isComposedHangulSyllable(char) ? 'composed-syllable' : 'other'})`)
-    console.log(`   Current syllable:`, currentSyllable)
+    // console.log(`🔍 Processing char ${i}: "${char}" (${isConsonant(char) ? 'consonant' : isVowel(char) ? 'vowel' : isComposedHangulSyllable(char) ? 'composed-syllable' : 'other'})`)
+    // console.log(`   Current syllable:`, currentSyllable)
     
     if (isComposedHangulSyllable(char)) {
       // Handle composed Hangul syllable
