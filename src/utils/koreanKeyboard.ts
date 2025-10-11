@@ -139,6 +139,8 @@ export function composeSyllable(initial: string, medial: string, final: string =
   
   console.log('🔤 composeSyllable called with:', { initial, medial, final })
   console.log('   Unicode codes:', { initialCode, medialCode, finalCode })
+  console.log('   Initial in modern range:', initial ? UNICODE_RANGES.INITIAL_CONSONANTS[initial] : 'N/A')
+  console.log('   Initial in archaic range:', initial ? UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS[initial] : 'N/A')
   
   // If we don't have both initial and medial, return as-is
   if (!initialCode || !medialCode) {
@@ -149,9 +151,11 @@ export function composeSyllable(initial: string, medial: string, final: string =
   // Validate that the initial consonant is in a valid range for composition
   // Standard range: 0x1100-0x1112, Extended range: 0x1113-0x1116 (for some archaic characters)
   if (initialCode < 0x1100 || initialCode > 0x1116) {
-    console.log('   Initial consonant outside valid composition range, returning as-is')
+    console.log('   ❌ Initial consonant outside valid composition range:', initialCode, 'returning as-is')
     return initial + medial + final
   }
+  
+  console.log('   ✅ Initial consonant in valid range, proceeding with composition')
   
   // Base syllable: 가 (0xAC00)
   const base = 0xAC00
@@ -159,9 +163,15 @@ export function composeSyllable(initial: string, medial: string, final: string =
   const medialOffset = (medialCode - 0x1161) * 28
   const finalOffset = finalCode ? (finalCode - 0x11A7) : 0
   
+  console.log('   📊 Composition calculation:')
+  console.log('     base:', base, '(0xAC00)')
+  console.log('     initialOffset:', initialOffset, '(initialCode - 0x1100) * 21 * 28')
+  console.log('     medialOffset:', medialOffset, '(medialCode - 0x1161) * 28')
+  console.log('     finalOffset:', finalOffset, finalCode ? '(finalCode - 0x11A7)' : '0')
+  
   const syllableCode = base + initialOffset + medialOffset + finalOffset
   const result = String.fromCharCode(syllableCode)
-  console.log('   Composed syllable:', result, 'code:', syllableCode)
+  console.log('   🎯 Composed syllable:', result, 'code:', syllableCode, '(0x' + syllableCode.toString(16) + ')')
   return result
 }
 
@@ -245,6 +255,8 @@ export function getCompositionState(): CompositionState {
 export function processKoreanCharacter(char: string): { text: string; isComposing: boolean; completedSyllable?: string } {
   console.log('🔤 processKoreanCharacter called with:', char)
   console.log('   Current composition state:', compositionState)
+  console.log('   Is consonant:', isConsonant(char))
+  console.log('   Is vowel:', isVowel(char))
   
   if (!char) return { text: '', isComposing: false }
   
