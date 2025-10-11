@@ -492,14 +492,14 @@ function canFormComplexFinal(first: string, second: string): string | null {
   console.log(`   🔍 First char code: ${first.charCodeAt(0)}, Second char code: ${second.charCodeAt(0)}`)
   
   const complexFinals: { [key: string]: string } = {
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11A8)]: 'ᆪ',  // ㄹ + ㄱ = ㄺ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11B6)]: 'ᆫ',  // ㄹ + ㅁ = ㄻ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11B1)]: 'ᆬ',  // ㄹ + ㅂ = ㄼ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11B9)]: 'ᆭ',  // ㄹ + ㅅ = ㄽ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11AE)]: 'ᆮ',  // ㄹ + ㄷ = ㄾ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11B7)]: 'ᆰ',  // ㄹ + ㅍ = ㄿ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11B5)]: 'ᆱ',  // ㄹ + ㅎ = ㅀ
-    [String.fromCharCode(0x11B1) + String.fromCharCode(0x11B9)]: 'ᆲ',  // ㅂ + ㅅ = ㅄ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3131)]: 'ᆪ',  // ㄹ + ㄱ = ㄺ (using Compatibility Jamo)
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3141)]: 'ᆫ',  // ㄹ + ㅁ = ㄻ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3142)]: 'ᆬ',  // ㄹ + ㅂ = ㄼ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3145)]: 'ᆭ',  // ㄹ + ㅅ = ㄽ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3137)]: 'ᆮ',  // ㄹ + ㄷ = ㄾ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3147)]: 'ᆰ',  // ㄹ + ㅍ = ㄿ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x314E)]: 'ᆱ',  // ㄹ + ㅎ = ㅀ
+    [String.fromCharCode(0x3142) + String.fromCharCode(0x3145)]: 'ᆲ',  // ㅂ + ㅅ = ㅄ
   }
   
   const combination = first + second
