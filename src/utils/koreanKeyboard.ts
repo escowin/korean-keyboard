@@ -489,17 +489,23 @@ function canFormComplexMedial(first: string, second: string): string | null {
  */
 function canFormComplexFinal(first: string, second: string): string | null {
   console.log(`🔍 canFormComplexFinal called with: "${first}" + "${second}"`)
-  console.log(`   🔍 First char code: ${first.charCodeAt(0)}, Second char code: ${second.charCodeAt(0)}`)
+  console.log(`   🔍 First char code: ${first.charCodeAt(0)} (0x${first.charCodeAt(0).toString(16)}), Second char code: ${second.charCodeAt(0)} (0x${second.charCodeAt(0).toString(16)})`)
   
   const complexFinals: { [key: string]: string } = {
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3131)]: 'ᆪ',  // ㄹ + ㄱ = ㄺ (using Compatibility Jamo)
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3141)]: 'ᆫ',  // ㄹ + ㅁ = ㄻ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3142)]: 'ᆬ',  // ㄹ + ㅂ = ㄼ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3145)]: 'ᆭ',  // ㄹ + ㅅ = ㄽ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3137)]: 'ᆮ',  // ㄹ + ㄷ = ㄾ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3147)]: 'ᆰ',  // ㄹ + ㅍ = ㄿ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x314E)]: 'ᆱ',  // ㄹ + ㅎ = ㅀ
-    [String.fromCharCode(0x3142) + String.fromCharCode(0x3145)]: 'ᆲ',  // ㅂ + ㅅ = ㅄ
+    // moern complex finals
+    [String.fromCharCode(0x11A8) + String.fromCharCode(0x3145)]: 'ᆪ',  // ㄱ + ㅅ = ㄳ (using Compatibility Jamo)
+    [String.fromCharCode(0x11AB) + String.fromCharCode(0x110C)]: 'ᆬ',  // ㄴ + ㅈ = ㄵ
+    [String.fromCharCode(0x11AB) + String.fromCharCode(0x314E)]: 'ᆭ',  // ㄴ + ㅎ = ㄶ
+
+
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3131)]: 'ᆰ',  // ㄹ + ㄱ = ㄺ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3141)]: 'ᆱ',  // ㄹ + ㅁ = ㄻ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3142)]: 'ᆲ',  // ㄹ + ㅂ = ㄼ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3145)]: 'ᆳ',  // ㄹ + ㅅ = ㄽ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3137)]: 'ᆴ',  // ㄹ + ㅌ = ㄾ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3147)]: 'ᆵ',  // ㄹ + ㅍ = ㄿ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x314E)]: 'ᆶ',  // ㄹ + ㅎ = ㅀ
+    [String.fromCharCode(0x11B8) + String.fromCharCode(0x3145)]: 'ᆹ',  // ㅂ + ㅅ = ㅄ
   }
   
   const combination = first + second
