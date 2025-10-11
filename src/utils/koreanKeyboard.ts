@@ -578,14 +578,23 @@ export function processKoreanInput(input: string): string {
         currentSyllable = decomposed
         console.log(`   ✅ Syllable "${char}" can accept final consonant or complex medial vowel`)
       } else {
-        // This syllable already has a final, check if we can form a complex final
-        const complexFinal = canFormComplexFinal(decomposed.final, char)
-        if (complexFinal) {
-          // Form complex final
-          currentSyllable = { initial: decomposed.initial, medial: decomposed.medial, final: complexFinal }
-          console.log(`   ✅ Formed complex final "${decomposed.final}" + "${char}" = "${complexFinal}"`)
+        // This syllable already has a final, check if there are more characters to process
+        if (i < input.length - 1) {
+          // There are more characters, check if next character can form complex final
+          const nextChar = input[i + 1]
+          const complexFinal = canFormComplexFinal(decomposed.final, nextChar)
+          if (complexFinal) {
+            // Form complex final and skip the next character
+            currentSyllable = { initial: decomposed.initial, medial: decomposed.medial, final: complexFinal }
+            console.log(`   ✅ Formed complex final "${decomposed.final}" + "${nextChar}" = "${complexFinal}"`)
+            i++ // Skip the next character since we used it
+          } else {
+            // Cannot form complex final, complete current syllable
+            result += char
+            console.log(`   ✅ Syllable "${char}" already complete, adding to result`)
+          }
         } else {
-          // Cannot form complex final, complete current syllable and start new one
+          // No more characters, complete current syllable
           result += char
           console.log(`   ✅ Syllable "${char}" already complete, adding to result`)
         }
