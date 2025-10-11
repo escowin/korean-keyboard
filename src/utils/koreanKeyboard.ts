@@ -532,7 +532,7 @@ function decomposeHangulSyllable(syllable: string): { initial: string, medial: s
   
   const initialCode = 0x1100 + initialOffset
   const medialCode = 0x1161 + medialOffset
-  const finalCode = finalOffset > 0 ? 0x11A8 + finalOffset : null
+  const finalCode = finalOffset > 0 ? 0x11A7 + finalOffset : null
   
   console.log(`🔍 Decomposing "${syllable}" (${code}):`)
   console.log(`   Offsets: initial=${initialOffset}, medial=${medialOffset}, final=${finalOffset}`)
