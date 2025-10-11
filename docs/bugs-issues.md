@@ -1,8 +1,8 @@
 # Korean Keyboard - Bugs & Issues Tracking
 
-**Document Version:** 1.0  
-**Last Updated:** October 2025  
-**Status:** Active Development
+**Document Version:** 2.0  
+**Last Updated:** December 2024  
+**Status:** Active Development - Modern Korean Complete
 
 ## 🚨 Critical Issues
 
@@ -43,9 +43,9 @@
 
 ## 🔧 Major Issues
 
-### 3. Complex Medial Jamo Not Supported
+### 3. Complex Medial Jamo Not Supported ✅ RESOLVED
 **Priority:** Medium  
-**Status:** Open  
+**Status:** Closed  
 **Description:** App can handle simple initial + medial combinations, but fails with complex medial vowels (diphthongs).
 
 **Expected Behavior:**
@@ -62,14 +62,55 @@
 - Complex vowels have different Unicode ranges
 - May need special handling for diphthong composition
 
+**Resolution:**
+- ✅ Added `canFormComplexMedial()` function to check valid diphthong combinations
+- ✅ Fixed Unicode character mismatch between Hangul Jamo and Compatibility Jamo
+- ✅ Updated vowel processing logic to prioritize complex medial formation
+- ✅ All modern Korean diphthongs now work correctly
+
 **Test Cases:**
-- `ㅅㅗㅏ` → should be `솨`
-- `ㄱㅗㅏ` → should be `과`
-- `ㅂㅜㅓ` → should be `붜`
+- `ㅅㅗㅏ` → `솨` ✅
+- `ㄱㅗㅏ` → `과` ✅
+- `ㅂㅜㅓ` → `붜` ✅
+- `ㅎㅗㅏ` → `화` ✅
 
 ---
 
-### 4. Variant Popup Positioning
+### 4. Complex Final Consonants Not Supported ✅ RESOLVED
+**Priority:** Medium  
+**Status:** Closed  
+**Description:** App cannot handle complex final consonants (consonant clusters at the end of syllables).
+
+**Expected Behavior:**
+- `ㄷㅏㄹㄱ` should compose to `닭` (complex final ㄺ)
+- Complex finals like `ㄺ`, `ㄻ`, `ㄼ`, `ㄽ`, `ㄾ`, `ㄿ`, `ㅀ`, `ㅄ` should work
+- All modern Korean complex finals should be supported
+
+**Actual Behavior:**
+- Complex finals are not properly composed
+- Results in separate syllables instead of single syllable with complex final
+- Final consonant becomes initial for next syllable
+
+**Technical Details:**
+- Issue in decomposition function producing wrong Unicode characters
+- Unicode character mismatch between Hangul Jamo and Compatibility Jamo
+- Missing complex final formation logic in processing pipeline
+
+**Resolution:**
+- ✅ Added `canFormComplexFinal()` function to check valid final combinations
+- ✅ Fixed Unicode calculation in `decomposeHangulSyllable()` (0x11A7 + finalOffset)
+- ✅ Updated processing logic to check for complex final formation before completing syllables
+- ✅ All modern Korean complex finals now work correctly
+
+**Test Cases:**
+- `ㄷㅏㄹㄱ` → `닭` ✅
+- `ㅅㅏㄹㅁ` → `삶` ✅
+- `ㅂㅏㄹㅂ` → `밟` ✅
+- `ㅇㅏㄴㅈ` → `앉` ✅
+
+---
+
+### 5. Variant Popup Positioning
 **Priority:** Medium  
 **Status:** Open  
 **Description:** Long-press variant popup has correct height relative to the pressed key, but is positioned too far to the right.
@@ -100,7 +141,7 @@ const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
 
 ## 🏛️ Archaic Jamo Issues
 
-### 5. Archaic Jamo Block Composition
+### 6. Archaic Jamo Block Composition
 **Priority:** Medium  
 **Status:** Open  
 **Description:** Archaic jamo characters are incorrectly mapped and/or not mapped at all to compose syllabic blocks.
@@ -130,7 +171,7 @@ const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
 
 ## 🔍 Research & Investigation
 
-### 6. Microsoft Old Hangul IME Analysis
+### 7. Microsoft Old Hangul IME Analysis
 **Priority:** Low  
 **Status:** Research  
 **Description:** Need to investigate how Microsoft Old Hangul IME handles archaic jamo composition.
@@ -158,7 +199,8 @@ const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
 | Issue | Priority | Status | Complexity | Impact |
 |-------|----------|--------|------------|---------|
 | Final Jamo Composition | High | Closed | Medium | High |
-| Complex Medial Jamo | Medium | Open | Medium | Medium |
+| Complex Medial Jamo | Medium | Closed | Medium | Medium |
+| Complex Final Consonants | Medium | Closed | Medium | Medium |
 | Variant Popup Position | Medium | Open | Low | Low |
 | Archaic Jamo Blocks | Medium | Open | High | Medium |
 | Microsoft IME Research | Low | Research | High | Low |
@@ -167,24 +209,25 @@ const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
 
 1. **Immediate (This Week):**
    - ✅ **COMPLETED**: Final jamo composition working correctly
-   - Test complex medial jamo support (diphthongs like ㅘ, ㅙ, ㅚ, etc.)
+   - ✅ **COMPLETED**: Complex medial jamo support (diphthongs like ㅘ, ㅙ, ㅚ, etc.)
+   - ✅ **COMPLETED**: Complex final consonants support (ㄺ, ㄻ, ㄼ, etc.)
    - Fix variant popup positioning
 
 2. **Short Term (Next 2 Weeks):**
-   - Implement complex medial jamo support
+   - ✅ **COMPLETED**: All modern Korean syllable composition working
    - Correct variant popup positioning
-   - Test composition with various Korean input scenarios
+   - Comprehensive testing of all modern Korean input scenarios
    - Begin research on archaic jamo composition
 
 3. **Medium Term (Next Month):**
    - Research Microsoft Old Hangul IME
    - Implement proper archaic jamo composition
-   - Comprehensive testing of all Korean input scenarios
+   - Advanced Korean input features (double consonants, etc.)
 
 4. **Long Term (Future):**
    - Full archaic character support
-   - Advanced Korean input features
    - Performance optimization
+   - Mobile-specific enhancements
 
 ## 🧪 Testing Strategy
 
@@ -197,10 +240,16 @@ const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
 - `ㅈㅏㅇ` → `장`
 
 **Complex Medial Jamo:**
-- `ㅅㅗㅏ` → `솨`
-- `ㄱㅗㅏ` → `과`
-- `ㅂㅜㅓ` → `붜`
-- `ㅁㅜㅣ` → `뮈`
+- `ㅅㅗㅏ` → `솨` ✅
+- `ㄱㅗㅏ` → `과` ✅
+- `ㅂㅜㅓ` → `붜` ✅
+- `ㅁㅜㅣ` → `뮈` ✅
+
+**Complex Final Consonants:**
+- `ㄷㅏㄹㄱ` → `닭` ✅
+- `ㅅㅏㄹㅁ` → `삶` ✅
+- `ㅂㅏㄹㅂ` → `밟` ✅
+- `ㅇㅏㄴㅈ` → `앉` ✅
 
 **Archaic Jamo:**
 - `ㅿㅏㄴ` → `ᅀᅡᆫ`
@@ -209,10 +258,14 @@ const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
 
 ## 📝 Notes
 
+- ✅ **MAJOR MILESTONE**: All modern Korean syllable composition is now working correctly
+- ✅ Complex medial jamo (diphthongs) fully supported
+- ✅ Complex final consonants fully supported
+- ✅ All Unicode character mapping issues resolved
 - All issues should be tested across different browsers
-- Unicode composition algorithm needs thorough review
 - Consider implementing a test suite for Korean input scenarios
 - Console logging is working correctly (user had console filter set to 'errors' only)
+- Next focus: Archaic jamo support and variant popup positioning
 
 ---
 
