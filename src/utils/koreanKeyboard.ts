@@ -544,6 +544,7 @@ function decomposeHangulSyllable(syllable: string): { initial: string, medial: s
   }
   
   console.log(`   🔍 Decomposed result:`, result)
+  console.log(`   🔍 Final char code: ${result.final.charCodeAt(0)} (${result.final})`)
   return result
 }
 
