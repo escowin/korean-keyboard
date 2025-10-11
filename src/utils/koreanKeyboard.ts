@@ -471,6 +471,10 @@ function canFormComplexMedial(first: string, second: string): string | null {
     'ㅡㅣ': 'ㅢ'   // ㅡ + ㅣ = ㅢ
   }
   
+  // Debug: Check if the key characters match what we expect
+  console.log(`🔍 Object key 'ㅗㅏ' char codes:`, 'ㅗㅏ'.split('').map(c => c.charCodeAt(0)))
+  console.log(`🔍 Object key 'ㅗㅏ' exists:`, 'ㅗㅏ' in complexMedials)
+  
   const combination = first + second
   console.log(`🔍 Looking for combination: "${combination}"`)
   console.log(`🔍 Combination char codes:`, combination.split('').map(c => c.charCodeAt(0)))
