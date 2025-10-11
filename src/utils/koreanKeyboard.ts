@@ -507,6 +507,10 @@ function decomposeHangulSyllable(syllable: string): { initial: string, medial: s
   console.log(`   Offsets: initial=${initialOffset}, medial=${medialOffset}, final=${finalOffset}`)
   console.log(`   Codes: initial=${initialCode} (${String.fromCharCode(initialCode)}), medial=${medialCode} (${String.fromCharCode(medialCode)}), final=${finalCode}`)
   
+  const initialChar = String.fromCharCode(initialCode)
+  const medialChar = String.fromCharCode(medialCode)
+  console.log(`   🔍 Actual characters: initial="${initialChar}" (${initialChar.charCodeAt(0)}), medial="${medialChar}" (${medialChar.charCodeAt(0)})`)
+  
   return {
     initial: String.fromCharCode(initialCode),
     medial: String.fromCharCode(medialCode),
