@@ -462,13 +462,13 @@ function canFormComplexMedial(first: string, second: string): string | null {
   console.log(`🔍 canFormComplexMedial called with: "${first}" + "${second}"`)
   
   const complexMedials: { [key: string]: string } = {
-    'ㅗㅏ': 'ㅘ',  // ㅗ + ㅏ = ㅘ
-    'ㅗㅐ': 'ㅙ',  // ㅗ + ㅐ = ㅙ
-    'ㅗㅣ': 'ㅚ',  // ㅗ + ㅣ = ㅚ
-    'ㅜㅓ': 'ㅝ',  // ㅜ + ㅓ = ㅝ
-    'ㅜㅔ': 'ㅞ',  // ㅜ + ㅔ = ㅞ
-    'ㅜㅣ': 'ㅟ',  // ㅜ + ㅣ = ㅟ
-    'ㅡㅣ': 'ㅢ'   // ㅡ + ㅣ = ㅢ
+    [String.fromCharCode(0x1169) + String.fromCharCode(0x1161)]: 'ㅘ',  // ㅗ + ㅏ = ㅘ
+    [String.fromCharCode(0x1169) + String.fromCharCode(0x1162)]: 'ㅙ',  // ㅗ + ㅐ = ㅙ
+    [String.fromCharCode(0x1169) + String.fromCharCode(0x1175)]: 'ㅚ',  // ㅗ + ㅣ = ㅚ
+    [String.fromCharCode(0x116C) + String.fromCharCode(0x1163)]: 'ㅝ',  // ㅜ + ㅓ = ㅝ
+    [String.fromCharCode(0x116C) + String.fromCharCode(0x1164)]: 'ㅞ',  // ㅜ + ㅔ = ㅞ
+    [String.fromCharCode(0x116C) + String.fromCharCode(0x1175)]: 'ㅟ',  // ㅜ + ㅣ = ㅟ
+    [String.fromCharCode(0x1173) + String.fromCharCode(0x1175)]: 'ㅢ'   // ㅡ + ㅣ = ㅢ
   }
   
   // Debug: Check if the key characters match what we expect
