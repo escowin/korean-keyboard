@@ -476,6 +476,8 @@ function canFormComplexMedial(first: string, second: string): string | null {
   console.log(`🔍 Combination char codes:`, combination.split('').map(c => c.charCodeAt(0)))
   console.log(`🔍 Available combinations:`, Object.keys(complexMedials))
   console.log(`🔍 Available combination char codes:`, Object.keys(complexMedials).map(key => key.split('').map(c => c.charCodeAt(0))))
+  console.log(`🔍 Full complexMedials object:`, complexMedials)
+  console.log(`🔍 Direct lookup test:`, complexMedials['ㅗㅏ'])
   
   const result = complexMedials[combination]
   console.log(`🔍 Result:`, result)
