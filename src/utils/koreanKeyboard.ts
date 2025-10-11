@@ -482,6 +482,36 @@ function canFormComplexMedial(first: string, second: string): string | null {
 }
 
 /**
+ * Check if two consonants can form a complex final consonant
+ * @param first - First consonant (current final)
+ * @param second - Second consonant (new input)
+ * @returns Complex final character or null if not combinable
+ */
+function canFormComplexFinal(first: string, second: string): string | null {
+  console.log(`🔍 canFormComplexFinal called with: "${first}" + "${second}"`)
+  
+  const complexFinals: { [key: string]: string } = {
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11A8)]: 'ᆪ',  // ㄹ + ㄱ = ㄺ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11B6)]: 'ᆫ',  // ㄹ + ㅁ = ㄻ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11B1)]: 'ᆬ',  // ㄹ + ㅂ = ㄼ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11B9)]: 'ᆭ',  // ㄹ + ㅅ = ㄽ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11AE)]: 'ᆮ',  // ㄹ + ㄷ = ㄾ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11B7)]: 'ᆰ',  // ㄹ + ㅍ = ㄿ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x11B5)]: 'ᆱ',  // ㄹ + ㅎ = ㅀ
+    [String.fromCharCode(0x11B1) + String.fromCharCode(0x11B9)]: 'ᆲ',  // ㅂ + ㅅ = ㅄ
+  }
+  
+  const combination = first + second
+  const result = complexFinals[combination]
+  
+  if (result) {
+    console.log(`🔗 Complex final formed: "${first}" + "${second}" = "${result}"`)
+  }
+  
+  return result || null
+}
+
+/**
  * Decompose a composed Hangul syllable into its components
  * @param syllable - Composed Hangul syllable
  * @returns Object with initial, medial, final components
@@ -544,18 +574,34 @@ export function processKoreanInput(input: string): string {
         currentSyllable = decomposed
         console.log(`   ✅ Syllable "${char}" can accept final consonant or complex medial vowel`)
       } else {
-        // This syllable already has a final, add it to result
-        result += char
-        console.log(`   ✅ Syllable "${char}" already complete, adding to result`)
+        // This syllable already has a final, check if we can form a complex final
+        const complexFinal = canFormComplexFinal(decomposed.final, char)
+        if (complexFinal) {
+          // Form complex final
+          currentSyllable = { initial: decomposed.initial, medial: decomposed.medial, final: complexFinal }
+          console.log(`   ✅ Formed complex final "${decomposed.final}" + "${char}" = "${complexFinal}"`)
+        } else {
+          // Cannot form complex final, complete current syllable and start new one
+          result += char
+          console.log(`   ✅ Syllable "${char}" already complete, adding to result`)
+        }
       }
     } else if (isConsonant(char)) {
       if (currentSyllable.initial && currentSyllable.medial) {
         // We have initial + medial, this could be final consonant
         if (currentSyllable.final) {
-          // Already have final, complete current syllable and start new one
-          console.log(`   ✅ Completing syllable with final, starting new with "${char}"`)
-          result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
-          currentSyllable = { initial: char, medial: '', final: '' }
+          // Already have final, check if we can form a complex final
+          const complexFinal = canFormComplexFinal(currentSyllable.final, char)
+          if (complexFinal) {
+            // Form complex final
+            currentSyllable.final = complexFinal
+            console.log(`   ✅ Formed complex final "${currentSyllable.final}" + "${char}" = "${complexFinal}"`)
+          } else {
+            // Cannot form complex final, complete current syllable and start new one
+            console.log(`   ✅ Completing syllable with final, starting new with "${char}"`)
+            result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
+            currentSyllable = { initial: char, medial: '', final: '' }
+          }
         } else {
           // This is the final consonant
           console.log(`   ✅ Adding final consonant "${char}"`)
