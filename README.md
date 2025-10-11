@@ -57,8 +57,8 @@ Hold down any key to see available archaic variants:
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd korean-keyboard
+   git clone git@github.com:escowin/archaic-korean-keyboard.git
+   cd archaic-korean-keyboard
    ```
 
 2. **Install dependencies**
