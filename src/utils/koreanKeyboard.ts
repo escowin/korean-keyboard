@@ -130,18 +130,14 @@ export function composeSyllable(initial: string, medial: string, final: string =
   if (!initial && !final) return medial
   if (!medial && !final) return initial
   
-  // Get Unicode codes, checking both modern and archaic ranges
-  const initialCode = initial ? (
-    UNICODE_RANGES.INITIAL_CONSONANTS[initial] || 
-    UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS[initial]
-  ) : null
-  const medialCode = medial ? UNICODE_RANGES.MEDIAL_VOWELS[medial] : null
-  const finalCode = final ? UNICODE_RANGES.FINAL_CONSONANTS[final] : null
+  // Get Unicode codes using the new helper function
+  const initialCode = initial ? getJamoUnicodeCode(initial) : null
+  const medialCode = medial ? getJamoUnicodeCode(medial) : null
+  const finalCode = final ? getJamoUnicodeCode(final) : null
   
   console.log('🔤 composeSyllable called with:', { initial, medial, final })
   console.log('   Unicode codes:', { initialCode, medialCode, finalCode })
-  console.log('   Initial in modern range:', initial ? UNICODE_RANGES.INITIAL_CONSONANTS[initial] : 'N/A')
-  console.log('   Initial in archaic range:', initial ? UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS[initial] : 'N/A')
+  console.log('   Using getJamoUnicodeCode for all jamo characters')
   
   // If we don't have both initial and medial, return as-is
   if (!initialCode || !medialCode) {
@@ -404,6 +400,33 @@ function isComposedHangulSyllable(char: string): boolean {
   const code = char.charCodeAt(0)
   // Hangul Syllables range: 0xAC00-0xD7AF
   return code >= 0xAC00 && code <= 0xD7AF
+}
+
+/**
+ * Get the Unicode code for a Jamo character (either Compatibility or Jamo)
+ * @param char - Jamo character
+ * @returns Unicode code or null if not found
+ */
+function getJamoUnicodeCode(char: string): number | null {
+  // First try to find in our existing mappings (Compatibility Jamo)
+  if (UNICODE_RANGES.INITIAL_CONSONANTS[char]) {
+    return UNICODE_RANGES.INITIAL_CONSONANTS[char]
+  }
+  if (UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS[char]) {
+    return UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS[char]
+  }
+  if (UNICODE_RANGES.MEDIAL_VOWELS[char]) {
+    return UNICODE_RANGES.MEDIAL_VOWELS[char]
+  }
+  if (UNICODE_RANGES.FINAL_CONSONANTS[char]) {
+    return UNICODE_RANGES.FINAL_CONSONANTS[char]
+  }
+  
+  // If not found, return the character's Unicode code directly
+  // This handles cases where we have actual Jamo characters
+  const code = char.charCodeAt(0)
+  console.log(`🔍 getJamoUnicodeCode: "${char}" not in mappings, using direct code: ${code}`)
+  return code
 }
 
 /**
