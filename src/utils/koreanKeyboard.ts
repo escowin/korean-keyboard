@@ -471,25 +471,11 @@ function canFormComplexMedial(first: string, second: string): string | null {
     [String.fromCharCode(0x1173) + String.fromCharCode(0x3163)]: 'ㅢ'   // ㅡ + ㅣ = ㅢ
   }
   
-  // Debug: Check if the key characters match what we expect
-  console.log(`🔍 Object key 'ㅗㅏ' char codes:`, 'ㅗㅏ'.split('').map(c => c.charCodeAt(0)))
-  console.log(`🔍 Object key 'ㅗㅏ' exists:`, 'ㅗㅏ' in complexMedials)
-  
   const combination = first + second
-  console.log(`🔍 Looking for combination: "${combination}"`)
-  console.log(`🔍 Combination char codes:`, combination.split('').map(c => c.charCodeAt(0)))
-  console.log(`🔍 Available combinations:`, Object.keys(complexMedials))
-  console.log(`🔍 Available combination char codes:`, Object.keys(complexMedials).map(key => key.split('').map(c => c.charCodeAt(0))))
-  console.log(`🔍 Full complexMedials object:`, complexMedials)
-  console.log(`🔍 Direct lookup test:`, complexMedials['ㅗㅏ'])
-  
   const result = complexMedials[combination]
-  console.log(`🔍 Result:`, result)
   
   if (result) {
     console.log(`🔗 Complex medial formed: "${first}" + "${second}" = "${result}"`)
-  } else {
-    console.log(`❌ No complex medial found for: "${first}" + "${second}"`)
   }
   
   return result || null
@@ -513,11 +499,6 @@ function decomposeHangulSyllable(syllable: string): { initial: string, medial: s
   
   console.log(`🔍 Decomposing "${syllable}" (${code}):`)
   console.log(`   Offsets: initial=${initialOffset}, medial=${medialOffset}, final=${finalOffset}`)
-  console.log(`   Codes: initial=${initialCode} (${String.fromCharCode(initialCode)}), medial=${medialCode} (${String.fromCharCode(medialCode)}), final=${finalCode}`)
-  
-  const initialChar = String.fromCharCode(initialCode)
-  const medialChar = String.fromCharCode(medialCode)
-  console.log(`   🔍 Actual characters: initial="${initialChar}" (${initialChar.charCodeAt(0)}), medial="${medialChar}" (${medialChar.charCodeAt(0)})`)
   
   return {
     initial: String.fromCharCode(initialCode),
