@@ -28,6 +28,13 @@ export const SHIFT_MAPPINGS: Record<string, string> = {
   'ㄴ': 'ᄔ', 'ㄹ': 'ᄙ', 'ㅇ': 'ᅇ', 'ㅎ': 'ᅘ', 'ㆍ': 'ᆢ'
 }
 
+// Mapping from archaic consonants to modern equivalents for composition
+export const ARCHAIC_TO_MODERN_MAPPING: Record<string, string> = {
+  'ㅸ': 'ㅂ', 'ㅿ': 'ㅅ', 'ㆆ': 'ㅇ', 'ᅎ': 'ㅈ', 'ᅏ': 'ㅈ', 
+  'ᅐ': 'ㅈ', 'ᅑ': 'ㅈ', 'ᄔ': 'ㄴ', 'ᅇ': 'ㅇ', 'ᄙ': 'ㄹ', 
+  'ᄼ': 'ㅅ', 'ᄾ': 'ㅅ', 'ᅙ': 'ㅎ'
+}
+
 // Archaic letter mappings for long-press functionality
 export const ARCHAIC_MAPPINGS: ArchaicMappings = {
   // Consonants with archaic variants
@@ -81,7 +88,7 @@ export const UNICODE_RANGES: KoreanUnicodeRanges = {
     'ㅋ': 0x110F, 'ㅌ': 0x1110, 'ㅍ': 0x1111, 'ㅎ': 0x1112
   },
   
-  // Archaic initial consonants (not used in modern syllable composition)
+  // Archaic initial consonants (some can be used in syllable composition)
   ARCHAIC_INITIAL_CONSONANTS: {
     'ㅸ': 0x1170, 'ㅿ': 0x113F, 'ㆆ': 0x1146, 'ᅎ': 0x114E, 'ᅏ': 0x114F, 
     'ᅐ': 0x1150, 'ᅑ': 0x1151, 'ᄔ': 0x1114, 'ᅇ': 0x1115, 'ᄙ': 0x1116, 
@@ -139,9 +146,10 @@ export function composeSyllable(initial: string, medial: string, final: string =
     return initial + medial + final
   }
   
-  // Validate that the initial consonant is in the valid range for composition
-  if (initialCode < 0x1100 || initialCode > 0x1112) {
-    console.log('   Initial consonant outside valid range, returning as-is')
+  // Validate that the initial consonant is in a valid range for composition
+  // Standard range: 0x1100-0x1112, Extended range: 0x1113-0x1116 (for some archaic characters)
+  if (initialCode < 0x1100 || initialCode > 0x1116) {
+    console.log('   Initial consonant outside valid composition range, returning as-is')
     return initial + medial + final
   }
   
@@ -292,11 +300,11 @@ function processConsonant(char: string): { text: string; isComposing: boolean; c
       return { text: '', isComposing: true }
     }
   } else if (currentSyllable.initial && !currentSyllable.medial) {
-    // We have initial but no medial, this could be a double consonant
-    // For now, treat as new initial (could be enhanced for double consonants)
-    const result = currentSyllable.initial
+    // We have initial but no medial, this new consonant should complete the previous syllable
+    const completedSyllable = completeCurrentComposition()
+    resetCompositionState()
     compositionState.currentSyllable = { initial: char, medial: '', final: '' }
-    return { text: result, isComposing: true }
+    return { text: completedSyllable, isComposing: true }
   } else {
     // This is the initial consonant
     compositionState.currentSyllable.initial = char

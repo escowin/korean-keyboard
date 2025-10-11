@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import KoreanKeyboard from './components/KoreanKeyboard.tsx'
-import { processKoreanCharacter, completeCurrentComposition, resetCompositionState, getCurrentCompositionDisplay } from './utils/koreanKeyboard.js'
+import { processKoreanCharacter, completeCurrentComposition, resetCompositionState } from './utils/koreanKeyboard.js'
 import type { Note } from './types/korean.js'
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
   const [noteTitle, setNoteTitle] = useState<string>('')
   const [noteContent, setNoteContent] = useState<string>('')
   const [compositionStart, setCompositionStart] = useState<number>(-1) // Track where composition starts
+  const [isComposing, setIsComposing] = useState<boolean>(false) // Track if we're currently composing
 
   // Load notes from localStorage on mount
   useEffect(() => {
@@ -134,6 +135,7 @@ function App() {
             if (completedText) {
               resetCompositionState()
               setCompositionStart(-1)
+              setIsComposing(false)
             }
             
             return prev.substring(0, start - 1) + prev.substring(end)
@@ -143,6 +145,7 @@ function App() {
             if (completedText) {
               resetCompositionState()
               setCompositionStart(-1)
+              setIsComposing(false)
             }
             
             return prev.substring(0, start) + prev.substring(end)
@@ -165,31 +168,29 @@ function App() {
         console.log('📝 handleKeyboardText called with:', text, 'at position:', start)
         console.log('   Current content before:', before)
         console.log('   Current content after:', after)
+        console.log('   Is composing:', isComposing, 'composition start:', compositionStart)
         
         // Process Korean input character by character for proper composition
         const processedText = processKoreanCharacter(text)
         
-        // Get current composition display for real-time feedback
-        const compositionDisplay = getCurrentCompositionDisplay()
-        
         // If we're composing, show the composition in the textarea
-        if (processedText.isComposing && compositionDisplay) {
-          console.log('   Composing, showing:', compositionDisplay)
+        if (processedText.isComposing) {
+          console.log('   Composing, processed text:', processedText.text)
           
-          // If we have a previous composition, replace it
-          let newBefore = before
-          if (compositionStart >= 0 && compositionStart < start) {
-            newBefore = prev.substring(0, compositionStart)
-            console.log('   Replacing previous composition from position:', compositionStart)
-          } else {
+          // Start composition if not already composing
+          if (!isComposing) {
             setCompositionStart(start)
+            setIsComposing(true)
           }
           
-          const newContent = newBefore + compositionDisplay + after
+          // Replace the composition area with current composition
+          const compositionStartPos = compositionStart >= 0 ? compositionStart : start
+          const newBefore = prev.substring(0, compositionStartPos)
+          const newContent = newBefore + processedText.text + after
           
           // Update cursor position after React re-renders
           setTimeout(() => {
-            const newPosition = newBefore.length + compositionDisplay.length
+            const newPosition = newBefore.length + processedText.text.length
             textarea.setSelectionRange(newPosition, newPosition)
             textarea.focus()
           }, 0)
@@ -199,13 +200,14 @@ function App() {
           console.log('   Normal text input, processed text:', processedText.text)
           
           // Complete any pending composition
-          if (compositionStart >= 0) {
+          if (isComposing && compositionStart >= 0) {
             const completedComposition = completeCurrentComposition()
             if (completedComposition) {
               const beforeComposition = prev.substring(0, compositionStart)
               const afterComposition = prev.substring(start)
               const newContent = beforeComposition + completedComposition + processedText.text + afterComposition
               setCompositionStart(-1)
+              setIsComposing(false)
               resetCompositionState()
               
               setTimeout(() => {
@@ -221,6 +223,7 @@ function App() {
           // Normal text input
           const newContent = before + processedText.text + after
           setCompositionStart(-1)
+          setIsComposing(false)
           
           // Update cursor position after React re-renders
           setTimeout(() => {
@@ -234,7 +237,7 @@ function App() {
       }
       return prev + text
     })
-  }, [compositionStart])
+  }, [compositionStart, isComposing])
 
   const renderNotesList = () => {
     if (notes.length === 0) {

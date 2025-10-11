@@ -173,7 +173,8 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     hideArchaicPopup() // Hide any existing popup
     
     const rect = keyElement.getBoundingClientRect()
-    const popupWidth = variants.length * 40 + 20 // Approximate width
+    // More accurate width calculation: 32px minWidth + 24px padding (12px each side) + 8px gap between variants
+    const popupWidth = variants.length * (32 + 24) + (variants.length - 1) * 8 + 16 // 16px for popup padding
     // Center the popup directly above the key
     const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
     const calculatedBottom = window.innerHeight - rect.top + rect.height + 5
