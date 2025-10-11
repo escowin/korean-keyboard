@@ -158,13 +158,13 @@ export function composeSyllable(initial: string, medial: string, final: string =
   const base = 0xAC00
   const initialOffset = (initialCode - 0x1100) * 21 * 28
   const medialOffset = (medialCode - 0x1161) * 28
-  const finalOffset = finalCode ? (finalCode - 0x11A8) : 0
+  const finalOffset = finalCode ? (finalCode - 0x11A8 + 1) : 0
   
   console.log('   📊 Composition calculation:')
   console.log('     base:', base, '(0xAC00)')
   console.log('     initialOffset:', initialOffset, '(initialCode - 0x1100) * 21 * 28')
   console.log('     medialOffset:', medialOffset, '(medialCode - 0x1161) * 28')
-  console.log('     finalOffset:', finalOffset, finalCode ? '(finalCode - 0x11A8)' : '0')
+  console.log('     finalOffset:', finalOffset, finalCode ? '(finalCode - 0x11A8 + 1)' : '0')
   
   const syllableCode = base + initialOffset + medialOffset + finalOffset
   const result = String.fromCharCode(syllableCode)
