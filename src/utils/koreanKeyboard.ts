@@ -453,6 +453,33 @@ function getFinalConsonantCode(char: string): number | null {
 }
 
 /**
+ * Check if two vowels can form a complex medial (diphthong)
+ * @param first - First vowel
+ * @param second - Second vowel
+ * @returns Complex medial character or null if not combinable
+ */
+function canFormComplexMedial(first: string, second: string): string | null {
+  const complexMedials: { [key: string]: string } = {
+    'ㅗㅏ': 'ㅘ',  // ㅗ + ㅏ = ㅘ
+    'ㅗㅐ': 'ㅙ',  // ㅗ + ㅐ = ㅙ
+    'ㅗㅣ': 'ㅚ',  // ㅗ + ㅣ = ㅚ
+    'ㅜㅓ': 'ㅝ',  // ㅜ + ㅓ = ㅝ
+    'ㅜㅔ': 'ㅞ',  // ㅜ + ㅔ = ㅞ
+    'ㅜㅣ': 'ㅟ',  // ㅜ + ㅣ = ㅟ
+    'ㅡㅣ': 'ㅢ'   // ㅡ + ㅣ = ㅢ
+  }
+  
+  const combination = first + second
+  const result = complexMedials[combination]
+  
+  if (result) {
+    console.log(`🔗 Complex medial formed: "${first}" + "${second}" = "${result}"`)
+  }
+  
+  return result || null
+}
+
+/**
  * Decompose a composed Hangul syllable into its components
  * @param syllable - Composed Hangul syllable
  * @returns Object with initial, medial, final components
@@ -551,9 +578,24 @@ export function processKoreanInput(input: string): string {
         result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
         currentSyllable = { initial: '', medial: char, final: '' }
       } else if (currentSyllable.initial) {
-        // This is the medial vowel
-        console.log(`   ✅ Adding medial vowel "${char}"`)
-        currentSyllable.medial = char
+        // Check if we can form a complex medial with existing medial
+        if (currentSyllable.medial) {
+          const complexMedial = canFormComplexMedial(currentSyllable.medial, char)
+          if (complexMedial) {
+            // Replace the existing medial with the complex medial
+            console.log(`   ✅ Forming complex medial: "${currentSyllable.medial}" + "${char}" = "${complexMedial}"`)
+            currentSyllable.medial = complexMedial
+          } else {
+            // Cannot form complex medial, complete current syllable and start new one
+            console.log(`   ✅ Cannot form complex medial, completing syllable and starting new with "${char}"`)
+            result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
+            currentSyllable = { initial: '', medial: char, final: '' }
+          }
+        } else {
+          // This is the first medial vowel
+          console.log(`   ✅ Adding medial vowel "${char}"`)
+          currentSyllable.medial = char
+        }
       } else {
         // Standalone vowel
         console.log(`   ✅ Standalone vowel "${char}"`)
