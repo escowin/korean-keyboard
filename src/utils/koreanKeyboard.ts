@@ -537,11 +537,11 @@ export function processKoreanInput(input: string): string {
       const decomposed = decomposeHangulSyllable(char)
       console.log(`   📝 Decomposed "${char}" to:`, decomposed)
       
-      // If it has no final, we can add a final consonant to it
+      // If it has no final, we can potentially add a final consonant OR another vowel to form complex medial
       if (!decomposed.final) {
-        // This syllable can accept a final consonant
+        // This syllable can accept a final consonant or another vowel for complex medial
         currentSyllable = decomposed
-        console.log(`   ✅ Syllable "${char}" can accept final consonant`)
+        console.log(`   ✅ Syllable "${char}" can accept final consonant or complex medial vowel`)
       } else {
         // This syllable already has a final, add it to result
         result += char
@@ -573,10 +573,18 @@ export function processKoreanInput(input: string): string {
       }
     } else if (isVowel(char)) {
       if (currentSyllable.initial && currentSyllable.medial) {
-        // We have initial + medial, complete current syllable and start new one
-        console.log(`   ✅ Completing syllable, starting new with vowel "${char}"`)
-        result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
-        currentSyllable = { initial: '', medial: char, final: '' }
+        // We have initial + medial, check if we can form a complex medial
+        const complexMedial = canFormComplexMedial(currentSyllable.medial, char)
+        if (complexMedial) {
+          // Replace the existing medial with the complex medial
+          console.log(`   ✅ Forming complex medial: "${currentSyllable.medial}" + "${char}" = "${complexMedial}"`)
+          currentSyllable.medial = complexMedial
+        } else {
+          // Cannot form complex medial, complete current syllable and start new one
+          console.log(`   ✅ Cannot form complex medial, completing syllable and starting new with "${char}"`)
+          result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
+          currentSyllable = { initial: '', medial: char, final: '' }
+        }
       } else if (currentSyllable.initial) {
         // Check if we can form a complex medial with existing medial
         if (currentSyllable.medial) {
