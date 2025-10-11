@@ -70,7 +70,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
       default:
         // Show shifted character if shift is pressed and mapping exists
         const displayChar = isShiftPressed ? getShiftedCharacter(key) : key
-        console.log('🎨 Displaying key:', key, 'as:', displayChar, 'shift state:', isShiftPressed)
+        // console.log('🎨 Displaying key:', key, 'as:', displayChar, 'shift state:', isShiftPressed)
         return <span className="korean-text">{displayChar}</span>
     }
   }
@@ -106,7 +106,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
 
   const handleKeyClick = useCallback((keyValue, event) => {
     event.preventDefault()
-    console.log('🖱️ handleKeyClick called with:', keyValue, 'current shift state:', isShiftPressed)
+    // console.log('🖱️ handleKeyClick called with:', keyValue, 'current shift state:', isShiftPressed)
     
     // Clear any existing timer
     if (longPressTimer.current) {
@@ -125,8 +125,8 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
   }, [popup, isShiftPressed])
 
   const processKeyPress = (keyValue) => {
-    console.log('🔑 processKeyPress called with:', keyValue, 'current shift state:', isShiftPressed)
-    console.log('🔍 KEYBOARD DEBUG: Key pressed:', keyValue)
+    // console.log('🔑 processKeyPress called with:', keyValue, 'current shift state:', isShiftPressed)
+    // console.log('🔍 KEYBOARD DEBUG: Key pressed:', keyValue)
     switch (keyValue) {
       case 'shift':
         // Toggle shift state using functional update to avoid stale closure
@@ -158,7 +158,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
         if (keyValue && keyValue.length === 1) {
           // Use shifted character if shift is pressed
           const inputChar = isShiftPressed ? getShiftedCharacter(keyValue) : keyValue
-          console.log('📝 Input character:', keyValue, 'shifted to:', inputChar, 'shift state:', isShiftPressed)
+          // console.log('📝 Input character:', keyValue, 'shifted to:', inputChar, 'shift state:', isShiftPressed)
           onTextInput(inputChar)
           
           // Reset shift after typing a character (like traditional keyboard)
