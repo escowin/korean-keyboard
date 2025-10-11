@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import KoreanKeyboard from './components/KoreanKeyboard.tsx'
-import { processKoreanCharacter, completeCurrentComposition, resetCompositionState } from './utils/koreanKeyboard.js'
+import { processKoreanCharacter, completeCurrentComposition, resetCompositionState, getCurrentCompositionDisplay } from './utils/koreanKeyboard.js'
 import type { Note } from './types/korean.js'
 
 function App() {
@@ -9,6 +9,7 @@ function App() {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState<boolean>(true)
   const [noteTitle, setNoteTitle] = useState<string>('')
   const [noteContent, setNoteContent] = useState<string>('')
+  const [compositionStart, setCompositionStart] = useState<number>(-1) // Track where composition starts
 
   // Load notes from localStorage on mount
   useEffect(() => {
@@ -125,11 +126,14 @@ function App() {
           const start = textarea.selectionStart
           const end = textarea.selectionEnd
           
+          console.log('⌫ Backspace pressed at position:', start, 'to', end)
+          
           if (start === end && start > 0) {
             // Complete any pending composition first
             const completedText = completeCurrentComposition()
             if (completedText) {
               resetCompositionState()
+              setCompositionStart(-1)
             }
             
             return prev.substring(0, start - 1) + prev.substring(end)
@@ -138,6 +142,7 @@ function App() {
             const completedText = completeCurrentComposition()
             if (completedText) {
               resetCompositionState()
+              setCompositionStart(-1)
             }
             
             return prev.substring(0, start) + prev.substring(end)
@@ -157,22 +162,79 @@ function App() {
         const before = prev.substring(0, start)
         const after = prev.substring(end)
         
+        console.log('📝 handleKeyboardText called with:', text, 'at position:', start)
+        console.log('   Current content before:', before)
+        console.log('   Current content after:', after)
+        
         // Process Korean input character by character for proper composition
         const processedText = processKoreanCharacter(text)
-        const newContent = before + processedText.text + after
         
-        // Update cursor position after React re-renders
-        setTimeout(() => {
-          const newPosition = start + processedText.text.length
-          textarea.setSelectionRange(newPosition, newPosition)
-          textarea.focus()
-        }, 0)
+        // Get current composition display for real-time feedback
+        const compositionDisplay = getCurrentCompositionDisplay()
         
-        return newContent
+        // If we're composing, show the composition in the textarea
+        if (processedText.isComposing && compositionDisplay) {
+          console.log('   Composing, showing:', compositionDisplay)
+          
+          // If we have a previous composition, replace it
+          let newBefore = before
+          if (compositionStart >= 0 && compositionStart < start) {
+            newBefore = prev.substring(0, compositionStart)
+            console.log('   Replacing previous composition from position:', compositionStart)
+          } else {
+            setCompositionStart(start)
+          }
+          
+          const newContent = newBefore + compositionDisplay + after
+          
+          // Update cursor position after React re-renders
+          setTimeout(() => {
+            const newPosition = newBefore.length + compositionDisplay.length
+            textarea.setSelectionRange(newPosition, newPosition)
+            textarea.focus()
+          }, 0)
+          
+          return newContent
+        } else {
+          console.log('   Normal text input, processed text:', processedText.text)
+          
+          // Complete any pending composition
+          if (compositionStart >= 0) {
+            const completedComposition = completeCurrentComposition()
+            if (completedComposition) {
+              const beforeComposition = prev.substring(0, compositionStart)
+              const afterComposition = prev.substring(start)
+              const newContent = beforeComposition + completedComposition + processedText.text + afterComposition
+              setCompositionStart(-1)
+              resetCompositionState()
+              
+              setTimeout(() => {
+                const newPosition = beforeComposition.length + completedComposition.length + processedText.text.length
+                textarea.setSelectionRange(newPosition, newPosition)
+                textarea.focus()
+              }, 0)
+              
+              return newContent
+            }
+          }
+          
+          // Normal text input
+          const newContent = before + processedText.text + after
+          setCompositionStart(-1)
+          
+          // Update cursor position after React re-renders
+          setTimeout(() => {
+            const newPosition = start + processedText.text.length
+            textarea.setSelectionRange(newPosition, newPosition)
+            textarea.focus()
+          }, 0)
+          
+          return newContent
+        }
       }
       return prev + text
     })
-  }, [])
+  }, [compositionStart])
 
   const renderNotesList = () => {
     if (notes.length === 0) {

@@ -122,12 +122,26 @@ export function composeSyllable(initial: string, medial: string, final: string =
   if (!initial && !final) return medial
   if (!medial && !final) return initial
   
-  const initialCode = initial ? UNICODE_RANGES.INITIAL_CONSONANTS[initial] : null
+  // Get Unicode codes, checking both modern and archaic ranges
+  const initialCode = initial ? (
+    UNICODE_RANGES.INITIAL_CONSONANTS[initial] || 
+    UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS[initial]
+  ) : null
   const medialCode = medial ? UNICODE_RANGES.MEDIAL_VOWELS[medial] : null
   const finalCode = final ? UNICODE_RANGES.FINAL_CONSONANTS[final] : null
   
+  console.log('🔤 composeSyllable called with:', { initial, medial, final })
+  console.log('   Unicode codes:', { initialCode, medialCode, finalCode })
+  
   // If we don't have both initial and medial, return as-is
   if (!initialCode || !medialCode) {
+    console.log('   Missing initial or medial, returning as-is')
+    return initial + medial + final
+  }
+  
+  // Validate that the initial consonant is in the valid range for composition
+  if (initialCode < 0x1100 || initialCode > 0x1112) {
+    console.log('   Initial consonant outside valid range, returning as-is')
     return initial + medial + final
   }
   
@@ -138,7 +152,9 @@ export function composeSyllable(initial: string, medial: string, final: string =
   const finalOffset = finalCode ? (finalCode - 0x11A7) : 0
   
   const syllableCode = base + initialOffset + medialOffset + finalOffset
-  return String.fromCharCode(syllableCode)
+  const result = String.fromCharCode(syllableCode)
+  console.log('   Composed syllable:', result, 'code:', syllableCode)
+  return result
 }
 
 /**
@@ -219,10 +235,14 @@ export function getCompositionState(): CompositionState {
  * @returns Object with processed text and composition status
  */
 export function processKoreanCharacter(char: string): { text: string; isComposing: boolean; completedSyllable?: string } {
+  console.log('🔤 processKoreanCharacter called with:', char)
+  console.log('   Current composition state:', compositionState)
+  
   if (!char) return { text: '', isComposing: false }
   
   // Handle non-Korean characters
   if (!isConsonant(char) && !isVowel(char)) {
+    console.log('   Non-Korean character, completing composition')
     // Complete any pending composition
     const result = completeCurrentComposition()
     resetCompositionState()
@@ -233,8 +253,10 @@ export function processKoreanCharacter(char: string): { text: string; isComposin
   compositionState.isComposing = true
   
   if (isConsonant(char)) {
+    console.log('   Processing as consonant')
     return processConsonant(char)
   } else if (isVowel(char)) {
+    console.log('   Processing as vowel')
     return processVowel(char)
   }
   
@@ -246,10 +268,12 @@ export function processKoreanCharacter(char: string): { text: string; isComposin
  */
 function processConsonant(char: string): { text: string; isComposing: boolean; completedSyllable?: string } {
   const { currentSyllable } = compositionState
+  console.log('   Processing consonant:', char, 'current syllable:', currentSyllable)
   
-  // If this is an archaic consonant, don't use it in syllable composition
-  if (!isModernConsonant(char)) {
-    // Complete any pending composition first
+  // Check if this is a valid consonant for syllable composition (modern or archaic)
+  if (!isConsonant(char)) {
+    console.log('   Not a valid consonant, completing composition')
+    // Not a consonant, complete any pending composition first
     const completedText = completeCurrentComposition()
     resetCompositionState()
     return { text: completedText + char, isComposing: false }
@@ -309,6 +333,29 @@ export function completeCurrentComposition(): string {
   if (currentSyllable.initial) {
     return composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
   }
+  return ''
+}
+
+/**
+ * Get the current composition display (what should be shown in the textarea)
+ */
+export function getCurrentCompositionDisplay(): string {
+  const { currentSyllable } = compositionState
+  console.log('📺 getCurrentCompositionDisplay called, current syllable:', currentSyllable)
+  
+  if (currentSyllable.initial) {
+    // If we have a complete syllable, compose it
+    if (currentSyllable.medial) {
+      const composed = composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
+      console.log('   Composed syllable:', composed)
+      return composed
+    } else {
+      // Show the initial consonant as-is while composing
+      console.log('   Showing initial consonant:', currentSyllable.initial)
+      return currentSyllable.initial
+    }
+  }
+  console.log('   No composition to display')
   return ''
 }
 

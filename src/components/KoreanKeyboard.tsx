@@ -70,6 +70,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
       default:
         // Show shifted character if shift is pressed and mapping exists
         const displayChar = isShiftPressed ? getShiftedCharacter(key) : key
+        console.log('🎨 Displaying key:', key, 'as:', displayChar, 'shift state:', isShiftPressed)
         return <span className="korean-text">{displayChar}</span>
     }
   }
@@ -105,6 +106,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
 
   const handleKeyClick = useCallback((keyValue, event) => {
     event.preventDefault()
+    console.log('🖱️ handleKeyClick called with:', keyValue, 'current shift state:', isShiftPressed)
     
     // Clear any existing timer
     if (longPressTimer.current) {
@@ -120,12 +122,19 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     
     // Handle key press
     processKeyPress(keyValue)
-  }, [popup])
+  }, [popup, isShiftPressed])
 
   const processKeyPress = (keyValue) => {
+    console.log('🔑 processKeyPress called with:', keyValue, 'current shift state:', isShiftPressed)
     switch (keyValue) {
       case 'shift':
-        setIsShiftPressed(!isShiftPressed)
+        // Toggle shift state using functional update to avoid stale closure
+        console.log('🔄 Shift key pressed, toggling shift state')
+        setIsShiftPressed(prev => {
+          const newState = !prev
+          console.log('   Toggling from', prev, 'to', newState)
+          return newState
+        })
         break
       case 'backspace':
         onKeyPress('backspace')
@@ -148,7 +157,14 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
         if (keyValue && keyValue.length === 1) {
           // Use shifted character if shift is pressed
           const inputChar = isShiftPressed ? getShiftedCharacter(keyValue) : keyValue
+          console.log('📝 Input character:', keyValue, 'shifted to:', inputChar, 'shift state:', isShiftPressed)
           onTextInput(inputChar)
+          
+          // Reset shift after typing a character (like traditional keyboard)
+          if (isShiftPressed) {
+            console.log('🔄 Resetting shift after character input')
+            setIsShiftPressed(false)
+          }
         }
     }
   }
@@ -158,12 +174,21 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     
     const rect = keyElement.getBoundingClientRect()
     const popupWidth = variants.length * 40 + 20 // Approximate width
+    // Center the popup directly above the key
+    const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
+    const calculatedBottom = window.innerHeight - rect.top + rect.height + 5
+    
+    console.log('🎯 Popup positioning for key:', keyValue)
+    console.log('   Key rect:', { left: rect.left, top: rect.top, width: rect.width, height: rect.height })
+    console.log('   Calculated position:', { left: calculatedLeft, bottom: calculatedBottom })
+    console.log('   Window size:', { width: window.innerWidth, height: window.innerHeight })
+    
     const popupElement = {
       keyValue,
       variants,
       position: {
-        left: Math.max(10, Math.min(rect.left - popupWidth / 2 + rect.width / 2, window.innerWidth - popupWidth - 10)),
-        bottom: window.innerHeight - rect.top + 5 // Closer to the key
+        left: calculatedLeft,
+        bottom: calculatedBottom
       }
     }
     
