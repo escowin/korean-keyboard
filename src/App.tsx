@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import KoreanKeyboard from './components/KoreanKeyboard.tsx'
-import { processKoreanCharacter, completeCurrentComposition, resetCompositionState, getCurrentCompositionDisplay } from './utils/koreanKeyboard.js'
+import { processKoreanInput } from './utils/koreanKeyboard.js'
 import type { Note } from './types/korean.js'
 
 function App() {
@@ -9,8 +9,6 @@ function App() {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState<boolean>(true)
   const [noteTitle, setNoteTitle] = useState<string>('')
   const [noteContent, setNoteContent] = useState<string>('')
-  const [compositionStart, setCompositionStart] = useState<number>(-1) // Track where composition starts
-  const [isComposing, setIsComposing] = useState<boolean>(false) // Track if we're currently composing
 
   // Load notes from localStorage on mount
   useEffect(() => {
@@ -25,14 +23,6 @@ function App() {
     }
   }, [])
 
-  // Track composition state changes for real-time display
-  useEffect(() => {
-    if (isComposing) {
-      console.log('🎯 Composition state changed - isComposing:', isComposing)
-      console.log('🎯 Composition start:', compositionStart)
-      // We'll update the composition display in the text handling logic
-    }
-  }, [isComposing, compositionStart])
 
   // Auto-save when note content changes
   useEffect(() => {
@@ -136,28 +126,20 @@ function App() {
           const start = textarea.selectionStart
           const end = textarea.selectionEnd
           
-          console.log('⌫ Backspace pressed at position:', start, 'to', end)
+          console.log('🔍 SIMPLE: Backspace pressed at position:', start, 'to', end)
           
           if (start === end && start > 0) {
-            // Complete any pending composition first
-            const completedText = completeCurrentComposition()
-            if (completedText) {
-              resetCompositionState()
-              setCompositionStart(-1)
-              setIsComposing(false)
-            }
-            
-            return prev.substring(0, start - 1) + prev.substring(end)
+            // Simple backspace: remove one character
+            const newContent = prev.substring(0, start - 1) + prev.substring(end)
+            const composedContent = processKoreanInput(newContent)
+            console.log('🔍 SIMPLE: Backspace result:', composedContent)
+            return composedContent
           } else if (start !== end) {
-            // Complete any pending composition when deleting selection
-            const completedText = completeCurrentComposition()
-            if (completedText) {
-              resetCompositionState()
-              setCompositionStart(-1)
-              setIsComposing(false)
-            }
-            
-            return prev.substring(0, start) + prev.substring(end)
+            // Delete selection
+            const newContent = prev.substring(0, start) + prev.substring(end)
+            const composedContent = processKoreanInput(newContent)
+            console.log('🔍 SIMPLE: Delete selection result:', composedContent)
+            return composedContent
           }
         }
         return prev
@@ -166,6 +148,8 @@ function App() {
   }, [])
 
   const handleKeyboardText = useCallback((text: string) => {
+    console.log('🔍 SIMPLE: handleKeyboardText called with:', text)
+    
     setNoteContent(prev => {
       const textarea = document.querySelector('#note-content') as HTMLTextAreaElement
       if (textarea) {
@@ -174,95 +158,28 @@ function App() {
         const before = prev.substring(0, start)
         const after = prev.substring(end)
         
-        console.log('📝 handleKeyboardText called with:', text, 'at position:', start)
-        console.log('   Current content before:', before)
-        console.log('   Current content after:', after)
-        console.log('   Is composing:', isComposing, 'composition start:', compositionStart)
-        console.log('   Full current content:', prev)
+        console.log('🔍 SIMPLE: Position:', start, 'to', end)
+        console.log('🔍 SIMPLE: Before:', before)
+        console.log('🔍 SIMPLE: After:', after)
         
-        // Process Korean input character by character for proper composition
-        const processedText = processKoreanCharacter(text)
+        // Simple approach: add the character and then compose the entire text
+        const rawContent = before + text + after
+        const composedContent = processKoreanInput(rawContent)
+        console.log('🔍 SIMPLE: Raw content:', rawContent)
+        console.log('🔍 SIMPLE: Composed content:', composedContent)
         
-        // If we're composing, show the composition in the textarea
-        if (processedText.isComposing) {
-          console.log('   🔄 COMPOSING - processed text:', processedText.text)
-          console.log('   🔄 COMPOSING - isComposing state:', isComposing)
-          console.log('   🔄 COMPOSING - compositionStart:', compositionStart)
-          
-          // Start composition if not already composing
-          if (!isComposing) {
-            console.log('   🆕 Starting new composition at position:', start)
-            setCompositionStart(start)
-            setIsComposing(true)
-          }
-          
-          // Get the current composition display
-          const compositionDisplay = getCurrentCompositionDisplay()
-          console.log('   🔄 COMPOSING - compositionDisplay:', compositionDisplay)
-          
-          // Replace the composition area with current composition
-          const compositionStartPos = compositionStart >= 0 ? compositionStart : start
-          const newBefore = prev.substring(0, compositionStartPos)
-          const newContent = newBefore + compositionDisplay + after
-          
-          console.log('   🔄 COMPOSING - newBefore:', newBefore)
-          console.log('   🔄 COMPOSING - newContent:', newContent)
-          console.log('   🔄 COMPOSING - compositionStartPos:', compositionStartPos)
-          
-          // Update cursor position after React re-renders
-          setTimeout(() => {
-            const newPosition = newBefore.length + compositionDisplay.length
-            textarea.setSelectionRange(newPosition, newPosition)
-            textarea.focus()
-          }, 0)
-          
-          return newContent
-        } else {
-          console.log('   ✅ NORMAL INPUT - processed text:', processedText.text)
-          
-          // Complete any pending composition
-          if (isComposing && compositionStart >= 0) {
-            console.log('   🔚 Completing pending composition')
-            const completedComposition = completeCurrentComposition()
-            console.log('   🔚 Completed composition:', completedComposition)
-            if (completedComposition) {
-              const beforeComposition = prev.substring(0, compositionStart)
-              const afterComposition = prev.substring(start)
-              const newContent = beforeComposition + completedComposition + processedText.text + afterComposition
-              console.log('   🔚 Final content with completed composition:', newContent)
-              setCompositionStart(-1)
-              setIsComposing(false)
-              resetCompositionState()
-              
-              setTimeout(() => {
-                const newPosition = beforeComposition.length + completedComposition.length + processedText.text.length
-                textarea.setSelectionRange(newPosition, newPosition)
-                textarea.focus()
-              }, 0)
-              
-              return newContent
-            }
-          }
-          
-          // Normal text input
-          const newContent = before + processedText.text + after
-          console.log('   ✅ NORMAL INPUT - newContent:', newContent)
-          setCompositionStart(-1)
-          setIsComposing(false)
-          
-          // Update cursor position after React re-renders
-          setTimeout(() => {
-            const newPosition = start + processedText.text.length
-            textarea.setSelectionRange(newPosition, newPosition)
-            textarea.focus()
-          }, 0)
-          
-          return newContent
-        }
+        // Update cursor position
+        setTimeout(() => {
+          const newPosition = start + text.length
+          textarea.setSelectionRange(newPosition, newPosition)
+          textarea.focus()
+        }, 0)
+        
+        return composedContent
       }
       return prev + text
     })
-  }, [compositionStart, isComposing])
+  }, [])
 
   const renderNotesList = () => {
     if (notes.length === 0) {

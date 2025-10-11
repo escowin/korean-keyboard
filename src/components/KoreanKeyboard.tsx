@@ -126,6 +126,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
 
   const processKeyPress = (keyValue) => {
     console.log('🔑 processKeyPress called with:', keyValue, 'current shift state:', isShiftPressed)
+    console.log('🔍 KEYBOARD DEBUG: Key pressed:', keyValue)
     switch (keyValue) {
       case 'shift':
         // Toggle shift state using functional update to avoid stale closure
@@ -177,7 +178,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     const popupWidth = variants.length * (32 + 24) + (variants.length - 1) * 8 + 16 // 16px for popup padding
     // Center the popup directly above the key
     const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
-    const calculatedBottom = window.innerHeight - rect.top + rect.height + 5
+    const calculatedBottom = window.innerHeight - rect.top + 5 // Just 5px above the key
     
     console.log('🎯 Popup positioning for key:', keyValue)
     console.log('   Key rect:', { left: rect.left, top: rect.top, width: rect.width, height: rect.height })

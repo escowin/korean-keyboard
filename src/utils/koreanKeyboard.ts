@@ -104,14 +104,15 @@ export const UNICODE_RANGES: KoreanUnicodeRanges = {
     'ㅣ': 0x1175, 'ㆍ': 0x1197, 'ᆢ': 0x11A2
   },
   
-  // Final consonants (종성)
+  // Final consonants (종성) - Correct Unicode mappings
   FINAL_CONSONANTS: {
     'ㄱ': 0x11A8, 'ㄲ': 0x11A9, 'ㄳ': 0x11AA, 'ㄴ': 0x11AB, 'ㄵ': 0x11AC,
-    'ㄶ': 0x11AD, 'ㄷ': 0x11AE, 'ㄹ': 0x11AF, 'ㄺ': 0x11B0, 'ㄻ': 0x11B1,
-    'ㄼ': 0x11B2, 'ㄽ': 0x11B3, 'ㄾ': 0x11B4, 'ㄿ': 0x11B5, 'ㅀ': 0x11B6,
-    'ㅁ': 0x11B7, 'ㅂ': 0x11B8, 'ㅄ': 0x11B9, 'ㅅ': 0x11BA, 'ㅆ': 0x11BB,
-    'ㅇ': 0x11BC, 'ㅈ': 0x11BD, 'ㅊ': 0x11C0, 'ㅋ': 0x11C1, 'ㅌ': 0x11C2,
-    'ㅍ': 0x11C3, 'ㅎ': 0x11C6, 'ㅸ': 0x11B9, 'ㅿ': 0x11BF, 'ㆆ': 0x11C7
+    'ㄶ': 0x11AD, 'ㄷ': 0x11AE, 'ㄸ': 0x11AE, 'ㄹ': 0x11AF, 'ㄺ': 0x11B0, 
+    'ㄻ': 0x11B1, 'ㄼ': 0x11B2, 'ㄽ': 0x11B3, 'ㄾ': 0x11B4, 'ㄿ': 0x11B5, 
+    'ㅀ': 0x11B6, 'ㅁ': 0x11B7, 'ㅂ': 0x11B8, 'ㅃ': 0x11B8, 'ㅄ': 0x11B9, 
+    'ㅅ': 0x11BA, 'ㅆ': 0x11BB, 'ㅇ': 0x11BC, 'ㅈ': 0x11BD, 'ㅉ': 0x11BD, 
+    'ㅊ': 0x11BE, 'ㅋ': 0x11BF, 'ㅌ': 0x11C0, 'ㅍ': 0x11C1, 'ㅎ': 0x11C2,
+    'ㅸ': 0x11B9, 'ㅿ': 0x11BF, 'ㆆ': 0x11C7
   }
 }
 
@@ -161,17 +162,30 @@ export function composeSyllable(initial: string, medial: string, final: string =
   const base = 0xAC00
   const initialOffset = (initialCode - 0x1100) * 21 * 28
   const medialOffset = (medialCode - 0x1161) * 28
-  const finalOffset = finalCode ? (finalCode - 0x11A7) : 0
+  const finalOffset = finalCode ? (finalCode - 0x11A8) : 0
   
   console.log('   📊 Composition calculation:')
   console.log('     base:', base, '(0xAC00)')
   console.log('     initialOffset:', initialOffset, '(initialCode - 0x1100) * 21 * 28')
   console.log('     medialOffset:', medialOffset, '(medialCode - 0x1161) * 28')
-  console.log('     finalOffset:', finalOffset, finalCode ? '(finalCode - 0x11A7)' : '0')
+  console.log('     finalOffset:', finalOffset, finalCode ? '(finalCode - 0x11A8)' : '0')
   
   const syllableCode = base + initialOffset + medialOffset + finalOffset
   const result = String.fromCharCode(syllableCode)
   console.log('   🎯 Composed syllable:', result, 'code:', syllableCode, '(0x' + syllableCode.toString(16) + ')')
+  
+  // Debug specific case: ㅅㅗㅎ should be 솧
+  if (initial === 'ㅅ' && medial === 'ㅗ' && final === 'ㅎ') {
+    console.log('   🧪 DEBUG: ㅅㅗㅎ composition test')
+    console.log('     Expected: 솧 (0x' + (0xAC00 + (0x1109 - 0x1100) * 21 * 28 + (0x1169 - 0x1161) * 28 + (0x11C2 - 0x11A8)).toString(16) + ')')
+    console.log('     Actual: ' + result + ' (0x' + syllableCode.toString(16) + ')')
+  }
+  
+  // Debug final consonant mapping
+  if (final && finalCode) {
+    console.log('   🔍 Final consonant mapping:', final, '->', finalCode, '(0x' + finalCode.toString(16) + ')')
+  }
+  
   return result
 }
 
@@ -266,6 +280,7 @@ export function processKoreanCharacter(char: string): { text: string; isComposin
     // Complete any pending composition
     const result = completeCurrentComposition()
     resetCompositionState()
+    console.log('   Completed composition result:', result)
     return { text: result + char, isComposing: false }
   }
   
@@ -316,7 +331,7 @@ function processConsonant(char: string): { text: string; isComposing: boolean; c
     const completedSyllable = completeCurrentComposition()
     resetCompositionState()
     compositionState.currentSyllable = { initial: char, medial: '', final: '' }
-    return { text: completedSyllable, isComposing: true }
+    return { text: completedSyllable, isComposing: true, completedSyllable }
   } else {
     // This is the initial consonant
     compositionState.currentSyllable.initial = char
@@ -362,20 +377,21 @@ export function completeCurrentComposition(): string {
 export function getCurrentCompositionDisplay(): string {
   const { currentSyllable } = compositionState
   console.log('📺 getCurrentCompositionDisplay called, current syllable:', currentSyllable)
+  console.log('📺 Composition state:', compositionState)
   
   if (currentSyllable.initial) {
     // If we have a complete syllable, compose it
     if (currentSyllable.medial) {
       const composed = composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
-      console.log('   Composed syllable:', composed)
+      console.log('   ✅ Composed syllable:', composed)
       return composed
     } else {
       // Show the initial consonant as-is while composing
-      console.log('   Showing initial consonant:', currentSyllable.initial)
+      console.log('   🔤 Showing initial consonant:', currentSyllable.initial)
       return currentSyllable.initial
     }
   }
-  console.log('   No composition to display')
+  console.log('   ❌ No composition to display')
   return ''
 }
 
@@ -385,6 +401,7 @@ export function getCurrentCompositionDisplay(): string {
  * @returns Processed string with composed syllables
  */
 export function processKoreanInput(input: string): string {
+  console.log('🔍 processKoreanInput called with:', input)
   if (!input) return ''
   
   let result = ''
@@ -392,53 +409,68 @@ export function processKoreanInput(input: string): string {
   
   for (let i = 0; i < input.length; i++) {
     const char = input[i]
+    console.log(`🔍 Processing char ${i}: "${char}" (${isConsonant(char) ? 'consonant' : isVowel(char) ? 'vowel' : 'other'})`)
+    console.log(`   Current syllable:`, currentSyllable)
     
     if (isConsonant(char)) {
       if (currentSyllable.initial && currentSyllable.medial) {
         // We have initial + medial, this could be final consonant
         if (currentSyllable.final) {
           // Already have final, complete current syllable and start new one
+          console.log(`   ✅ Completing syllable with final, starting new with "${char}"`)
           result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
           currentSyllable = { initial: char, medial: '', final: '' }
         } else {
           // This is the final consonant
+          console.log(`   ✅ Adding final consonant "${char}"`)
           currentSyllable.final = char
         }
       } else if (currentSyllable.initial && !currentSyllable.medial) {
         // We have initial but no medial, this could be a double consonant
         // For now, treat as new initial (could be enhanced for double consonants)
+        console.log(`   ✅ No medial found, treating "${char}" as new initial`)
         result += currentSyllable.initial
         currentSyllable = { initial: char, medial: '', final: '' }
       } else {
         // This is the initial consonant
+        console.log(`   ✅ Setting initial consonant "${char}"`)
         currentSyllable.initial = char
       }
     } else if (isVowel(char)) {
       if (currentSyllable.initial && currentSyllable.medial) {
         // We have initial + medial, complete current syllable and start new one
+        console.log(`   ✅ Completing syllable, starting new with vowel "${char}"`)
         result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
         currentSyllable = { initial: '', medial: char, final: '' }
       } else if (currentSyllable.initial) {
         // This is the medial vowel
+        console.log(`   ✅ Adding medial vowel "${char}"`)
         currentSyllable.medial = char
       } else {
         // Standalone vowel
+        console.log(`   ✅ Standalone vowel "${char}"`)
         result += char
       }
     } else {
       // Non-Korean character, complete current syllable if any
+      console.log(`   ✅ Non-Korean character "${char}", completing syllable if any`)
       if (currentSyllable.initial) {
         result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
         currentSyllable = { initial: '', medial: '', final: '' }
       }
       result += char
     }
+    
+    console.log(`   Result so far: "${result}"`)
+    console.log(`   Updated syllable:`, currentSyllable)
   }
   
   // Complete final syllable if any
   if (currentSyllable.initial) {
+    console.log('🔍 Completing final syllable:', currentSyllable)
     result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
   }
   
+  console.log('🔍 processKoreanInput result:', result)
   return result
 }
