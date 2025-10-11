@@ -488,9 +488,6 @@ function canFormComplexMedial(first: string, second: string): string | null {
  * @returns Complex final character or null if not combinable
  */
 function canFormComplexFinal(first: string, second: string): string | null {
-  console.log(`🔍 canFormComplexFinal called with: "${first}" + "${second}"`)
-  console.log(`   🔍 First char code: ${first.charCodeAt(0)} (0x${first.charCodeAt(0).toString(16)}), Second char code: ${second.charCodeAt(0)} (0x${second.charCodeAt(0).toString(16)})`)
-  
   const complexFinals: { [key: string]: string } = {
     // moern complex finals
     [String.fromCharCode(0x11A8) + String.fromCharCode(0x3145)]: 'ᆪ',  // ㄱ + ㅅ = ㄳ (using Compatibility Jamo)
@@ -509,16 +506,10 @@ function canFormComplexFinal(first: string, second: string): string | null {
   }
   
   const combination = first + second
-  console.log(`   🔍 Looking for combination: "${combination}"`)
-  console.log(`   🔍 Available combinations:`, Object.keys(complexFinals))
-  
   const result = complexFinals[combination]
-  console.log(`   🔍 Result:`, result)
   
   if (result) {
     console.log(`🔗 Complex final formed: "${first}" + "${second}" = "${result}"`)
-  } else {
-    console.log(`❌ No complex final found for: "${first}" + "${second}"`)
   }
   
   return result || null
@@ -543,15 +534,11 @@ function decomposeHangulSyllable(syllable: string): { initial: string, medial: s
   console.log(`🔍 Decomposing "${syllable}" (${code}):`)
   console.log(`   Offsets: initial=${initialOffset}, medial=${medialOffset}, final=${finalOffset}`)
   
-  const result = {
+  return {
     initial: String.fromCharCode(initialCode),
     medial: String.fromCharCode(medialCode),
     final: finalCode ? String.fromCharCode(finalCode) : ''
   }
-  
-  console.log(`   🔍 Decomposed result:`, result)
-  console.log(`   🔍 Final char code: ${result.final.charCodeAt(0)} (${result.final})`)
-  return result
 }
 
 /**
