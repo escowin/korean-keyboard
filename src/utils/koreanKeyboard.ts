@@ -503,10 +503,16 @@ function canFormComplexFinal(first: string, second: string): string | null {
   }
   
   const combination = first + second
+  console.log(`   🔍 Looking for combination: "${combination}"`)
+  console.log(`   🔍 Available combinations:`, Object.keys(complexFinals))
+  
   const result = complexFinals[combination]
+  console.log(`   🔍 Result:`, result)
   
   if (result) {
     console.log(`🔗 Complex final formed: "${first}" + "${second}" = "${result}"`)
+  } else {
+    console.log(`❌ No complex final found for: "${first}" + "${second}"`)
   }
   
   return result || null
