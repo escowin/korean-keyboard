@@ -459,6 +459,8 @@ function getFinalConsonantCode(char: string): number | null {
  * @returns Complex medial character or null if not combinable
  */
 function canFormComplexMedial(first: string, second: string): string | null {
+  console.log(`🔍 canFormComplexMedial called with: "${first}" + "${second}"`)
+  
   const complexMedials: { [key: string]: string } = {
     'ㅗㅏ': 'ㅘ',  // ㅗ + ㅏ = ㅘ
     'ㅗㅐ': 'ㅙ',  // ㅗ + ㅐ = ㅙ
@@ -470,10 +472,16 @@ function canFormComplexMedial(first: string, second: string): string | null {
   }
   
   const combination = first + second
+  console.log(`🔍 Looking for combination: "${combination}"`)
+  console.log(`🔍 Available combinations:`, Object.keys(complexMedials))
+  
   const result = complexMedials[combination]
+  console.log(`🔍 Result:`, result)
   
   if (result) {
     console.log(`🔗 Complex medial formed: "${first}" + "${second}" = "${result}"`)
+  } else {
+    console.log(`❌ No complex medial found for: "${first}" + "${second}"`)
   }
   
   return result || null
