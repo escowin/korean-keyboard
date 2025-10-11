@@ -494,7 +494,7 @@ function canFormComplexFinal(first: string, second: string): string | null {
   const complexFinals: { [key: string]: string } = {
     // moern complex finals
     [String.fromCharCode(0x11A8) + String.fromCharCode(0x3145)]: 'ᆪ',  // ㄱ + ㅅ = ㄳ (using Compatibility Jamo)
-    [String.fromCharCode(0x11AB) + String.fromCharCode(0x110C)]: 'ᆬ',  // ㄴ + ㅈ = ㄵ
+    [String.fromCharCode(0x11AB) + String.fromCharCode(0x3148)]: 'ᆬ',  // ㄴ + ㅈ = ㄵ
     [String.fromCharCode(0x11AB) + String.fromCharCode(0x314E)]: 'ᆭ',  // ㄴ + ㅎ = ㄶ
 
 
