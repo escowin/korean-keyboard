@@ -186,13 +186,21 @@ function App() {
         // Archaic jamo are typically in the range 0x1140+ (outside standard composition range)
         const hasArchaicJamo = composedContent.split('').some(char => {
           const code = char.charCodeAt(0)
-          // Check for archaic initial consonants (0x1140+)
+          // Check for archaic initial consonants (0x1140+) or any character that caused composition to fail
           return code >= 0x1140 && code <= 0x114F
         })
         
         console.log('🔍 ARCHAIC: Has archaic jamo:', hasArchaicJamo)
         
-        if (hasArchaicJamo) {
+        // Also check if the composed content is different from raw content (indicating composition issues)
+        const hasCompositionIssues = composedContent !== rawContent && composedContent.length > 1
+        console.log('🔍 ARCHAIC: Has composition issues:', hasCompositionIssues)
+        
+        // Use either archaic jamo detection OR composition issues as trigger
+        const shouldUseArchaicHandling = hasArchaicJamo || hasCompositionIssues
+        console.log('🔍 ARCHAIC: Should use archaic handling:', shouldUseArchaicHandling)
+        
+        if (shouldUseArchaicHandling) {
           console.log('🔍 ARCHAIC: Archaic jamo detected, using InsertText with Hangul Jamo conversion')
           console.log('🔍 ARCHAIC: Original composed content:', composedContent)
           
