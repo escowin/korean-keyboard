@@ -40,6 +40,9 @@ export const FINAL_TO_INITIAL_MAPPING: { [key: string]: string } = {
 
 // Mapping from Compatibility Jamo to Hangul Jamo for proper rendering
 export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
+  // Archaic initial consonants (Compatibility Jamo to Hangul Jamo)
+  [String.fromCharCode(0x317F)]: String.fromCharCode(0x1140), // △ → ᅀ (archaic initial consonant)
+  
   // Medial vowels
   [String.fromCharCode(0x314F)]: String.fromCharCode(0x1161), // ㅏ → ᅡ
   [String.fromCharCode(0x3150)]: String.fromCharCode(0x1162), // ㅐ → ᅢ
