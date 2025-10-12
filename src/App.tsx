@@ -174,10 +174,20 @@ function App() {
         
         if (hasArchaicJamo) {
           console.log('🔍 ARCHAIC: Archaic jamo detected, using InsertText with Hangul Jamo conversion')
+          console.log('🔍 ARCHAIC: Original composed content:', composedContent)
           
           // Convert Compatibility Jamo to Hangul Jamo for proper rendering
           const hangulContent = convertCompatibilityToHangulJamo(composedContent)
           console.log('🔍 ARCHAIC: Converted to Hangul Jamo:', hangulContent)
+          console.log('🔍 ARCHAIC: Conversion details:')
+          composedContent.split('').forEach((char, index) => {
+            const converted = convertCompatibilityToHangulJamo(char)
+            if (char !== converted) {
+              console.log(`  "${char}" (U+${char.charCodeAt(0).toString(16)}) → "${converted}" (U+${converted.charCodeAt(0).toString(16)})`)
+            } else {
+              console.log(`  "${char}" (U+${char.charCodeAt(0).toString(16)}) → unchanged`)
+            }
+          })
           
           // Use InsertText API for proper rendering
           setTimeout(() => {
