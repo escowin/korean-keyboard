@@ -185,12 +185,20 @@ export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
 
 // Archaic complex medial mappings (ㆍ + vowel combinations)
 export const ARCHAIC_COMPLEX_MEDIAL_MAPPINGS: { [key: string]: string } = {
-  // ㆍ + modern vowels = archaic complex medials
+  // ㆍ + modern vowels = archaic complex medials (support both compatibility and Hangul jamo)
+  // Compatibility jamo combinations
   [String.fromCharCode(0x318D) + String.fromCharCode(0x314F)]: String.fromCharCode(0xD7C5), // ㆍ + ㅏ = ퟅ
   [String.fromCharCode(0x318D) + String.fromCharCode(0x3153)]: String.fromCharCode(0x119F), // ㆍ + ㅓ = ᆟ
   [String.fromCharCode(0x318D) + String.fromCharCode(0x3154)]: String.fromCharCode(0xD7C6), // ㆍ + ㅔ = ퟆ
   [String.fromCharCode(0x318D) + String.fromCharCode(0x315C)]: String.fromCharCode(0x11A0), // ㆍ + ㅜ = ᆠ
   [String.fromCharCode(0x318D) + String.fromCharCode(0x3163)]: String.fromCharCode(0x11A1), // ㆍ + ㅣ = ᆡ
+  
+  // Hangul jamo combinations (converted forms)
+  [String.fromCharCode(0x1196) + String.fromCharCode(0x1161)]: String.fromCharCode(0xD7C5), // ᆞ + ᅡ = ퟅ
+  [String.fromCharCode(0x1196) + String.fromCharCode(0x1165)]: String.fromCharCode(0x119F), // ᆞ + ᅥ = ᆟ
+  [String.fromCharCode(0x1196) + String.fromCharCode(0x1166)]: String.fromCharCode(0xD7C6), // ᆞ + ᅦ = ퟆ
+  [String.fromCharCode(0x1196) + String.fromCharCode(0x116E)]: String.fromCharCode(0x11A0), // ᆞ + ᅮ = ᆠ
+  [String.fromCharCode(0x1196) + String.fromCharCode(0x1175)]: String.fromCharCode(0x11A1), // ᆞ + ᅵ = ᆡ
 }
 
 // Mapping from complex final consonants to their component parts

@@ -31,13 +31,22 @@ export function composeSyllable(initial: string, medial: string, final: string =
   // Check if this involves archaic jamo that needs special handling
   if (isArchaicMedialVowel(medial)) {
     console.log('   🏛️ Archaic medial vowel detected:', medial)
-    const archaicSyllable = getArchaicSyllable(initial, medial, final)
-    if (archaicSyllable) {
-      console.log('   ✅ Found precomposed archaic syllable:', archaicSyllable)
-      return archaicSyllable
+    
+    // Check if this is an archaic complex medial that should be composed normally
+    const isArchaicComplexMedial = Object.values(ARCHAIC_COMPLEX_MEDIAL_MAPPINGS).includes(medial)
+    if (isArchaicComplexMedial) {
+      console.log('   🏛️ Archaic complex medial detected, proceeding with normal composition')
+      // Continue with normal composition for archaic complex medials
     } else {
-      console.log('   ⚠️ No precomposed form found, returning jamo as-is')
-      return initial + medial + final
+      // For simple archaic medials, try precomposed forms first
+      const archaicSyllable = getArchaicSyllable(initial, medial, final)
+      if (archaicSyllable) {
+        console.log('   ✅ Found precomposed archaic syllable:', archaicSyllable)
+        return archaicSyllable
+      } else {
+        console.log('   ⚠️ No precomposed form found, proceeding with normal composition')
+        // Continue with normal composition
+      }
     }
   }
   
@@ -62,6 +71,16 @@ export function composeSyllable(initial: string, medial: string, final: string =
   }
   
   console.log('   ✅ Initial consonant in valid range, proceeding with composition')
+  
+  // Check if this is an archaic complex medial that needs special handling
+  const isArchaicComplexMedial = Object.values(ARCHAIC_COMPLEX_MEDIAL_MAPPINGS).includes(medial)
+  if (isArchaicComplexMedial) {
+    console.log('   🏛️ Archaic complex medial detected, using special composition')
+    // For archaic complex medials, we need to use a different approach
+    // They don't fit the standard composition formula, so we'll return them as-is
+    // The browser should handle the rendering properly
+    return initial + medial + final
+  }
   
   // Base syllable: 가 (0xAC00)
   const base = 0xAC00

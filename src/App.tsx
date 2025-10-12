@@ -3,7 +3,7 @@ import KoreanKeyboard from './components/KoreanKeyboard.tsx'
 import { processKoreanInput } from './utils/koreanKeyboard.js'
 import { convertCompatibilityToHangulJamoContextAware } from './utils/unicode.js'
 import type { Note } from './types/korean.js'
-import iconSvg from '/icons/icon.svg?url'
+const iconSvg = '/korean-keyboard/icons/icon.svg'
 
 function App() {
   const [notes, setNotes] = useState<Note[]>([])
