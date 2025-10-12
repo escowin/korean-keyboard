@@ -131,24 +131,24 @@ export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
   [String.fromCharCode(0x318D)]: String.fromCharCode(0x119E), // ㆍ → ᆞ (archaic medial vowel)
   [String.fromCharCode(0x11A2)]: String.fromCharCode(0x11A2), // ᆢ → ᆢ (archaic medial vowel)
   
-  // Final consonants
-  [String.fromCharCode(0x3131)]: String.fromCharCode(0x11A8), // ㄱ → ᆨ
-  [String.fromCharCode(0x3132)]: String.fromCharCode(0x11A9), // ㄲ → ᆩ
-  [String.fromCharCode(0x3134)]: String.fromCharCode(0x11AB), // ㄴ → ᆫ
-  [String.fromCharCode(0x3137)]: String.fromCharCode(0x11AE), // ㄷ → ᆮ
-  [String.fromCharCode(0x3138)]: String.fromCharCode(0x11AF), // ㄹ → ᆯ
-  [String.fromCharCode(0x3141)]: String.fromCharCode(0x11B7), // ㅁ → ᆷ
-  [String.fromCharCode(0x3142)]: String.fromCharCode(0x11B8), // ㅂ → ᆸ
-  [String.fromCharCode(0x3143)]: String.fromCharCode(0xD7E6), // ㅃ → ퟦ
-  [String.fromCharCode(0x3145)]: String.fromCharCode(0x11BA), // ㅅ → ᆺ
-  [String.fromCharCode(0x3146)]: String.fromCharCode(0x11BB), // ㅆ → ᆻ
-  [String.fromCharCode(0x3147)]: String.fromCharCode(0x11BC), // ㅇ → ᆼ
-  [String.fromCharCode(0x3148)]: String.fromCharCode(0x11BD), // ㅈ → ᆽ
-  [String.fromCharCode(0x3149)]: String.fromCharCode(0x11BE), // ㅊ → ᆾ
-  [String.fromCharCode(0x314A)]: String.fromCharCode(0x11BF), // ㅋ → ᆿ
-  [String.fromCharCode(0x314B)]: String.fromCharCode(0x11C0), // ㅌ → ᇀ
-  [String.fromCharCode(0x314C)]: String.fromCharCode(0x11C1), // ㅍ → ᇁ
-  // [String.fromCharCode(0x314E)]: String.fromCharCode(0x11C2), // ㅎ → ᇂ (alternative)
+  // Initial consonants (prefer initial forms for compatibility jamo)
+  [String.fromCharCode(0x3131)]: String.fromCharCode(0x1100), // ㄱ → ᄀ
+  [String.fromCharCode(0x3132)]: String.fromCharCode(0x1101), // ㄲ → ᄁ
+  [String.fromCharCode(0x3134)]: String.fromCharCode(0x1102), // ㄴ → ᄂ
+  [String.fromCharCode(0x3137)]: String.fromCharCode(0x1103), // ㄷ → ᄃ
+  [String.fromCharCode(0x3138)]: String.fromCharCode(0x1105), // ㄹ → ᄅ
+  [String.fromCharCode(0x3141)]: String.fromCharCode(0x1106), // ㅁ → ᄆ
+  [String.fromCharCode(0x3142)]: String.fromCharCode(0x1107), // ㅂ → ᄇ
+  [String.fromCharCode(0x3143)]: String.fromCharCode(0x1108), // ㅃ → ᄈ
+  [String.fromCharCode(0x3145)]: String.fromCharCode(0x1109), // ㅅ → ᄉ
+  [String.fromCharCode(0x3146)]: String.fromCharCode(0x110A), // ㅆ → ᄊ
+  [String.fromCharCode(0x3147)]: String.fromCharCode(0x110B), // ㅇ → ᄋ
+  [String.fromCharCode(0x3148)]: String.fromCharCode(0x110C), // ㅈ → ᄌ
+  [String.fromCharCode(0x3149)]: String.fromCharCode(0x110E), // ㅊ → ᄎ
+  [String.fromCharCode(0x314A)]: String.fromCharCode(0x110F), // ㅋ → ᄏ
+  [String.fromCharCode(0x314B)]: String.fromCharCode(0x1110), // ㅌ → ᄐ
+  [String.fromCharCode(0x314C)]: String.fromCharCode(0x1111), // ㅍ → ᄑ
+  [String.fromCharCode(0x314D)]: String.fromCharCode(0x1112), // ㅎ → ᄒ
   
   // Archaic final consonants
   [String.fromCharCode(0x11EB)]: String.fromCharCode(0x11EB), // ᇫ → ᇫ (archaic final consonant)
@@ -345,12 +345,77 @@ export function getFinalConsonantCode(char: string): number | null {
 /**
  * Convert Compatibility Jamo to Hangul Jamo for proper rendering
  * This ensures archaic jamo render as combined blocks instead of separate characters
+ * @param text - Text to convert
+ * @param preferInitial - If true, prefer initial consonant forms; if false, prefer final consonant forms
  */
-export function convertCompatibilityToHangulJamo(text: string): string {
+export function convertCompatibilityToHangulJamo(text: string, preferInitial: boolean = true): string {
   return text.split('').map(char => {
+    // Try the appropriate mapping based on preference
+    if (preferInitial) {
+      const initialChar = COMPATIBILITY_TO_HANGUL_JAMO_INITIAL[char]
+      if (initialChar) return initialChar
+    } else {
+      const finalChar = COMPATIBILITY_TO_HANGUL_JAMO_FINAL[char]
+      if (finalChar) return finalChar
+    }
+    
+    // Fallback to legacy mapping
     const hangulChar = COMPATIBILITY_TO_HANGUL_JAMO[char]
     return hangulChar || char // Return original if no mapping exists
   }).join('')
+}
+
+/**
+ * Convert Compatibility Jamo to Hangul Jamo with context awareness
+ * Determines whether to use initial or final forms based on surrounding characters
+ */
+export function convertCompatibilityToHangulJamoContextAware(text: string): string {
+  return text.split('').map((char, index) => {
+    // Check if this character should be a final consonant
+    const shouldBeFinal = shouldBeFinalConsonant(text, index)
+    
+    if (shouldBeFinal) {
+      const finalChar = COMPATIBILITY_TO_HANGUL_JAMO_FINAL[char]
+      if (finalChar) return finalChar
+    } else {
+      const initialChar = COMPATIBILITY_TO_HANGUL_JAMO_INITIAL[char]
+      if (initialChar) return initialChar
+    }
+    
+    // Fallback to legacy mapping
+    const hangulChar = COMPATIBILITY_TO_HANGUL_JAMO[char]
+    return hangulChar || char
+  }).join('')
+}
+
+/**
+ * Determine if a character at a given position should be a final consonant
+ */
+function shouldBeFinalConsonant(text: string, index: number): boolean {
+  const char = text[index]
+  
+  // If it's not a compatibility jamo, return false
+  if (!COMPATIBILITY_TO_HANGUL_JAMO_INITIAL[char]) return false
+  
+  // Look at the previous character to determine context
+  if (index > 0) {
+    const prevChar = text[index - 1]
+    const prevCode = prevChar.charCodeAt(0)
+    
+    // If previous character is a medial vowel (including archaic), this should be final
+    if ((prevCode >= 0x1161 && prevCode <= 0x1175) || // Modern medial vowels
+        (prevCode >= 0x1196 && prevCode <= 0x11A1)) { // Archaic medial vowels
+      return true
+    }
+    
+    // If previous character is an initial consonant, this should also be final
+    if (prevCode >= 0x1100 && prevCode <= 0x1116) {
+      return true
+    }
+  }
+  
+  // Default to initial consonant
+  return false
 }
 
 /**
@@ -419,6 +484,9 @@ export function getArchaicSyllable(initial: string, medial: string, final: strin
     // ㅎ + ㆍ = ᄒᆞ (precomposed)
     'ㅎㆍ': 'ᄒᆞ',
     'ㅎㆍㅇ': 'ᄒᆞᆼ', // if there's a final consonant
+    // ㅂ + ㆍ = ᄇᆞ (precomposed)
+    'ㅂㆍ': 'ᄇᆞ',
+    'ㅂㆍㅇ': 'ᄇᆞᆼ', // if there's a final consonant
   }
   
   const key = initial + medial + final

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import KoreanKeyboard from './components/KoreanKeyboard.tsx'
 import { processKoreanInput } from './utils/koreanKeyboard.js'
-import { convertCompatibilityToHangulJamo } from './utils/unicode.js'
+import { convertCompatibilityToHangulJamoContextAware } from './utils/unicode.js'
 import type { Note } from './types/korean.js'
 import iconSvg from '/icons/icon.svg?url'
 
@@ -261,10 +261,6 @@ function App() {
           console.log(`  ${_index}: "${char}" = U+${code.toString(16).toUpperCase().padStart(4, '0')} (${code})`)
         })
         
-        console.log('🔍 ARCHAIC: Contains ᅀ:', composedContent.includes('ᅀ'))
-        console.log('🔍 ARCHAIC: Contains ᅠ:', composedContent.includes('ᅠ'))
-        console.log('🔍 ARCHAIC: Contains ᆫ:', composedContent.includes('ᆫ'))
-        
         // Check if we have archaic jamo by looking for specific Unicode ranges
         // Archaic jamo can be in multiple ranges
         const hasArchaicJamo = composedContent.split('').some(char => {
@@ -290,12 +286,12 @@ function App() {
           console.log('🔍 ARCHAIC: Archaic jamo detected, using React state with Hangul Jamo conversion')
           console.log('🔍 ARCHAIC: Original composed content:', composedContent)
           
-          // Convert Compatibility Jamo to Hangul Jamo for proper rendering
-          const hangulContent = convertCompatibilityToHangulJamo(composedContent)
+          // Convert Compatibility Jamo to Hangul Jamo for proper rendering with context awareness
+          const hangulContent = convertCompatibilityToHangulJamoContextAware(composedContent)
           console.log('🔍 ARCHAIC: Converted to Hangul Jamo:', hangulContent)
           console.log('🔍 ARCHAIC: Conversion details:')
           composedContent.split('').forEach((char, _index) => {
-            const converted = convertCompatibilityToHangulJamo(char)
+            const converted = convertCompatibilityToHangulJamoContextAware(char)
             if (char !== converted) {
               console.log(`  "${char}" (U+${char.charCodeAt(0).toString(16)}) → "${converted}" (U+${converted.charCodeAt(0).toString(16)})`)
             } else {
