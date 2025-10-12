@@ -27,6 +27,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     }
   }, [popup])
 
+
   const getKeyClass = (key) => {
     const classes = ['key']
     
@@ -83,7 +84,9 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     const variants = getArchaicVariants(keyValue)
     if (variants.length > 1) {
       longPressTimer.current = setTimeout(() => {
-        showArchaicPopup(keyValue, variants, event.target)
+        // Find the actual key element (the one with data-key attribute)
+        const keyElement = event.target.closest('[data-key]') || event.target
+        showArchaicPopup(keyValue, variants, keyElement)
       }, longPressDelay)
     }
     
@@ -174,22 +177,12 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     hideArchaicPopup() // Hide any existing popup
     
     const rect = keyElement.getBoundingClientRect()
-    // More accurate width calculation: 32px minWidth + 24px padding (12px each side) + 8px gap between variants
-    const popupWidth = variants.length * (32 + 24) + (variants.length - 1) * 8 + 16 // 16px for popup padding
-    // Center the popup directly above the key
-    const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
     const calculatedBottom = window.innerHeight - rect.top + 5 // Just 5px above the key
-    
-    console.log('🎯 Popup positioning for key:', keyValue)
-    console.log('   Key rect:', { left: rect.left, top: rect.top, width: rect.width, height: rect.height })
-    console.log('   Calculated position:', { left: calculatedLeft, bottom: calculatedBottom })
-    console.log('   Window size:', { width: window.innerWidth, height: window.innerHeight })
     
     const popupElement = {
       keyValue,
       variants,
       position: {
-        left: calculatedLeft,
         bottom: calculatedBottom
       }
     }
@@ -244,7 +237,6 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
           className="archaic-popup"
           style={{
             position: 'fixed',
-            left: `${popup.position.left}px`,
             bottom: `${popup.position.bottom}px`,
             zIndex: 1000,
             display: 'flex',
