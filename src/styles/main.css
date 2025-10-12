@@ -16,6 +16,11 @@
   --color-text-muted: #888888;
   --color-accent: #4a9eff;
   --color-accent-hover: #3a8eef;
+
+  /* dark mode old silk or scroll colors for note items */
+  --note-bg-primary: #322a20;
+  --note-color-accent: #f0e6dc;
+
   --color-success: #4caf50;
   --color-warning: #ff9800;
   --color-error: #f44336;

@@ -11,6 +11,7 @@ function App() {
   const [noteTitle, setNoteTitle] = useState<string>('')
   const [noteContent, setNoteContent] = useState<string>('')
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
+  const [isMobile, setIsMobile] = useState<boolean>(false)
 
   // Load notes from localStorage on mount
   useEffect(() => {
@@ -35,6 +36,20 @@ function App() {
       return () => clearTimeout(timer)
     }
   }, [noteTitle, noteContent, currentNote, isDeleting])
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                            (navigator.maxTouchPoints && navigator.maxTouchPoints > 2) ||
+                            window.innerWidth <= 768
+      setIsMobile(isMobileDevice)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const loadNotes = () => {
     try {
@@ -281,6 +296,38 @@ function App() {
     })
   }, [])
 
+  // Handle textarea focus - prevent native keyboard on mobile
+  const handleTextareaFocus = useCallback((e: React.FocusEvent<HTMLTextAreaElement>) => {
+    if (isMobile) {
+      // Prevent the native keyboard from appearing
+      e.target.blur()
+      // Ensure our custom keyboard is visible
+      setIsKeyboardVisible(true)
+    }
+  }, [isMobile])
+
+  // Handle textarea blur
+  const handleTextareaBlur = useCallback((e: React.FocusEvent<HTMLTextAreaElement>) => {
+    // Only blur if it's not a click on our custom keyboard
+    const relatedTarget = e.relatedTarget as Element | null
+    if (relatedTarget && relatedTarget.closest('.keyboard-container')) {
+      // If clicking on keyboard, prevent blur and refocus
+      setTimeout(() => {
+        e.target.focus()
+      }, 0)
+    }
+  }, [])
+
+  // Handle textarea click - ensure keyboard is visible on mobile
+  const handleTextareaClick = useCallback((e: React.MouseEvent<HTMLTextAreaElement>) => {
+    if (isMobile) {
+      // Ensure our custom keyboard is visible when clicking on textarea
+      setIsKeyboardVisible(true)
+      // Prevent the native keyboard from appearing
+      e.currentTarget.blur()
+    }
+  }, [isMobile])
+
   const renderNotesList = () => {
     if (notes.length === 0) {
       return <div className="empty-notes">No notes yet. Create your first note!</div>
@@ -355,8 +402,13 @@ function App() {
               id="note-content"
               value={noteContent}
               onChange={(e) => setNoteContent(e.target.value)}
+              onFocus={handleTextareaFocus}
+              onBlur={handleTextareaBlur}
+              onClick={handleTextareaClick}
               placeholder="Start typing your note here..."
               rows={10}
+              readOnly={isMobile}
+              inputMode="none"
             />
           </div>
         </div>

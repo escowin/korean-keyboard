@@ -2,6 +2,8 @@
   "name": "Korean Keyboard PWA",
   "short_name": "KoreanNotes",
   "description": "A notetaking app with Korean keyboard supporting archaic letters",
+  "version": "1.0.0-1760280599817",
+  "timestamp": "2025-10-12T14:49:59.840Z",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1a1a1a",
@@ -9,7 +11,11 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en",
-  "categories": ["productivity", "education", "utilities"],
+  "categories": [
+    "productivity",
+    "education",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "/pwa-192x192.png",
