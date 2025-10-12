@@ -8,7 +8,8 @@ import {
   getMedialVowelCode, 
   getFinalConsonantCode,
   isArchaicMedialVowel,
-  getArchaicSyllable
+  getArchaicSyllable,
+  ARCHAIC_COMPLEX_MEDIAL_MAPPINGS
 } from './unicode.js'
 
 /**
@@ -102,6 +103,15 @@ export function composeSyllable(initial: string, medial: string, final: string =
 export function canFormComplexMedial(first: string, second: string): string | null {
   console.log(`🔍 canFormComplexMedial called with: "${first}" + "${second}"`)
   
+  // Check for archaic complex medials first (ㆍ + vowel combinations)
+  const archaicCombination = first + second
+  const archaicResult = ARCHAIC_COMPLEX_MEDIAL_MAPPINGS[archaicCombination]
+  if (archaicResult) {
+    console.log(`🏛️ Archaic complex medial formed: "${first}" + "${second}" = "${archaicResult}"`)
+    return archaicResult
+  }
+  
+  // Check for modern complex medials
   const complexMedials: { [key: string]: string } = {
     [String.fromCharCode(0x1169) + String.fromCharCode(0x314F)]: 'ㅘ',  // ㅗ + ㅏ = ㅘ (using actual decomposition chars)
     [String.fromCharCode(0x1169) + String.fromCharCode(0x3150)]: 'ㅙ',  // ㅗ + ㅐ = ㅙ
