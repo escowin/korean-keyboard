@@ -1,9 +1,14 @@
 // Service Worker for Korean Keyboard PWA
-const CACHE_NAME = 'korean-keyboard-pwa-v1-0-0-1760290543265'
-const CACHE_VERSION = 'korean-keyboard-pwa-v1-0-0-1760290543265'
+const CACHE_NAME = 'korean-keyboard-pwa-v1-0-0-1760291406070'
+const CACHE_VERSION = 'korean-keyboard-pwa-v1-0-0-1760291406070'
 
 // Cache strategies
 const CACHE_STRATEGIES = {
+  // Fonts - cache first with long-term storage
+  FONTS: [
+    '/fonts/ChironSungHK-VariableFont_wght.ttf',
+    '/fonts/ChironSungHK-Italic-VariableFont_wght.ttf'
+  ],
   // Static assets - cache first
   STATIC: [
     '/manifest.json',
@@ -30,15 +35,27 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache:', CACHE_NAME)
+        // Cache fonts first (highest priority)
+        const fontPromises = CACHE_STRATEGIES.FONTS.map(url => 
+          cache.add(url).catch(err => {
+            console.warn('Failed to cache font:', url, err)
+            return null
+          })
+        )
+        
         // Cache static assets and app shell
-        const urlsToCache = [
+        const otherUrls = [
           ...CACHE_STRATEGIES.STATIC,
           ...CACHE_STRATEGIES.APP_SHELL
         ]
-        return cache.addAll(urlsToCache)
+        
+        return Promise.all([
+          Promise.all(fontPromises),
+          cache.addAll(otherUrls)
+        ])
       })
       .then(() => {
-        console.log('Cache populated successfully')
+        console.log('Cache populated successfully, fonts cached with priority')
         // Skip waiting to activate immediately
         return self.skipWaiting()
       })
@@ -58,6 +75,22 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.match(request).then((cachedResponse) => {
+        // For fonts, use cache-first strategy (fonts rarely change)
+        if (CACHE_STRATEGIES.FONTS.some(path => url.pathname === path)) {
+          if (cachedResponse) {
+            console.log('Font served from cache:', url.pathname)
+            return cachedResponse
+          }
+          // If not in cache, fetch and cache
+          return fetch(request).then((networkResponse) => {
+            if (networkResponse.ok) {
+              cache.put(request, networkResponse.clone())
+              console.log('Font cached for future use:', url.pathname)
+            }
+            return networkResponse
+          })
+        }
+        
         // For app shell and static assets, use stale-while-revalidate
         if (CACHE_STRATEGIES.APP_SHELL.some(path => url.pathname === path) ||
             CACHE_STRATEGIES.STATIC.some(path => url.pathname === path)) {

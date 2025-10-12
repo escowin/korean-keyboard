@@ -7,6 +7,29 @@
   <link rel="icon" type="image/svg+xml" href="./icons/icon.png">
   <link rel="apple-touch-icon" href="./icons/icon.png">
   <link rel="manifest" href="/manifest.json">
+  
+  <!-- Font preloading for optimal performance -->
+  <link rel="preload" href="./fonts/ChironSungHK-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin>
+  
+  <!-- Font loading optimization script -->
+  <script>
+    // Ensure font is loaded before rendering
+    if ('fonts' in document) {
+      document.fonts.ready.then(() => {
+        console.log('Fonts loaded successfully');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+      
+      // Preload the Korean font
+      const font = new FontFace('Chiron Sung HK', 'url(./fonts/ChironSungHK-VariableFont_wght.ttf)');
+      font.load().then(() => {
+        document.fonts.add(font);
+        console.log('Chiron Sung HK font loaded and ready');
+      }).catch(err => {
+        console.warn('Failed to load Chiron Sung HK font:', err);
+      });
+    }
+  </script>
   <meta name="theme-color" content="#1a1a1a">
   <meta name="description" content="A notetaking app with Korean keyboard supporting archaic letters">
   <style>

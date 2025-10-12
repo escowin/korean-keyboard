@@ -1,10 +1,29 @@
-/* Chiron Sung HK Font Face Declarations */
+/* Chiron Sung HK Font Face Declarations - Optimized for Korean archaic letters */
 @font-face {
   font-family: 'Chiron Sung HK';
-  src: url('/fonts/ChironSungHK-VariableFont_wght.ttf') format('truetype-variations');
+  src: url('./fonts/ChironSungHK-VariableFont_wght.ttf') format('truetype-variations');
   font-weight: 100 900;
   font-style: normal;
+  font-display: block; /* Block rendering until font loads for consistent archaic letter display */
+  unicode-range: U+AC00-D7AF, U+1100-11FF, U+3130-318F, U+A960-A97F, U+D7B0-D7FF; /* Korean character ranges */
+}
+
+/* Font loading states */
+html {
+  font-family: 'Chiron Sung HK', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', 'Noto Sans CJK KR', 'D2Coding', sans-serif;
+}
+
+/* Ensure consistent rendering while font loads */
+html:not(.fonts-loaded) {
+  font-display: block;
+}
+
+/* Optimize font rendering for Korean characters */
+html.fonts-loaded {
   font-display: swap;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* CSS Custom Properties */
