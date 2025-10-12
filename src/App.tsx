@@ -168,12 +168,31 @@ function App() {
         console.log('🔍 SIMPLE: Raw content:', rawContent)
         console.log('🔍 SIMPLE: Composed content:', composedContent)
         
-        // Update cursor position
-        setTimeout(() => {
-          const newPosition = start + text.length
-          textarea.setSelectionRange(newPosition, newPosition)
-          textarea.focus()
-        }, 0)
+        // Check if archaic jamo are present (composition returned separate characters)
+        const hasArchaicJamo = composedContent !== rawContent && composedContent.includes('ᅀ') || composedContent.includes('ᅠ') || composedContent.includes('ᆫ')
+        
+        if (hasArchaicJamo) {
+          console.log('🔍 SIMPLE: Archaic jamo detected, using DOM manipulation')
+          // Use DOM manipulation to insert text like pasting
+          setTimeout(() => {
+            // Insert the composed content directly into the textarea
+            textarea.value = composedContent
+            const newPosition = start + text.length
+            textarea.setSelectionRange(newPosition, newPosition)
+            textarea.focus()
+            
+            // Trigger input event to ensure React state is updated
+            const inputEvent = new Event('input', { bubbles: true })
+            textarea.dispatchEvent(inputEvent)
+          }, 0)
+        } else {
+          // Normal cursor positioning for regular characters
+          setTimeout(() => {
+            const newPosition = start + text.length
+            textarea.setSelectionRange(newPosition, newPosition)
+            textarea.focus()
+          }, 0)
+        }
         
         return composedContent
       }
