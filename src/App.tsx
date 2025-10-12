@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import KoreanKeyboard from './components/KoreanKeyboard.tsx'
 import { processKoreanInput } from './utils/koreanKeyboard.js'
-import { convertCompatibilityToHangulJamo, isCompatibilityJamo } from './utils/unicode.js'
+import { convertCompatibilityToHangulJamo } from './utils/unicode.js'
 import type { Note } from './types/korean.js'
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState<boolean>(true)
   const [noteTitle, setNoteTitle] = useState<string>('')
   const [noteContent, setNoteContent] = useState<string>('')
+  const [isDeleting, setIsDeleting] = useState<boolean>(false)
 
   // Load notes from localStorage on mount
   useEffect(() => {
@@ -25,15 +26,15 @@ function App() {
   }, [])
 
 
-  // Auto-save when note content changes
+  // Auto-save when note content changes (but not during deletion)
   useEffect(() => {
-    if (currentNote) {
+    if (currentNote && !isDeleting) {
       const timer = setTimeout(() => {
         saveCurrentNote()
       }, 2000)
       return () => clearTimeout(timer)
     }
-  }, [noteTitle, noteContent, currentNote])
+  }, [noteTitle, noteContent, currentNote, isDeleting])
 
   const loadNotes = () => {
     try {
@@ -54,6 +55,9 @@ function App() {
   }
 
   const createNewNote = () => {
+    // Set deletion flag to prevent auto-save during note creation
+    setIsDeleting(true)
+    
     const newNote = {
       id: Date.now().toString(),
       title: '',
@@ -68,6 +72,11 @@ function App() {
     setNoteTitle('')
     setNoteContent('')
     saveNotes(updatedNotes)
+    
+    // Clear deletion flag after a short delay
+    setTimeout(() => {
+      setIsDeleting(false)
+    }, 100)
   }
 
   const selectNote = (noteId: string) => {
@@ -100,18 +109,45 @@ function App() {
 
   const deleteCurrentNote = () => {
     if (currentNote && confirm('Are you sure you want to delete this note?')) {
+      // Set deletion flag to prevent auto-save during deletion
+      setIsDeleting(true)
+      
+      // Filter out the current note
       const updatedNotes = notes.filter(n => n.id !== currentNote.id)
+      
+      // Update state atomically
       setNotes(updatedNotes)
       
+      // Select next note or create new one
       if (updatedNotes.length > 0) {
-        setCurrentNote(updatedNotes[0])
-        setNoteTitle(updatedNotes[0].title || '')
-        setNoteContent(updatedNotes[0].content || '')
+        const nextNote = updatedNotes[0]
+        setCurrentNote(nextNote)
+        setNoteTitle(nextNote.title || '')
+        setNoteContent(nextNote.content || '')
       } else {
-        createNewNote()
+        // Create new note if no notes remain
+        const newNote = {
+          id: Date.now().toString(),
+          title: '',
+          content: '',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+        const notesWithNew = [newNote]
+        setNotes(notesWithNew)
+        setCurrentNote(newNote)
+        setNoteTitle('')
+        setNoteContent('')
+        saveNotes(notesWithNew)
       }
       
+      // Save the updated notes (without the deleted note)
       saveNotes(updatedNotes)
+      
+      // Clear deletion flag after a short delay to ensure state is settled
+      setTimeout(() => {
+        setIsDeleting(false)
+      }, 100)
     }
   }
 
@@ -173,9 +209,9 @@ function App() {
         console.log('🔍 ARCHAIC: Checking for archaic jamo in:', composedContent)
         console.log('🔍 ARCHAIC: Composed content length:', composedContent.length)
         console.log('🔍 ARCHAIC: Character breakdown:')
-        composedContent.split('').forEach((char, index) => {
+        composedContent.split('').forEach((char, _index) => {
           const code = char.charCodeAt(0)
-          console.log(`  ${index}: "${char}" = U+${code.toString(16).toUpperCase().padStart(4, '0')} (${code})`)
+          console.log(`  ${_index}: "${char}" = U+${code.toString(16).toUpperCase().padStart(4, '0')} (${code})`)
         })
         
         console.log('🔍 ARCHAIC: Contains ᅀ:', composedContent.includes('ᅀ'))
@@ -211,7 +247,7 @@ function App() {
           const hangulContent = convertCompatibilityToHangulJamo(composedContent)
           console.log('🔍 ARCHAIC: Converted to Hangul Jamo:', hangulContent)
           console.log('🔍 ARCHAIC: Conversion details:')
-          composedContent.split('').forEach((char, index) => {
+          composedContent.split('').forEach((char, _index) => {
             const converted = convertCompatibilityToHangulJamo(char)
             if (char !== converted) {
               console.log(`  "${char}" (U+${char.charCodeAt(0).toString(16)}) → "${converted}" (U+${converted.charCodeAt(0).toString(16)})`)
