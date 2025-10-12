@@ -21,7 +21,7 @@ export const SHIFT_MAPPINGS: Record<string, string> = {
   
   // Archaic variants unique to this keyboard
   'ㄴ': 'ㅥ', 'ㄹ': 'ᄙ', 'ㅇ': 'ㆀ', 'ㅎ': 'ㆅ', 
-  'ㆆ' : 'ꥼ', 'ㅁ': 'ㅱ', 'ㅍ': 'ㆄ', 'ㆍ': 'ᆢ'
+  'ㆆ': 'ꥼ', 'ㅁ': 'ㅱ', 'ㅍ': 'ㆄ', 'ㆍ': 'ᆢ'
 }
 
 // Mapping from archaic consonants to modern equivalents for composition
@@ -44,6 +44,7 @@ export const VARIANT_MAPPINGS: VariantMappings = {
   'ㄴ': ['ㄴ', 'ㅥ'],
   'ㅇ': ['ㅇ', 'ㆀ'],
   'ㄹ': ['ㄹ', 'ᄙ'],
+  'ㆆ': ['ㆆ', 'ꥼ'],
   'ㅎ': ['ㅎ', 'ㆅ'],
   'ㅋ': ['ㅋ'],
   'ㅌ': ['ㅌ'],

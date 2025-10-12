@@ -183,12 +183,14 @@ function App() {
         console.log('🔍 ARCHAIC: Contains ᆫ:', composedContent.includes('ᆫ'))
         
         // Check if we have archaic jamo by looking for specific Unicode ranges
-        // Archaic jamo can be in Hangul Jamo range (0x1140+) or Compatibility Jamo range (0x317F+)
+        // Archaic jamo can be in multiple ranges
         const hasArchaicJamo = composedContent.split('').some(char => {
           const code = char.charCodeAt(0)
-          // Check for archaic initial consonants in both ranges
-          return (code >= 0x1140 && code <= 0x114F) || // Hangul Jamo archaic range
-                 (code >= 0x317F && code <= 0x318F)    // Compatibility Jamo archaic range
+          // Check for archaic jamo in various ranges
+          return (code >= 0x1140 && code <= 0x1152) || // Hangul Jamo archaic initial consonants
+                 (code >= 0x1197 && code <= 0x11A2) || // Hangul Jamo archaic medial vowels
+                 (code >= 0x317F && code <= 0x318F) || // Compatibility Jamo archaic range
+                 (code >= 0xA97C && code <= 0xA97C)    // Special archaic character ꥼ
         })
         
         console.log('🔍 ARCHAIC: Has archaic jamo:', hasArchaicJamo)
