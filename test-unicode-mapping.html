@@ -93,6 +93,22 @@
     </div>
 
     <div class="test-section">
+        <div class="test-title">Test 5: Visual Rendering Test</div>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <div>
+                <div>Compatibility Jamo (should be wide):</div>
+                <div id="visual-compat" style="font-size: 24px; border: 1px solid #ccc; padding: 5px; min-width: 60px; text-align: center;"></div>
+            </div>
+            <div>
+                <div>Hangul Jamo (should be narrow):</div>
+                <div id="visual-hangul" style="font-size: 24px; border: 1px solid #ccc; padding: 5px; min-width: 60px; text-align: center;"></div>
+            </div>
+        </div>
+        <button onclick="testVisualRendering()">Test Visual Rendering</button>
+        <div id="result5" class="result"></div>
+    </div>
+
+    <div class="test-section">
         <div class="test-title">Reference: Expected Result</div>
         <textarea id="reference" placeholder="Paste ᅀᅡᆫ here..."></textarea>
         <div id="reference-result" class="result info">Paste ᅀᅡᆫ here to see the expected rendering</div>
@@ -173,12 +189,14 @@
                 textarea.value = textarea.value.slice(0, cursorPos) + hangulSequence + textarea.value.slice(cursorPos);
                 textarea.setSelectionRange(cursorPos + hangulSequence.length, cursorPos + hangulSequence.length);
                 
-                // Check if it rendered as a combined block
+                // For Hangul Jamo, the text content stays the same but visual rendering combines
+                // We can't easily detect visual combining programmatically, so we'll assume success
+                // if the text was inserted correctly and the sequence is valid Hangul Jamo
                 const rendered = textarea.value.slice(cursorPos, cursorPos + hangulSequence.length);
-                const isCombined = rendered !== hangulSequence; // If different, it combined
+                const isSuccess = rendered === hangulSequence; // Text content should match
                 
-                logResult(2, 'Hangul Jamo', isCombined, 
-                    `Rendered: "${rendered}" (${rendered.length} chars)\nInput: "${hangulSequence}" (${hangulSequence.length} chars)\nResult: ${isCombined ? 'Combined (SUCCESS!)' : 'Linear (failed to combine)'}`);
+                logResult(2, 'Hangul Jamo', isSuccess, 
+                    `Rendered: "${rendered}" (${rendered.length} chars)\nInput: "${hangulSequence}" (${hangulSequence.length} chars)\nResult: ${isSuccess ? 'SUCCESS - Hangul Jamo inserted correctly (should render as combined block visually)' : 'FAILED - Text insertion failed'}`);
             } catch (error) {
                 logResult(2, 'Hangul Jamo', false, `Error: ${error.message}`);
             }
@@ -229,15 +247,43 @@
                     textarea.dispatchEvent(compositionEndEvent);
                     
                     const rendered = textarea.value;
-                    const isCombined = rendered !== hangulSequence;
+                    const isSuccess = success && rendered === hangulSequence;
                     
-                    logResult(4, 'InsertText + Composition Events', isCombined, 
-                        `Command executed: ${success}\nRendered: "${rendered}"\nExpected: Combined block\nResult: ${isCombined ? 'SUCCESS - Combined!' : 'Failed - Still linear'}`);
+                    logResult(4, 'InsertText + Composition Events', isSuccess, 
+                        `Command executed: ${success}\nRendered: "${rendered}" (${rendered.length} chars)\nExpected: Hangul Jamo sequence\nResult: ${isSuccess ? 'SUCCESS - InsertText worked with Hangul Jamo (should render as combined block visually)' : 'FAILED - Command or text insertion failed'}`);
                 } else {
                     logResult(4, 'InsertText + Composition Events', false, 'InsertText API not supported');
                 }
             } catch (error) {
                 logResult(4, 'InsertText + Composition Events', false, `Error: ${error.message}`);
+            }
+        }
+
+        function testVisualRendering() {
+            try {
+                // Set the text content
+                document.getElementById('visual-compat').textContent = compatibilitySequence;
+                document.getElementById('visual-hangul').textContent = hangulSequence;
+                
+                // Measure the visual width
+                const compatDiv = document.getElementById('visual-compat');
+                const hangulDiv = document.getElementById('visual-hangul');
+                
+                // Force a reflow to get accurate measurements
+                compatDiv.offsetHeight;
+                hangulDiv.offsetHeight;
+                
+                const compatWidth = compatDiv.scrollWidth;
+                const hangulWidth = hangulDiv.scrollWidth;
+                
+                // Hangul Jamo should be narrower (combined) than Compatibility Jamo (separate)
+                const isCombined = hangulWidth < compatWidth;
+                const widthDiff = compatWidth - hangulWidth;
+                
+                logResult(5, 'Visual Rendering Test', isCombined, 
+                    `Compatibility Jamo width: ${compatWidth}px\nHangul Jamo width: ${hangulWidth}px\nDifference: ${widthDiff}px\nResult: ${isCombined ? 'SUCCESS - Hangul Jamo is visually combined (narrower)' : 'FAILED - No visual difference detected'}`);
+            } catch (error) {
+                logResult(5, 'Visual Rendering Test', false, `Error: ${error.message}`);
             }
         }
 
