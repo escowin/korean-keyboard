@@ -81,6 +81,34 @@ export const COMPATIBILITY_TO_HANGUL_JAMO_FINAL: { [key: string]: string } = {
   [String.fromCharCode(0x314D)]: String.fromCharCode(0x11C2), // ㅎ → ᇂ
 }
 
+// Archaic consonant mappings (Compatibility Jamo to Hangul Jamo)
+export const ARCHAIC_CONSONANT_MAPPINGS: { [key: string]: { initial: string, final?: string } } = {
+  // Archaic consonants with both initial and final forms
+  [String.fromCharCode(0x3165)]: { initial: String.fromCharCode(0x1114), final: String.fromCharCode(0x11FF) }, // ㅥ → ᄔ / ᇿ
+  [String.fromCharCode(0x3171)]: { initial: String.fromCharCode(0x111D), final: String.fromCharCode(0x11E2) }, // ㅱ → ᄝ / ᇢ
+  [String.fromCharCode(0x3178)]: { initial: String.fromCharCode(0x112B), final: String.fromCharCode(0x11E6) }, // ㅸ → ᄫ / ᇦ
+  [String.fromCharCode(0x317F)]: { initial: String.fromCharCode(0x1140), final: String.fromCharCode(0x11EB) }, // ㅿ → ᅀ / ᇫ
+  [String.fromCharCode(0x3181)]: { initial: String.fromCharCode(0x114C), final: String.fromCharCode(0x11F0) }, // ㆁ → ᅌ / ᇰ
+  [String.fromCharCode(0x3184)]: { initial: String.fromCharCode(0x1157), final: String.fromCharCode(0x11F4) }, // ㆄ → ᅗ / ᇴ
+  [String.fromCharCode(0x3186)]: { initial: String.fromCharCode(0x1159), final: String.fromCharCode(0x11F9) }, // ㆆ → ᅙ / ᇹ
+  
+  // Archaic consonants without final forms
+  [String.fromCharCode(0x3179)]: { initial: String.fromCharCode(0x112C) }, // ㅹ → ᄬ
+  [String.fromCharCode(0x3180)]: { initial: String.fromCharCode(0x1147) }, // ㆀ → ᅇ
+  [String.fromCharCode(0x3185)]: { initial: String.fromCharCode(0x1158) }, // ㆅ → ᅘ
+  
+  // Archaic consonants that only exist as initial
+  [String.fromCharCode(0x113C)]: { initial: String.fromCharCode(0x113C) }, // ᄼ → ᄼ
+  [String.fromCharCode(0x113D)]: { initial: String.fromCharCode(0x113D) }, // ᄽ → ᄽ
+  [String.fromCharCode(0x113E)]: { initial: String.fromCharCode(0x113E) }, // ᄾ → ᄾ
+  [String.fromCharCode(0x113F)]: { initial: String.fromCharCode(0x113F) }, // ᄿ → ᄿ
+  [String.fromCharCode(0x114E)]: { initial: String.fromCharCode(0x114E) }, // ᅎ → ᅎ
+  [String.fromCharCode(0x114F)]: { initial: String.fromCharCode(0x114F) }, // ᅏ → ᅏ
+  [String.fromCharCode(0x1150)]: { initial: String.fromCharCode(0x1150) }, // ᅐ → ᅐ
+  [String.fromCharCode(0x1151)]: { initial: String.fromCharCode(0x1151) }, // ᅑ → ᅑ
+  [String.fromCharCode(0xA97C)]: { initial: String.fromCharCode(0xA97C) }, // ꥼ → ꥼ
+}
+
 // Legacy mapping for backward compatibility (will be deprecated)
 export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
   // Archaic initial consonants (Compatibility Jamo to Hangul Jamo)
@@ -374,6 +402,17 @@ export function convertCompatibilityToHangulJamoContextAware(text: string): stri
     // Check if this character should be a final consonant
     const shouldBeFinal = shouldBeFinalConsonant(text, index)
     
+    // Check if it's an archaic consonant first
+    const archaicMapping = ARCHAIC_CONSONANT_MAPPINGS[char]
+    if (archaicMapping) {
+      if (shouldBeFinal && archaicMapping.final) {
+        return archaicMapping.final
+      } else {
+        return archaicMapping.initial
+      }
+    }
+    
+    // Handle regular compatibility jamo
     if (shouldBeFinal) {
       const finalChar = COMPATIBILITY_TO_HANGUL_JAMO_FINAL[char]
       if (finalChar) return finalChar
@@ -394,8 +433,19 @@ export function convertCompatibilityToHangulJamoContextAware(text: string): stri
 function shouldBeFinalConsonant(text: string, index: number): boolean {
   const char = text[index]
   
-  // If it's not a compatibility jamo, return false
-  if (!COMPATIBILITY_TO_HANGUL_JAMO_INITIAL[char]) return false
+  // Check if it's a regular compatibility jamo
+  const isRegularJamo = COMPATIBILITY_TO_HANGUL_JAMO_INITIAL[char]
+  // Check if it's an archaic consonant
+  const isArchaicConsonant = ARCHAIC_CONSONANT_MAPPINGS[char]
+  
+  // If it's neither, return false
+  if (!isRegularJamo && !isArchaicConsonant) return false
+  
+  // For archaic consonants, check if they have a final form
+  if (isArchaicConsonant && !isArchaicConsonant.final) {
+    // This archaic consonant doesn't have a final form, so it can't be final
+    return false
+  }
   
   // Look at the previous character to determine context
   if (index > 0) {
@@ -408,8 +458,13 @@ function shouldBeFinalConsonant(text: string, index: number): boolean {
       return true
     }
     
-    // If previous character is an initial consonant, this should also be final
-    if (prevCode >= 0x1100 && prevCode <= 0x1116) {
+    // If previous character is an initial consonant (including archaic), this should also be final
+    if ((prevCode >= 0x1100 && prevCode <= 0x1116) || // Modern initial consonants
+        (prevCode >= 0x1113 && prevCode <= 0x1116) || // Extended initial consonants
+        (prevCode >= 0x1114 && prevCode <= 0x1159) || // Archaic initial consonants
+        (prevCode >= 0x113C && prevCode <= 0x113F) || // Additional archaic initials
+        (prevCode >= 0x114E && prevCode <= 0x1151) || // More archaic initials
+        prevCode === 0xA97C) { // ꥼ
       return true
     }
   }
