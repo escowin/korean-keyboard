@@ -51,10 +51,10 @@ export function getCompositionState(): CompositionState {
  * @returns Object with processed text and composition status
  */
 export function processKoreanCharacter(char: string): { text: string; isComposing: boolean; completedSyllable?: string } {
-  console.log('🔤 processKoreanCharacter called with:', char)
-  console.log('   Current composition state:', compositionState)
-  console.log('   Is consonant:', isConsonant(char))
-  console.log('   Is vowel:', isVowel(char))
+  // console.log('🔤 processKoreanCharacter called with:', char)
+  // console.log('   Current composition state:', compositionState)
+  // console.log('   Is consonant:', isConsonant(char))
+  // console.log('   Is vowel:', isVowel(char))
   
   if (!char) return { text: '', isComposing: false }
   

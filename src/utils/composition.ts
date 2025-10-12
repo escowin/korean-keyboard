@@ -6,7 +6,9 @@
 import { 
   getInitialConsonantCode, 
   getMedialVowelCode, 
-  getFinalConsonantCode
+  getFinalConsonantCode,
+  isArchaicMedialVowel,
+  getArchaicSyllable
 } from './unicode.js'
 
 /**
@@ -23,14 +25,27 @@ export function composeSyllable(initial: string, medial: string, final: string =
   if (!initial && !final) return medial
   if (!medial && !final) return initial
   
+  console.log('🔤 composeSyllable called with:', { initial, medial, final })
+  
+  // Check if this involves archaic jamo that needs special handling
+  if (isArchaicMedialVowel(medial)) {
+    console.log('   🏛️ Archaic medial vowel detected:', medial)
+    const archaicSyllable = getArchaicSyllable(initial, medial, final)
+    if (archaicSyllable) {
+      console.log('   ✅ Found precomposed archaic syllable:', archaicSyllable)
+      return archaicSyllable
+    } else {
+      console.log('   ⚠️ No precomposed form found, returning jamo as-is')
+      return initial + medial + final
+    }
+  }
+  
   // Get Unicode codes using the specific helper functions
   const initialCode = initial ? getInitialConsonantCode(initial) : null
   const medialCode = medial ? getMedialVowelCode(medial) : null
   const finalCode = final ? getFinalConsonantCode(final) : null
   
-  console.log('🔤 composeSyllable called with:', { initial, medial, final })
   console.log('   Unicode codes:', { initialCode, medialCode, finalCode })
-  console.log('   Using specific helper functions for each jamo type')
   
   // If we don't have both initial and medial, return as-is
   if (!initialCode || !medialCode) {

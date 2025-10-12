@@ -158,17 +158,17 @@ export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
 // Mapping from complex final consonants to their component parts
 export const COMPLEX_FINAL_TO_COMPONENTS: { [key: string]: { first: string, second: string } } = {
   // Modern complex finals
-  [String.fromCharCode(0x11AA)]: { first: String.fromCharCode(0x11A8), second: String.fromCharCode(0x3145) }, // ㄳ → ㄱ + ㅅ
-  [String.fromCharCode(0x11AC)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x3148) }, // ㄵ → ㄴ + ㅈ
-  [String.fromCharCode(0x11AD)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x314E) }, // ㄶ → ㄴ + ㅎ
   [String.fromCharCode(0x11B0)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3131) }, // ㄺ → ㄹ + ㄱ
   [String.fromCharCode(0x11B1)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3141) }, // ㄻ → ㄹ + ㅁ
   [String.fromCharCode(0x11B2)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3142) }, // ㄼ → ㄹ + ㅂ
+  [String.fromCharCode(0x11AA)]: { first: String.fromCharCode(0x11A8), second: String.fromCharCode(0x3145) }, // ㄳ → ㄱ + ㅅ
   [String.fromCharCode(0x11B3)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3145) }, // ㄽ → ㄹ + ㅅ
+  [String.fromCharCode(0x11B9)]: { first: String.fromCharCode(0x11B8), second: String.fromCharCode(0x3145) }, // ㅄ → ㅂ + ㅅ
+  [String.fromCharCode(0x11AC)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x3148) }, // ㄵ → ㄴ + ㅈ
   [String.fromCharCode(0x11B4)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3137) }, // ㄾ → ㄹ + ㅌ
   [String.fromCharCode(0x11B5)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3147) }, // ㄿ → ㄹ + ㅍ
+  [String.fromCharCode(0x11AD)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x314E) }, // ㄶ → ㄴ + ㅎ
   [String.fromCharCode(0x11B6)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x314E) }, // ㅀ → ㄹ + ㅎ
-  [String.fromCharCode(0x11B9)]: { first: String.fromCharCode(0x11B8), second: String.fromCharCode(0x3145) }, // ㅄ → ㅂ + ㅅ
 }
 
 // Unicode ranges for Korean characters
@@ -196,7 +196,8 @@ export const UNICODE_RANGES: KoreanUnicodeRanges = {
     'ㅔ': 0x1166, 'ㅕ': 0x1167, 'ㅖ': 0x1168, 'ㅗ': 0x1169, 'ㅘ': 0x116A,
     'ㅙ': 0x116B, 'ㅚ': 0x116C, 'ㅛ': 0x116D, 'ㅜ': 0x116E, 'ㅝ': 0x116F,
     'ㅞ': 0x1170, 'ㅟ': 0x1171, 'ㅠ': 0x1172, 'ㅡ': 0x1173, 'ㅢ': 0x1174,
-    'ㅣ': 0x1175, 'ㆍ': 0x1197, 'ᆢ': 0x11A2
+    'ㅣ': 0x1175, 'ㆍ': 0x1196, 'ᆢ': 0x11A2, 'ퟅ': 0xD7C5, 'ᆟ': 0x119F,
+    'ퟆ': 0xD7C6, 'ᆠ': 0x11A0, 'ᆡ': 0x11A1
   },
   
   // Final consonants (종성) - Correct Unicode mappings
@@ -386,4 +387,40 @@ export function convertToHangulJamoMedial(char: string): string {
  */
 export function isCompatibilityJamo(char: string): boolean {
   return char in COMPATIBILITY_TO_HANGUL_JAMO
+}
+
+/**
+ * Check if a character is an archaic jamo (cannot be composed using standard formula)
+ */
+export function isArchaicJamo(char: string): boolean {
+  // Archaic medial vowels that cannot be composed using standard formula
+  const archaicMedials = ['ㆍ', 'ᆢ', 'ퟅ', 'ᆟ', 'ퟆ', 'ᆠ', 'ᆡ']
+  
+  // Archaic initial consonants
+  const archaicInitials = Object.keys(UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS)
+  
+  return archaicMedials.includes(char) || archaicInitials.includes(char)
+}
+
+/**
+ * Check if a medial vowel is archaic (cannot use standard composition)
+ */
+export function isArchaicMedialVowel(char: string): boolean {
+  const archaicMedials = ['ㆍ', 'ᆢ', 'ퟅ', 'ᆟ', 'ퟆ', 'ᆠ', 'ᆡ']
+  return archaicMedials.includes(char)
+}
+
+/**
+ * Get precomposed archaic syllables for common combinations
+ */
+export function getArchaicSyllable(initial: string, medial: string, final: string = ''): string | null {
+  // Map common archaic combinations to their precomposed forms
+  const archaicSyllables: { [key: string]: string } = {
+    // ㅎ + ㆍ = ᄒᆞ (precomposed)
+    'ㅎㆍ': 'ᄒᆞ',
+    'ㅎㆍㅇ': 'ᄒᆞᆼ', // if there's a final consonant
+  }
+  
+  const key = initial + medial + final
+  return archaicSyllables[key] || null
 }
