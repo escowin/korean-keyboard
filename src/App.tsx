@@ -249,7 +249,8 @@ function App() {
             }
           }, 0)
           
-          return hangulContent
+          // Don't update React state when using DOM manipulation to avoid duplication
+          return prev
         } else {
           // Normal cursor positioning for regular characters
           setTimeout(() => {
