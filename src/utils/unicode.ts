@@ -45,7 +45,7 @@ export const COMPATIBILITY_TO_HANGUL_JAMO_INITIAL: { [key: string]: string } = {
   [String.fromCharCode(0x3132)]: String.fromCharCode(0x1101), // ㄲ → ᄁ
   [String.fromCharCode(0x3134)]: String.fromCharCode(0x1102), // ㄴ → ᄂ
   [String.fromCharCode(0x3137)]: String.fromCharCode(0x1103), // ㄷ → ᄃ
-  [String.fromCharCode(0x3138)]: String.fromCharCode(0x1105), // ㄹ → ᄅ
+  [String.fromCharCode(0x3139)]: String.fromCharCode(0x1105), // ㄹ → ᄅ
   [String.fromCharCode(0x3141)]: String.fromCharCode(0x1106), // ㅁ → ᄆ
   [String.fromCharCode(0x3142)]: String.fromCharCode(0x1107), // ㅂ → ᄇ
   [String.fromCharCode(0x3145)]: String.fromCharCode(0x1109), // ㅅ → ᄉ
@@ -67,7 +67,7 @@ export const COMPATIBILITY_TO_HANGUL_JAMO_FINAL: { [key: string]: string } = {
   [String.fromCharCode(0x3132)]: String.fromCharCode(0x11A9), // ㄲ → ᆩ
   [String.fromCharCode(0x3134)]: String.fromCharCode(0x11AB), // ㄴ → ᆫ
   [String.fromCharCode(0x3137)]: String.fromCharCode(0x11AE), // ㄷ → ᆮ
-  [String.fromCharCode(0x3138)]: String.fromCharCode(0x11AF), // ㄹ → ᆯ
+  [String.fromCharCode(0x3139)]: String.fromCharCode(0x11AF), // ㄹ → ᆯ
   [String.fromCharCode(0x3141)]: String.fromCharCode(0x11B7), // ㅁ → ᆷ
   [String.fromCharCode(0x3142)]: String.fromCharCode(0x11B8), // ㅂ → ᆸ
   [String.fromCharCode(0x3145)]: String.fromCharCode(0x11BA), // ㅅ → ᆺ
@@ -164,7 +164,7 @@ export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
   [String.fromCharCode(0x3132)]: String.fromCharCode(0x1101), // ㄲ → ᄁ
   [String.fromCharCode(0x3134)]: String.fromCharCode(0x1102), // ㄴ → ᄂ
   [String.fromCharCode(0x3137)]: String.fromCharCode(0x1103), // ㄷ → ᄃ
-  [String.fromCharCode(0x3138)]: String.fromCharCode(0x1105), // ㄹ → ᄅ
+  [String.fromCharCode(0x3139)]: String.fromCharCode(0x1105), // ㄹ → ᄅ
   [String.fromCharCode(0x3141)]: String.fromCharCode(0x1106), // ㅁ → ᄆ
   [String.fromCharCode(0x3142)]: String.fromCharCode(0x1107), // ㅂ → ᄇ
   [String.fromCharCode(0x3143)]: String.fromCharCode(0x1108), // ㅃ → ᄈ
