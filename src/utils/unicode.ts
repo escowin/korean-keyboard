@@ -105,8 +105,12 @@ export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
   [String.fromCharCode(0x314A)]: String.fromCharCode(0x11BF), // ㅋ → ᆿ
   [String.fromCharCode(0x314B)]: String.fromCharCode(0x11C0), // ㅌ → ᇀ
   [String.fromCharCode(0x314C)]: String.fromCharCode(0x11C1), // ㅍ → ᇁ
-  [String.fromCharCode(0x314D)]: String.fromCharCode(0x11C2), // ㅎ → ᇂ
+  [String.fromCharCode(0x314D)]: String.fromCharCode(0x1112), // ㅎ → ᄒ (Compatibility to Hangul Jamo initial)
   // [String.fromCharCode(0x314E)]: String.fromCharCode(0x11C2), // ㅎ → ᇂ (alternative)
+  
+  // Archaic final consonants
+  [String.fromCharCode(0x11EB)]: String.fromCharCode(0x11EB), // ᇫ → ᇫ (archaic final consonant)
+  [String.fromCharCode(0x25B2)]: String.fromCharCode(0x11EB), // ▲ → ᇫ (triangle to archaic final consonant)
 }
 
 // Mapping from complex final consonants to their component parts
