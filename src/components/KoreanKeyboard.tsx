@@ -20,6 +20,9 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
   const [, setCurrentKey] = useState<string | null>(null)
   const longPressTimer = useRef<NodeJS.Timeout | null>(null)
   const longPressDelay = 500 // ms
+  const lastProcessedKey = useRef<string | null>(null)
+  const lastProcessedTime = useRef<number>(0)
+  const touchProcessed = useRef<boolean>(false)
 
   // Handle clicking outside popup to close it
   useEffect(() => {
@@ -50,7 +53,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
     if (key === 'space') classes.push('key--space')
     if (key === 'enter') classes.push('key--enter')
     if (key === '123') classes.push('key--numbers')
-    if (key === 'emoji') classes.push('key--emoji')
+    if (key === 'hanja') classes.push('key--hanja')
     if (key === '←') classes.push('key--arrow-left')
     if (key === '→') classes.push('key--arrow-right')
     if (isShiftPressed && key === 'shift') classes.push('key--active')
@@ -82,8 +85,8 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
         )
       case '123':
         return <span>123</span>
-      case 'emoji':
-        return <span>😊</span>
+      case 'hanja':
+        return <span>漢</span>
       case '←':
         return (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -107,6 +110,11 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
   const handleKeyDown = useCallback((keyValue: string, event: React.MouseEvent | React.TouchEvent) => {
     event.preventDefault()
     setCurrentKey(keyValue)
+    
+    // Reset touch processed flag for new key press
+    if (event.type === 'touchstart') {
+      touchProcessed.current = false
+    }
     
     // Start long press timer for characters with archaic variants
     const variants = getArchaicVariants(keyValue)
@@ -135,6 +143,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
     // This ensures the key works on both platforms
     if (event.type === 'touchend') {
       // For touch events, process the key press directly
+      touchProcessed.current = true
       processKeyPress(keyValue)
     }
     
@@ -157,7 +166,18 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
       return
     }
     
-    // Handle key press for mouse clicks (desktop)
+    // Prevent double processing on mobile devices
+    // If this is a touch device and we already processed this key via touch, skip click
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    if (isTouchDevice && touchProcessed.current) {
+      // Reset the touch processed flag after a short delay
+      setTimeout(() => {
+        touchProcessed.current = false
+      }, 50)
+      return
+    }
+    
+    // Handle key press for mouse clicks (desktop) or when touch wasn't processed
     if (event.type === 'click') {
       processKeyPress(keyValue)
     }
@@ -166,6 +186,17 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
   const processKeyPress = (keyValue: string) => {
     // console.log('🔑 processKeyPress called with:', keyValue, 'current shift state:', isShiftPressed)
     // console.log('🔍 KEYBOARD DEBUG: Key pressed:', keyValue)
+    
+    // Debounce rapid successive key presses (especially important for mobile)
+    const now = Date.now()
+    if (lastProcessedKey.current === keyValue && now - lastProcessedTime.current < 150) {
+      console.log('🚫 Debouncing rapid key press:', keyValue)
+      return
+    }
+    
+    lastProcessedKey.current = keyValue
+    lastProcessedTime.current = now
+    
     switch (keyValue) {
       case 'shift':
         // Toggle shift state using functional update to avoid stale closure
@@ -195,9 +226,9 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
         // Switch to numbers/symbols (placeholder)
         console.log('Switch to numbers')
         break
-      case 'emoji':
-        // Show emoji picker (placeholder)
-        console.log('Show emoji picker')
+      case 'hanja':
+        // Show hanja selector (placeholder)
+        console.log('Show hanja selector')
         break
       default:
         if (keyValue && keyValue.length === 1) {

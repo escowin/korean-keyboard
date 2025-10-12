@@ -10,7 +10,7 @@ export const KEYBOARD_LAYOUT: KeyboardLayout = {
   row1: ['ㅿ', 'ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅛ', 'ㅕ', 'ㅑ', 'ㅐ', 'ㅔ'],
   row2: ['ㆆ', 'ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ', 'ㆍ'],
   row3: ['shift','ㆁ', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅠ', 'ㅜ', 'ㅡ', 'backspace'],
-  row4: ['123', 'emoji', 'space', '←', '→', 'enter']
+  row4: ['123', 'hanja', 'space', '←', '→', 'enter']
 }
 
 // Shift mappings for Dubeolsik layout
