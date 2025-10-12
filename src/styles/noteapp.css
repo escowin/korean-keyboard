@@ -139,15 +139,38 @@
   flex-shrink: 0;
 }
 
-.note-title {
+.title-input-container {
+  position: relative;
   flex: 1;
+  margin-right: var(--space);
+}
+
+.note-title {
+  width: 100%;
   font-size: var(--font-size-lg);
   font-weight: 600;
-  margin-right: var(--space);
   background: transparent;
   border: none;
   color: var(--color-text-primary);
   padding: var(--space-xs) 0;
+  -webkit-touch-callout: none;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.title-input-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 1;
+  cursor: text;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .note-title:focus {
@@ -222,6 +245,38 @@
   z-index: 1;
   cursor: text;
   -webkit-tap-highlight-color: transparent;
+}
+
+.cursor-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  font-family: 'Chiron Sung HK', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', 'Noto Sans CJK KR', 'D2Coding', sans-serif;
+  font-size: var(--font-size-lg);
+  line-height: 1.6;
+  color: transparent;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
+}
+
+.cursor-text {
+  color: transparent;
+}
+
+.cursor-blink {
+  color: var(--color-accent);
+  animation: cursor-blink 1s infinite;
+  font-weight: bold;
+}
+
+@keyframes cursor-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 
 /* Keyboard Container */

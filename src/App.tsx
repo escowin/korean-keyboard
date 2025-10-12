@@ -14,6 +14,7 @@ function App() {
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const [isMobile, setIsMobile] = useState<boolean>(false)
   const [isTextareaFocused, setIsTextareaFocused] = useState<boolean>(false)
+  const [cursorPosition, setCursorPosition] = useState<number>(0)
 
   // Load notes from localStorage on mount
   useEffect(() => {
@@ -198,6 +199,35 @@ function App() {
         }
         return prev
       })
+    } else if (key === 'arrow-left') {
+      // Move cursor left
+      const textarea = document.querySelector('#note-content') as HTMLTextAreaElement
+      if (textarea) {
+        const currentPos = textarea.selectionStart
+        if (currentPos > 0) {
+          const newPos = currentPos - 1
+          setTimeout(() => {
+            textarea.setSelectionRange(newPos, newPos)
+            textarea.focus()
+            setCursorPosition(newPos)
+          }, 0)
+        }
+      }
+    } else if (key === 'arrow-right') {
+      // Move cursor right
+      const textarea = document.querySelector('#note-content') as HTMLTextAreaElement
+      if (textarea) {
+        const currentPos = textarea.selectionStart
+        const maxPos = textarea.value.length
+        if (currentPos < maxPos) {
+          const newPos = currentPos + 1
+          setTimeout(() => {
+            textarea.setSelectionRange(newPos, newPos)
+            textarea.focus()
+            setCursorPosition(newPos)
+          }, 0)
+        }
+      }
     }
   }, [])
 
@@ -279,6 +309,7 @@ function App() {
             const newPosition = start + hangulContent.length
             textarea.setSelectionRange(newPosition, newPosition)
             textarea.focus()
+            setCursorPosition(newPosition)
           }, 0)
           
           // Return the converted content for React state update
@@ -289,6 +320,7 @@ function App() {
             const newPosition = start + text.length
             textarea.setSelectionRange(newPosition, newPosition)
             textarea.focus()
+            setCursorPosition(newPosition)
           }, 0)
           
           return composedContent
@@ -332,7 +364,18 @@ function App() {
       // Ensure our custom keyboard is visible when clicking on textarea
       setIsKeyboardVisible(true)
     }
+    // Update cursor position
+    const textarea = e.currentTarget
+    setCursorPosition(textarea.selectionStart)
   }, [isMobile])
+
+  // Update cursor position
+  const updateCursorPosition = useCallback(() => {
+    const textarea = document.querySelector('#note-content') as HTMLTextAreaElement
+    if (textarea) {
+      setCursorPosition(textarea.selectionStart)
+    }
+  }, [])
 
   // Handle overlay click - prevent native keyboard
   const handleOverlayClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -350,6 +393,54 @@ function App() {
     // Ensure our custom keyboard is visible and textarea appears focused
     setIsKeyboardVisible(true)
     setIsTextareaFocused(true)
+  }, [])
+
+  // Handle title input focus - manage keyboard visibility
+  const handleTitleFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+    if (isMobile) {
+      // Ensure our custom keyboard is visible
+      setIsKeyboardVisible(true)
+      // Small delay to prevent native keyboard
+      setTimeout(() => {
+        e.target.blur()
+      }, 10)
+    }
+  }, [isMobile])
+
+  // Handle title input blur
+  const handleTitleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+    // Only blur if it's not a click on our custom keyboard
+    const relatedTarget = e.relatedTarget as Element | null
+    if (relatedTarget && relatedTarget.closest('.keyboard-container')) {
+      // If clicking on keyboard, prevent blur and refocus
+      setTimeout(() => {
+        e.target.focus()
+      }, 0)
+    }
+  }, [])
+
+  // Handle title input click - ensure keyboard is visible on mobile
+  const handleTitleClick = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
+    if (isMobile) {
+      // Ensure our custom keyboard is visible when clicking on title input
+      setIsKeyboardVisible(true)
+    }
+  }, [isMobile])
+
+  // Handle title overlay click - prevent native keyboard
+  const handleTitleOverlayClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    // Ensure our custom keyboard is visible
+    setIsKeyboardVisible(true)
+  }, [])
+
+  // Handle title overlay touch - prevent native keyboard
+  const handleTitleOverlayTouch = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    // Ensure our custom keyboard is visible
+    setIsKeyboardVisible(true)
   }, [])
 
   const renderNotesList = () => {
@@ -406,13 +497,30 @@ function App() {
         
         <div className="note-editor-container">
           <div className="note-editor-header">
-            <input 
-              type="text" 
-              className="input note-title" 
-              value={noteTitle}
-              onChange={(e) => setNoteTitle(e.target.value)}
-              placeholder="Untitled Note" 
-            />
+            <div className="title-input-container">
+              <input 
+                type="text" 
+                className="input note-title" 
+                value={noteTitle}
+                onChange={(e) => setNoteTitle(e.target.value)}
+                onFocus={handleTitleFocus}
+                onBlur={handleTitleBlur}
+                onClick={handleTitleClick}
+                placeholder="Untitled Note"
+                inputMode="none"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck="false"
+              />
+              {isMobile && (
+                <div 
+                  className="title-input-overlay"
+                  onClick={handleTitleOverlayClick}
+                  onTouchStart={handleTitleOverlayTouch}
+                />
+              )}
+            </div>
             <div className="note-actions">
               <button className="button button--secondary" onClick={saveCurrentNote}>
                 Save
@@ -447,6 +555,12 @@ function App() {
                   onClick={handleOverlayClick}
                   onTouchStart={handleOverlayTouch}
                 />
+              )}
+              {isTextareaFocused && (
+                <div className="cursor-indicator">
+                  <span className="cursor-text">{noteContent.substring(0, cursorPosition)}</span>
+                  <span className="cursor-blink">|</span>
+                </div>
               )}
             </div>
           </div>

@@ -51,6 +51,8 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
     if (key === 'enter') classes.push('key--enter')
     if (key === '123') classes.push('key--numbers')
     if (key === 'emoji') classes.push('key--emoji')
+    if (key === '←') classes.push('key--arrow-left')
+    if (key === '→') classes.push('key--arrow-right')
     if (isShiftPressed && key === 'shift') classes.push('key--active')
     
     return classes.join(' ')
@@ -82,6 +84,18 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
         return <span>123</span>
       case 'emoji':
         return <span>😊</span>
+      case '←':
+        return (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+          </svg>
+        )
+      case '→':
+        return (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 11v2h12.17l-5.59 5.59L12 20l8-8-8-8-1.41 1.41L16.17 11H4z"/>
+          </svg>
+        )
       default:
         // Show shifted character if shift is pressed and mapping exists
         const displayChar = isShiftPressed ? getShiftedCharacter(key) : key
@@ -170,6 +184,12 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
         break
       case 'enter':
         onTextInput('\n')
+        break
+      case '←':
+        onKeyPress('arrow-left')
+        break
+      case '→':
+        onKeyPress('arrow-right')
         break
       case '123':
         // Switch to numbers/symbols (placeholder)

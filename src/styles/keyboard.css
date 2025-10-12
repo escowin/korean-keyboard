@@ -95,6 +95,20 @@
   font-size: var(--font-size-sm);
 }
 
+.key--arrow-left,
+.key--arrow-right {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  min-width: 50px;
+}
+
+.key--arrow-left:hover,
+.key--arrow-right:hover {
+  background: var(--color-accent);
+  color: white;
+}
+
 /* Row-specific adjustments */
 .row1 .key,
 .row2 .key {
