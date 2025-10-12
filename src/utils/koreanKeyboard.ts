@@ -78,6 +78,53 @@ export const ARCHAIC_MAPPINGS: ArchaicMappings = {
   'ㆍ': ['ㆍ', 'ᆢ']
 }
 
+// Mapping from final consonants to their corresponding initial consonants
+const FINAL_TO_INITIAL_MAPPING: { [key: string]: string } = {
+  // Basic consonants
+  [String.fromCharCode(0x11A8)]: String.fromCharCode(0x1100), // ᆨ → ᄀ (ㄱ)
+  [String.fromCharCode(0x11A9)]: String.fromCharCode(0x1101), // ᆩ → ᄁ (ㄲ)
+  [String.fromCharCode(0x11AA)]: String.fromCharCode(0x1102), // ᆪ → ᄂ (ㄴ)
+  [String.fromCharCode(0x11AB)]: String.fromCharCode(0x1102), // ᆫ → ᄂ (ㄴ)
+  [String.fromCharCode(0x11AC)]: String.fromCharCode(0x1103), // ᆬ → ᄃ (ㄷ)
+  [String.fromCharCode(0x11AD)]: String.fromCharCode(0x1104), // ᆭ → ᄄ (ㄸ)
+  [String.fromCharCode(0x11AE)]: String.fromCharCode(0x1105), // ᆮ → ᄅ (ㄹ)
+  [String.fromCharCode(0x11AF)]: String.fromCharCode(0x1105), // ᆯ → ᄅ (ㄹ)
+  [String.fromCharCode(0x11B0)]: String.fromCharCode(0x1106), // ᆰ → ᄆ (ㅁ)
+  [String.fromCharCode(0x11B1)]: String.fromCharCode(0x1107), // ᆱ → ᄇ (ㅂ)
+  [String.fromCharCode(0x11B2)]: String.fromCharCode(0x1108), // ᆲ → ᄈ (ㅃ)
+  [String.fromCharCode(0x11B3)]: String.fromCharCode(0x1109), // ᆳ → ᄉ (ㅅ)
+  [String.fromCharCode(0x11B4)]: String.fromCharCode(0x110A), // ᆴ → ᄊ (ㅆ)
+  [String.fromCharCode(0x11B5)]: String.fromCharCode(0x110B), // ᆵ → ᄋ (ㅇ)
+  [String.fromCharCode(0x11B6)]: String.fromCharCode(0x110C), // ᆶ → ᄌ (ㅈ)
+  [String.fromCharCode(0x11B7)]: String.fromCharCode(0x110D), // ᆷ → ᄍ (ㅉ)
+  [String.fromCharCode(0x11B8)]: String.fromCharCode(0x110E), // ᆸ → ᄎ (ㅊ)
+  [String.fromCharCode(0x11B9)]: String.fromCharCode(0x110F), // ᆹ → ᄏ (ㅋ)
+  [String.fromCharCode(0x11BA)]: String.fromCharCode(0x1110), // ᆺ → ᄐ (ㅌ)
+  [String.fromCharCode(0x11BB)]: String.fromCharCode(0x1111), // ᆻ → ᄑ (ㅍ)
+  [String.fromCharCode(0x11BC)]: String.fromCharCode(0x1112), // ᆼ → ᄒ (ㅎ)
+  [String.fromCharCode(0x11BD)]: String.fromCharCode(0x1112), // ᆽ → ᄒ (ㅎ)
+  [String.fromCharCode(0x11BE)]: String.fromCharCode(0x1112), // ᆾ → ᄒ (ㅎ)
+  [String.fromCharCode(0x11BF)]: String.fromCharCode(0x1112), // ᆿ → ᄒ (ㅎ)
+  [String.fromCharCode(0x11C0)]: String.fromCharCode(0x1112), // ᇀ → ᄒ (ㅎ)
+  [String.fromCharCode(0x11C1)]: String.fromCharCode(0x1112), // ᇁ → ᄒ (ㅎ)
+  [String.fromCharCode(0x11C2)]: String.fromCharCode(0x1112), // ᇂ → ᄒ (ㅎ)
+}
+
+/**
+ * Convert a final consonant to its corresponding initial consonant
+ * @param finalConsonant - Final consonant character
+ * @returns Corresponding initial consonant or the original character if no mapping exists
+ */
+function convertFinalToInitial(finalConsonant: string): string {
+  const initialConsonant = FINAL_TO_INITIAL_MAPPING[finalConsonant]
+  if (initialConsonant) {
+    console.log(`🔄 Converting final "${finalConsonant}" to initial "${initialConsonant}"`)
+    return initialConsonant
+  }
+  console.log(`⚠️ No mapping found for final consonant "${finalConsonant}", using as-is`)
+  return finalConsonant
+}
+
 // Unicode ranges for Korean characters
 export const UNICODE_RANGES: KoreanUnicodeRanges = {
   // Initial consonants (초성) - Modern Korean only
@@ -678,10 +725,12 @@ export function processKoreanInput(input: string): string {
       } else {
         // Check if we have a previous final consonant to use as initial
         if (previousFinalConsonant) {
-          // Start new syllable with previous final consonant as initial
-          currentSyllable = { initial: previousFinalConsonant, medial: char, final: '' }
+          // Convert final consonant to initial consonant
+          const initialConsonant = convertFinalToInitial(previousFinalConsonant)
+          // Start new syllable with converted initial consonant
+          currentSyllable = { initial: initialConsonant, medial: char, final: '' }
           previousFinalConsonant = ''
-          console.log(`   ✅ Starting new syllable with previous final "${currentSyllable.initial}" + "${char}"`)
+          console.log(`   ✅ Starting new syllable with converted initial "${currentSyllable.initial}" + "${char}"`)
         } else {
           // Standalone vowel
           console.log(`   ✅ Standalone vowel "${char}"`)
