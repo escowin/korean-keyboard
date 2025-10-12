@@ -3,7 +3,7 @@
   "short_name": "KoreanNotes",
   "description": "A notetaking app with Korean keyboard supporting archaic letters",
   "version": "1.0.0",
-  "timestamp": "2025-10-12T15:09:51.988Z",
+  "timestamp": "2025-10-12T16:56:08.298Z",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1a1a1a",
@@ -18,13 +18,7 @@
   ],
   "icons": [
     {
-      "src": "/pwa-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/pwa-512x512.png",
+      "src": "./icons/icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -38,8 +32,8 @@
       "url": "/?action=new",
       "icons": [
         {
-          "src": "/pwa-192x192.png",
-          "sizes": "192x192"
+          "src": "./icons/icon.png",
+          "sizes": "512x512"
         }
       ]
     }

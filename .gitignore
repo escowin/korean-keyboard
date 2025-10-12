@@ -9,6 +9,7 @@ Debug/
 Release/
 x64/
 x86/
+dist/
 
 # Visual Studio files
 .vs/

@@ -108,7 +108,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
     // Don't process the key immediately - wait for click or key up
   }, [])
 
-  const handleKeyUp = useCallback((_keyValue: string, event: React.MouseEvent | React.TouchEvent) => {
+  const handleKeyUp = useCallback((keyValue: string, event: React.MouseEvent | React.TouchEvent) => {
     event.preventDefault()
     
     // Clear long press timer
@@ -117,8 +117,13 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
       longPressTimer.current = null
     }
     
-    // Don't process key press automatically - only on click
-    // This prevents immediate input on hover
+    // Process key press on touch end (for mobile) or mouse up (for desktop)
+    // This ensures the key works on both platforms
+    if (event.type === 'touchend') {
+      // For touch events, process the key press directly
+      processKeyPress(keyValue)
+    }
+    
     setCurrentKey(null)
   }, [])
 
@@ -138,8 +143,10 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
       return
     }
     
-    // Handle key press
-    processKeyPress(keyValue)
+    // Handle key press for mouse clicks (desktop)
+    if (event.type === 'click') {
+      processKeyPress(keyValue)
+    }
   }, [popup, isShiftPressed])
 
   const processKeyPress = (keyValue: string) => {

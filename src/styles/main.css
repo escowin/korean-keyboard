@@ -1,3 +1,12 @@
+/* Chiron Sung HK Font Face Declarations */
+@font-face {
+  font-family: 'Chiron Sung HK';
+  src: url('/fonts/ChironSungHK-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* CSS Custom Properties */
 :root {
   /* Spacing scale */
@@ -44,6 +53,15 @@
   --transition-slow: 0.3s ease;
 }
 
+
+/* SVG Icon Styling */
+.app-icon {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%) drop-shadow(0 0 5px var(--note-color-accent));
+  transition: fill var(--transition);
+}
+
 /* Base styles */
 * {
   margin: 0;
@@ -52,7 +70,7 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Chiron Sung HK', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--color-bg-primary);
   color: var(--color-text-primary);
   line-height: 1.5;
@@ -146,7 +164,7 @@ body {
 
 /* Korean text styling */
 .korean-text {
-  font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', sans-serif;
+  font-family: 'Chiron Sung HK', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', sans-serif;
   font-size: var(--font-size-lg);
   line-height: 1.6;
 }

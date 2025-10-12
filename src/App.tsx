@@ -3,6 +3,7 @@ import KoreanKeyboard from './components/KoreanKeyboard.tsx'
 import { processKoreanInput } from './utils/koreanKeyboard.js'
 import { convertCompatibilityToHangulJamo } from './utils/unicode.js'
 import type { Note } from './types/korean.js'
+import iconSvg from '/icons/icon.svg?url'
 
 function App() {
   const [notes, setNotes] = useState<Note[]>([])
@@ -12,6 +13,7 @@ function App() {
   const [noteContent, setNoteContent] = useState<string>('')
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const [isMobile, setIsMobile] = useState<boolean>(false)
+  const [isTextareaFocused, setIsTextareaFocused] = useState<boolean>(false)
 
   // Load notes from localStorage on mount
   useEffect(() => {
@@ -298,6 +300,7 @@ function App() {
 
   // Handle textarea focus - manage keyboard visibility
   const handleTextareaFocus = useCallback((e: React.FocusEvent<HTMLTextAreaElement>) => {
+    setIsTextareaFocused(true)
     if (isMobile) {
       // Ensure our custom keyboard is visible
       setIsKeyboardVisible(true)
@@ -317,6 +320,9 @@ function App() {
       setTimeout(() => {
         e.target.focus()
       }, 0)
+    } else {
+      // Actually blurring, update focus state
+      setIsTextareaFocused(false)
     }
   }, [])
 
@@ -332,16 +338,18 @@ function App() {
   const handleOverlayClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault()
     e.stopPropagation()
-    // Ensure our custom keyboard is visible
+    // Ensure our custom keyboard is visible and textarea appears focused
     setIsKeyboardVisible(true)
+    setIsTextareaFocused(true)
   }, [])
 
   // Handle overlay touch - prevent native keyboard
   const handleOverlayTouch = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
     e.preventDefault()
     e.stopPropagation()
-    // Ensure our custom keyboard is visible
+    // Ensure our custom keyboard is visible and textarea appears focused
     setIsKeyboardVisible(true)
+    setIsTextareaFocused(true)
   }, [])
 
   const renderNotesList = () => {
@@ -369,7 +377,10 @@ function App() {
   return (
     <div className="note-app">
       <div className="app-header">
-        <h1 className="app-title">Korean Notes</h1>
+        <div className="app-title-container">
+          <img src={iconSvg} alt="Korean Notes" className="app-icon" />
+          <h1 className="app-title">Korean Notes</h1>
+        </div>
         <div className="header-actions">
           <button className="button button--secondary" onClick={createNewNote}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -413,7 +424,7 @@ function App() {
           </div>
           
           <div className="note-editor">
-            <div className="textarea-container">
+            <div className={`textarea-container ${isTextareaFocused ? 'textarea-focused' : ''}`}>
               <textarea 
                 className="note-textarea korean-text" 
                 id="note-content"
