@@ -1,7 +1,7 @@
 {
-  "name": "korean-keyboard-pwa",
-  "homepage": "https://escowin.github.io/korean-keyboard-pwa",
-  "repository": "https://github.com/escowin/korean-keyboard-pwa",
+  "name": "korean-keyboard",
+  "homepage": "https://escowin.github.io/korean-keyboard",
+  "repository": "https://github.com/escowin/korean-keyboard",
   "version": "1.0.0",
   "type": "module",
   "description": "A PWA notetaking app with built-in Korean keyboard supporting archaic letters",

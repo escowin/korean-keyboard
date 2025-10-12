@@ -244,7 +244,6 @@ function App() {
         
         console.log('🔍 ARCHAIC: Position:', start, 'to', end)
         console.log('🔍 ARCHAIC: Before:', before)
-        console.log('🔍 ARCHAIC: After:', after)
         
         // Process the input normally first
         const rawContent = before + text + after
@@ -365,13 +364,6 @@ function App() {
     setCursorPosition(textarea.selectionStart)
   }, [isMobile])
 
-  // Update cursor position
-  const updateCursorPosition = useCallback(() => {
-    const textarea = document.querySelector('#note-content') as HTMLTextAreaElement
-    if (textarea) {
-      setCursorPosition(textarea.selectionStart)
-    }
-  }, [])
 
   // Handle overlay click - prevent native keyboard
   const handleOverlayClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -393,13 +385,9 @@ function App() {
 
   // Handle title input focus - manage keyboard visibility
   const handleTitleFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+    // Ensure our custom keyboard is visible on mobile
     if (isMobile) {
-      // Ensure our custom keyboard is visible
       setIsKeyboardVisible(true)
-      // Small delay to prevent native keyboard
-      setTimeout(() => {
-        e.target.blur()
-      }, 10)
     }
   }, [isMobile])
 
@@ -423,21 +411,6 @@ function App() {
     }
   }, [isMobile])
 
-  // Handle title overlay click - prevent native keyboard
-  const handleTitleOverlayClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    // Ensure our custom keyboard is visible
-    setIsKeyboardVisible(true)
-  }, [])
-
-  // Handle title overlay touch - prevent native keyboard
-  const handleTitleOverlayTouch = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    // Ensure our custom keyboard is visible
-    setIsKeyboardVisible(true)
-  }, [])
 
   const renderNotesList = () => {
     if (notes.length === 0) {
@@ -463,10 +436,10 @@ function App() {
 
   return (
     <div className="note-app">
-      <div className="app-header">
+      <header className="app-header">
         <div className="app-title-container">
-          <img src={iconSvg} alt="Korean Notes" className="app-icon" />
-          <h1 className="app-title">Korean Notes</h1>
+          <img src={iconSvg} alt="Old Korean Notetaker" className="app-icon" />
+          <h1 className="app-title">옛정음필기</h1>
         </div>
         <div className="header-actions">
           <button className="button button--secondary" onClick={createNewNote}>
@@ -482,17 +455,17 @@ function App() {
             {isKeyboardVisible ? 'Hide' : 'Show'} Keyboard
           </button>
         </div>
-      </div>
+      </header>
       
-      <div className="app-content">
-        <div className="notes-sidebar">
+      <main className="app-content">
+        <section className="notes-sidebar">
           <div className="notes-list">
             {renderNotesList()}
           </div>
-        </div>
+        </section>
         
-        <div className="note-editor-container">
-          <div className="note-editor-header">
+        <section className="note-editor-container">
+          <header className="note-editor-header">
             <div className="title-input-container">
               <input 
                 type="text" 
@@ -503,19 +476,11 @@ function App() {
                 onBlur={handleTitleBlur}
                 onClick={handleTitleClick}
                 placeholder="Untitled Note"
-                inputMode="none"
                 autoComplete="off"
                 autoCorrect="off"
                 autoCapitalize="off"
                 spellCheck="false"
               />
-              {isMobile && (
-                <div 
-                  className="title-input-overlay"
-                  onClick={handleTitleOverlayClick}
-                  onTouchStart={handleTitleOverlayTouch}
-                />
-              )}
             </div>
             <div className="note-actions">
               <button className="button button--secondary" onClick={saveCurrentNote}>
@@ -525,9 +490,9 @@ function App() {
                 Delete
               </button>
             </div>
-          </div>
+          </header>
           
-          <div className="note-editor">
+          <article className="note-editor">
             <div className={`textarea-container ${isTextareaFocused ? 'textarea-focused' : ''}`}>
               <textarea 
                 className="note-textarea korean-text" 
@@ -559,9 +524,9 @@ function App() {
                 </div>
               )}
             </div>
-          </div>
-        </div>
-      </div>
+          </article>
+        </section>
+      </main>
       
       <div className={`keyboard-container ${isKeyboardVisible ? 'keyboard-visible' : 'keyboard-hidden'}`}>
         <div className="keyboard-wrapper">

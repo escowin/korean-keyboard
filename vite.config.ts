@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'Korean Keyboard PWA',
-        short_name: 'KoreanNotes',
+        name: 'Old Korean Notetaker PWA',
+        short_name: 'OldKoreanNotes',
         description: 'A notetaking app with Korean keyboard supporting archaic letters',
         theme_color: '#1a1a1a',
         background_color: '#ffffff',
