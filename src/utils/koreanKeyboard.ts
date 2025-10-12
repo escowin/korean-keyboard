@@ -18,7 +18,9 @@ export {
 export { 
   UNICODE_RANGES,
   FINAL_TO_INITIAL_MAPPING,
+  COMPLEX_FINAL_TO_COMPONENTS,
   convertFinalToInitial,
+  decomposeComplexFinal,
   isConsonant,
   isModernConsonant,
   isVowel,

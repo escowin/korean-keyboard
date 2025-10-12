@@ -38,6 +38,22 @@ export const FINAL_TO_INITIAL_MAPPING: { [key: string]: string } = {
   [String.fromCharCode(0x11B6)]: String.fromCharCode(0x1112), // ᆶ → ᄒ (ㅎ)
 }
 
+// Mapping from complex final consonants to their component parts
+export const COMPLEX_FINAL_TO_COMPONENTS: { [key: string]: { first: string, second: string } } = {
+  // Modern complex finals
+  [String.fromCharCode(0x11AA)]: { first: String.fromCharCode(0x11A8), second: String.fromCharCode(0x3145) }, // ㄳ → ㄱ + ㅅ
+  [String.fromCharCode(0x11AC)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x3148) }, // ㄵ → ㄴ + ㅈ
+  [String.fromCharCode(0x11AD)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x314E) }, // ㄶ → ㄴ + ㅎ
+  [String.fromCharCode(0x11B0)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3131) }, // ㄺ → ㄹ + ㄱ
+  [String.fromCharCode(0x11B1)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3141) }, // ㄻ → ㄹ + ㅁ
+  [String.fromCharCode(0x11B2)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3142) }, // ㄼ → ㄹ + ㅂ
+  [String.fromCharCode(0x11B3)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3145) }, // ㄽ → ㄹ + ㅅ
+  [String.fromCharCode(0x11B4)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3137) }, // ㄾ → ㄹ + ㅌ
+  [String.fromCharCode(0x11B5)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3147) }, // ㄿ → ㄹ + ㅍ
+  [String.fromCharCode(0x11B6)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x314E) }, // ㅀ → ㄹ + ㅎ
+  [String.fromCharCode(0x11B9)]: { first: String.fromCharCode(0x11B8), second: String.fromCharCode(0x3145) }, // ㅄ → ㅂ + ㅅ
+}
+
 // Unicode ranges for Korean characters
 export const UNICODE_RANGES: KoreanUnicodeRanges = {
   // Initial consonants (초성) - Modern Korean only
@@ -89,6 +105,21 @@ export function convertFinalToInitial(finalConsonant: string): string {
   }
   console.log(`⚠️ No mapping found for final consonant "${finalConsonant}", using as-is`)
   return finalConsonant
+}
+
+/**
+ * Decompose a complex final consonant into its component parts
+ * @param complexFinal - Complex final consonant
+ * @returns Object with first and second components, or null if not a complex final
+ */
+export function decomposeComplexFinal(complexFinal: string): { first: string, second: string } | null {
+  const components = COMPLEX_FINAL_TO_COMPONENTS[complexFinal]
+  if (components) {
+    console.log(`🔍 Decomposing complex final "${complexFinal}" to: "${components.first}" + "${components.second}"`)
+    return components
+  }
+  console.log(`⚠️ "${complexFinal}" is not a complex final, returning null`)
+  return null
 }
 
 /**

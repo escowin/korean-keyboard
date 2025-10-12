@@ -8,7 +8,8 @@ import {
   isConsonant, 
   isVowel, 
   isComposedHangulSyllable, 
-  convertFinalToInitial 
+  convertFinalToInitial,
+  decomposeComplexFinal
 } from './unicode.js'
 import { 
   composeSyllable, 
@@ -230,11 +231,21 @@ export function processKoreanInput(input: string): string {
         } else {
           // Cannot form complex final, check if next character is a vowel
           if (i < input.length - 1 && isVowel(input[i + 1])) {
-            // Next character is a vowel, recompose syllable without final consonant and store final consonant
-            const syllableWithoutFinal = composeSyllable(decomposed.initial, decomposed.medial, '')
-            result += syllableWithoutFinal
-            previousFinalConsonant = decomposed.final
-            console.log(`   ✅ Syllable "${char}" recomposed without final as "${syllableWithoutFinal}", storing final consonant "${decomposed.final}" for next syllable`)
+            // Next character is a vowel, handle complex final decomposition
+            const complexComponents = decomposeComplexFinal(decomposed.final)
+            if (complexComponents) {
+              // Complex final: keep first component in original syllable, use second for next syllable
+              const syllableWithFirstComponent = composeSyllable(decomposed.initial, decomposed.medial, complexComponents.first)
+              result += syllableWithFirstComponent
+              previousFinalConsonant = complexComponents.second
+              console.log(`   ✅ Complex final "${decomposed.final}" decomposed: keeping "${complexComponents.first}" in "${syllableWithFirstComponent}", storing "${complexComponents.second}" for next syllable`)
+            } else {
+              // Simple final: recompose syllable without final consonant and store final consonant
+              const syllableWithoutFinal = composeSyllable(decomposed.initial, decomposed.medial, '')
+              result += syllableWithoutFinal
+              previousFinalConsonant = decomposed.final
+              console.log(`   ✅ Simple final: syllable "${char}" recomposed without final as "${syllableWithoutFinal}", storing final consonant "${decomposed.final}" for next syllable`)
+            }
           } else {
             // No vowel follows, complete current syllable
             result += char
