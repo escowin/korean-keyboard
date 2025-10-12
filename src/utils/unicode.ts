@@ -38,7 +38,50 @@ export const FINAL_TO_INITIAL_MAPPING: { [key: string]: string } = {
   [String.fromCharCode(0x11B6)]: String.fromCharCode(0x1112), // ᆶ → ᄒ (ㅎ)
 }
 
-// Mapping from Compatibility Jamo to Hangul Jamo for proper rendering
+// Mapping from Compatibility Jamo to Hangul Jamo Initial consonants
+export const COMPATIBILITY_TO_HANGUL_JAMO_INITIAL: { [key: string]: string } = {
+  // Regular initial consonants
+  [String.fromCharCode(0x3131)]: String.fromCharCode(0x1100), // ㄱ → ᄀ
+  [String.fromCharCode(0x3132)]: String.fromCharCode(0x1101), // ㄲ → ᄁ
+  [String.fromCharCode(0x3134)]: String.fromCharCode(0x1102), // ㄴ → ᄂ
+  [String.fromCharCode(0x3137)]: String.fromCharCode(0x1103), // ㄷ → ᄃ
+  [String.fromCharCode(0x3138)]: String.fromCharCode(0x1105), // ㄹ → ᄅ
+  [String.fromCharCode(0x3141)]: String.fromCharCode(0x1106), // ㅁ → ᄆ
+  [String.fromCharCode(0x3142)]: String.fromCharCode(0x1107), // ㅂ → ᄇ
+  [String.fromCharCode(0x3145)]: String.fromCharCode(0x1109), // ㅅ → ᄉ
+  [String.fromCharCode(0x3146)]: String.fromCharCode(0x110A), // ㅆ → ᄊ
+  [String.fromCharCode(0x3147)]: String.fromCharCode(0x110B), // ㅇ → ᄋ
+  [String.fromCharCode(0x3148)]: String.fromCharCode(0x110C), // ㅈ → ᄌ
+  [String.fromCharCode(0x3149)]: String.fromCharCode(0x110E), // ㅊ → ᄎ
+  [String.fromCharCode(0x314A)]: String.fromCharCode(0x110F), // ㅋ → ᄏ
+  [String.fromCharCode(0x314B)]: String.fromCharCode(0x1110), // ㅌ → ᄐ
+  [String.fromCharCode(0x314C)]: String.fromCharCode(0x1111), // ㅍ → ᄑ
+  [String.fromCharCode(0x314D)]: String.fromCharCode(0x1112), // ㅎ → ᄒ
+  [String.fromCharCode(0x314E)]: String.fromCharCode(0x1112), // ㅎ → ᄒ (alternative Unicode)
+}
+
+// Mapping from Compatibility Jamo to Hangul Jamo Final consonants
+export const COMPATIBILITY_TO_HANGUL_JAMO_FINAL: { [key: string]: string } = {
+  // Regular final consonants
+  [String.fromCharCode(0x3131)]: String.fromCharCode(0x11A8), // ㄱ → ᆨ
+  [String.fromCharCode(0x3132)]: String.fromCharCode(0x11A9), // ㄲ → ᆩ
+  [String.fromCharCode(0x3134)]: String.fromCharCode(0x11AB), // ㄴ → ᆫ
+  [String.fromCharCode(0x3137)]: String.fromCharCode(0x11AE), // ㄷ → ᆮ
+  [String.fromCharCode(0x3138)]: String.fromCharCode(0x11AF), // ㄹ → ᆯ
+  [String.fromCharCode(0x3141)]: String.fromCharCode(0x11B7), // ㅁ → ᆷ
+  [String.fromCharCode(0x3142)]: String.fromCharCode(0x11B8), // ㅂ → ᆸ
+  [String.fromCharCode(0x3145)]: String.fromCharCode(0x11BA), // ㅅ → ᆺ
+  [String.fromCharCode(0x3146)]: String.fromCharCode(0x11BB), // ㅆ → ᆻ
+  [String.fromCharCode(0x3147)]: String.fromCharCode(0x11BC), // ㅇ → ᆼ
+  [String.fromCharCode(0x3148)]: String.fromCharCode(0x11BD), // ㅈ → ᆽ
+  [String.fromCharCode(0x3149)]: String.fromCharCode(0x11BE), // ㅊ → ᆾ
+  [String.fromCharCode(0x314A)]: String.fromCharCode(0x11BF), // ㅋ → ᆿ
+  [String.fromCharCode(0x314B)]: String.fromCharCode(0x11C0), // ㅌ → ᇀ
+  [String.fromCharCode(0x314C)]: String.fromCharCode(0x11C1), // ㅍ → ᇁ
+  [String.fromCharCode(0x314D)]: String.fromCharCode(0x11C2), // ㅎ → ᇂ
+}
+
+// Legacy mapping for backward compatibility (will be deprecated)
 export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
   // Archaic initial consonants (Compatibility Jamo to Hangul Jamo)
   [String.fromCharCode(0x317F)]: String.fromCharCode(0x1140), // △ → ᅀ (archaic initial consonant)
@@ -105,7 +148,6 @@ export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
   [String.fromCharCode(0x314A)]: String.fromCharCode(0x11BF), // ㅋ → ᆿ
   [String.fromCharCode(0x314B)]: String.fromCharCode(0x11C0), // ㅌ → ᇀ
   [String.fromCharCode(0x314C)]: String.fromCharCode(0x11C1), // ㅍ → ᇁ
-  [String.fromCharCode(0x314D)]: String.fromCharCode(0x1112), // ㅎ → ᄒ (Compatibility to Hangul Jamo initial)
   // [String.fromCharCode(0x314E)]: String.fromCharCode(0x11C2), // ㅎ → ᇂ (alternative)
   
   // Archaic final consonants
@@ -246,17 +288,20 @@ export function isComposedHangulSyllable(char: string): boolean {
  * @returns Unicode code or null if not found
  */
 export function getInitialConsonantCode(char: string): number | null {
+  // First convert Compatibility Jamo to Hangul Jamo if needed
+  const convertedChar = convertToHangulJamoInitial(char)
+  
   // Try modern initial consonants first
-  if (UNICODE_RANGES.INITIAL_CONSONANTS[char]) {
-    return UNICODE_RANGES.INITIAL_CONSONANTS[char]
+  if (UNICODE_RANGES.INITIAL_CONSONANTS[convertedChar]) {
+    return UNICODE_RANGES.INITIAL_CONSONANTS[convertedChar]
   }
   // Try archaic initial consonants
-  if (UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS[char]) {
-    return UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS[char]
+  if (UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS[convertedChar]) {
+    return UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS[convertedChar]
   }
-  // If not found, return the character's Unicode code directly
-  const code = char.charCodeAt(0)
-  console.log(`🔍 getInitialConsonantCode: "${char}" not in mappings, using direct code: ${code}`)
+  // If not found, return the converted character's Unicode code directly
+  const code = convertedChar.charCodeAt(0)
+  console.log(`🔍 getInitialConsonantCode: "${char}" -> "${convertedChar}", using code: ${code}`)
   return code
 }
 
@@ -266,12 +311,15 @@ export function getInitialConsonantCode(char: string): number | null {
  * @returns Unicode code or null if not found
  */
 export function getMedialVowelCode(char: string): number | null {
-  if (UNICODE_RANGES.MEDIAL_VOWELS[char]) {
-    return UNICODE_RANGES.MEDIAL_VOWELS[char]
+  // First convert Compatibility Jamo to Hangul Jamo if needed
+  const convertedChar = convertToHangulJamoMedial(char)
+  
+  if (UNICODE_RANGES.MEDIAL_VOWELS[convertedChar]) {
+    return UNICODE_RANGES.MEDIAL_VOWELS[convertedChar]
   }
-  // If not found, return the character's Unicode code directly
-  const code = char.charCodeAt(0)
-  console.log(`🔍 getMedialVowelCode: "${char}" not in mappings, using direct code: ${code}`)
+  // If not found, return the converted character's Unicode code directly
+  const code = convertedChar.charCodeAt(0)
+  console.log(`🔍 getMedialVowelCode: "${char}" -> "${convertedChar}", using code: ${code}`)
   return code
 }
 
@@ -281,12 +329,15 @@ export function getMedialVowelCode(char: string): number | null {
  * @returns Unicode code or null if not found
  */
 export function getFinalConsonantCode(char: string): number | null {
-  if (UNICODE_RANGES.FINAL_CONSONANTS[char]) {
-    return UNICODE_RANGES.FINAL_CONSONANTS[char]
+  // First convert Compatibility Jamo to Hangul Jamo if needed
+  const convertedChar = convertToHangulJamoFinal(char)
+  
+  if (UNICODE_RANGES.FINAL_CONSONANTS[convertedChar]) {
+    return UNICODE_RANGES.FINAL_CONSONANTS[convertedChar]
   }
-  // If not found, return the character's Unicode code directly
-  const code = char.charCodeAt(0)
-  console.log(`🔍 getFinalConsonantCode: "${char}" not in mappings, using direct code: ${code}`)
+  // If not found, return the converted character's Unicode code directly
+  const code = convertedChar.charCodeAt(0)
+  console.log(`🔍 getFinalConsonantCode: "${char}" -> "${convertedChar}", using code: ${code}`)
   return code
 }
 
@@ -299,6 +350,35 @@ export function convertCompatibilityToHangulJamo(text: string): string {
     const hangulChar = COMPATIBILITY_TO_HANGUL_JAMO[char]
     return hangulChar || char // Return original if no mapping exists
   }).join('')
+}
+
+/**
+ * Convert Compatibility Jamo to Hangul Jamo for initial consonants
+ * @param char - Compatibility Jamo character
+ * @returns Hangul Jamo character or original if no mapping exists
+ */
+export function convertToHangulJamoInitial(char: string): string {
+  return COMPATIBILITY_TO_HANGUL_JAMO_INITIAL[char] || char
+}
+
+/**
+ * Convert Compatibility Jamo to Hangul Jamo for final consonants
+ * @param char - Compatibility Jamo character
+ * @returns Hangul Jamo character or original if no mapping exists
+ */
+export function convertToHangulJamoFinal(char: string): string {
+  return COMPATIBILITY_TO_HANGUL_JAMO_FINAL[char] || char
+}
+
+/**
+ * Convert Compatibility Jamo to Hangul Jamo for medial vowels
+ * @param char - Compatibility Jamo character
+ * @returns Hangul Jamo character or original if no mapping exists
+ */
+export function convertToHangulJamoMedial(char: string): string {
+  // Medial vowels mapping (already correct in the existing mapping)
+  const hangulChar = COMPATIBILITY_TO_HANGUL_JAMO[char]
+  return hangulChar || char
 }
 
 /**
