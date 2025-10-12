@@ -178,31 +178,41 @@ const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
 
 ## 🏛️ Archaic Jamo Issues
 
-### 6. Archaic Jamo Block Composition
+### 6. Archaic Jamo Block Composition ✅ MOSTLY RESOLVED
 **Priority:** Medium  
-**Status:** Open  
-**Description:** Archaic jamo characters are incorrectly mapped and/or not mapped at all to compose syllabic blocks.
+**Status:** In Progress  
+**Description:** Archaic jamo characters are now mostly working with corrected Unicode mappings.
 
 **Expected Behavior:**
 - Archaic characters should compose into syllable blocks
-- `ㅿㅏㄴ` should compose to `ᅀᅡᆫ`
+- `△ㅏㄴ` should compose to `ᅀᅡᆫ` (combined block)
 - Historical Korean characters should work like modern ones
 
 **Actual Behavior:**
-- Archaic characters don't compose properly
-- May result in Chinese characters or incorrect mappings
-- Unicode composition fails for historical jamo
+- ✅ Most archaic initial consonants now work correctly
+- ✅ Unicode mappings corrected for proper Hangul Jamo conversion
+- ⚠️ Some medial vowel mappings still need fixing
+- ⚠️ Archaic vowels need integration into keyboard layout
 
 **Technical Details:**
-- Issue in `ARCHAIC_INITIAL_CONSONANTS` mapping
-- May be related to Unicode range validation in `composeSyllable`
-- Range `0x1100-0x1116` may not include all archaic characters
-- Need to investigate Microsoft Old Hangul IME approach
+- ✅ Fixed Unicode conversion mappings in `COMPATIBILITY_TO_HANGUL_JAMO`
+- ✅ Updated detection logic to cover all archaic jamo ranges
+- ✅ React state management working for archaic jamo rendering
+- ⚠️ Some medial vowel Unicode values need correction
+- ⚠️ Archaic vowels (ㆍ, ᆢ) need keyboard layout integration
 
-**Investigation Needed:**
-- Research Microsoft Old Hangul IME implementation
-- Check Unicode ranges for archaic characters
-- Verify composition algorithm for historical jamo
+**Resolution Progress:**
+- ✅ Added comprehensive archaic initial consonant mappings
+- ✅ Fixed Unicode ranges for archaic jamo detection
+- ✅ Implemented React state management for archaic jamo
+- ✅ Most archaic jamo now render as combined blocks
+- ⚠️ Remaining: Fix medial mappings and integrate archaic vowels
+
+**Test Cases:**
+- `△ㅏㄴ` → `ᅀᅡᆫ` ✅ (working)
+- `ㆆㅏㄴ` → `ᅙᅡᆫ` ✅ (working)
+- `ㆍㅏㄴ` → `ᆞᅡᆫ` ⚠️ (medial mapping needs fix)
+- `ㅸㅏㄴ` → `ᄫᅡᆫ` ✅ (working)
 
 ---
 
@@ -271,24 +281,29 @@ The Korean keyboard now behaves exactly like a standard Korean keyboard for all 
    - ✅ **COMPLETED**: Complex final consonants support (ㄺ, ㄻ, ㄼ, etc.)
    - ✅ **COMPLETED**: Complex final decomposition (앉ㅏ → 안자)
    - ✅ **COMPLETED**: All modern Korean keyboard functionality working
+   - ✅ **MOSTLY COMPLETED**: Archaic jamo support (most characters working)
+   - Fix remaining medial vowel mappings for archaic jamo
+   - Integrate archaic vowels into keyboard layout
    - Fix variant popup positioning
 
 2. **Short Term (Next 2 Weeks):**
    - ✅ **COMPLETED**: All modern Korean syllable composition working perfectly
    - ✅ **COMPLETED**: App now behaves exactly like a standard Korean keyboard for modern letters
+   - ✅ **MOSTLY COMPLETED**: Archaic jamo block composition working
+   - Complete archaic jamo support (fix medial mappings, integrate vowels)
    - Correct variant popup positioning
-   - Comprehensive testing of all modern Korean input scenarios
-   - Begin research on archaic jamo composition
+   - Comprehensive testing of all archaic Korean input scenarios
 
 3. **Medium Term (Next Month):**
-   - Research Microsoft Old Hangul IME
-   - Implement proper archaic jamo composition
+   - ✅ **COMPLETED**: Archaic jamo composition mostly working
+   - Polish archaic character support
    - Advanced Korean input features (double consonants, etc.)
+   - Performance optimization
 
 4. **Long Term (Future):**
-   - Full archaic character support
-   - Performance optimization
+   - Full archaic character support with all variants
    - Mobile-specific enhancements
+   - Advanced Korean language features
 
 ## 🧪 Testing Strategy
 
@@ -321,9 +336,12 @@ The Korean keyboard now behaves exactly like a standard Korean keyboard for all 
 - `값ㅏ` → `갑사` ✅ (ㅄ → ㅂ + ㅅ)
 
 **Archaic Jamo:**
-- `ㅿㅏㄴ` → `ᅀᅡᆫ`
-- `ㆍㅏㄴ` → `ᅟᅡᆫ`
-- `ㅸㅏㄴ` → `ᅘᅡᆫ`
+- `△ㅏㄴ` → `ᅀᅡᆫ` ✅ (working)
+- `ㆆㅏㄴ` → `ᅙᅡᆫ` ✅ (working)
+- `ㆍㅏㄴ` → `ᆞᅡᆫ` ⚠️ (medial mapping needs fix)
+- `ㅸㅏㄴ` → `ᄫᅡᆫ` ✅ (working)
+- `ㅱㅏㄴ` → `ᄝᅡᆫ` ✅ (working)
+- `ㅥㅏㄴ` → `ᄔᅡᆫ` ✅ (working)
 
 ## 📝 Notes
 
@@ -335,10 +353,14 @@ The Korean keyboard now behaves exactly like a standard Korean keyboard for all 
 - ✅ Final-to-initial consonant transition working perfectly
 - ✅ All Unicode character mapping issues resolved
 - ✅ Modular codebase structure implemented for better maintainability
+- ✅ **ARCHAIC JAMO MILESTONE**: Most archaic jamo now working with corrected Unicode mappings
+- ✅ Archaic initial consonants mostly working (△, ㆆ, ㆁ, ꥼ, ㅱ, ㅥ, ㆀ, ᄙ, ㆅ, ㅸ, ㅹ, etc.)
+- ⚠️ Some medial vowel mappings still need correction
+- ⚠️ Archaic vowels (ㆍ, ᆢ) need integration into keyboard layout
 - All issues should be tested across different browsers
 - Consider implementing a test suite for Korean input scenarios
 - Console logging is working correctly (user had console filter set to 'errors' only)
-- Next focus: Archaic jamo support and variant popup positioning
+- Next focus: Complete archaic jamo support and variant popup positioning
 
 ---
 

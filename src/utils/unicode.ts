@@ -42,24 +42,24 @@ export const FINAL_TO_INITIAL_MAPPING: { [key: string]: string } = {
 export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
   // Archaic initial consonants (Compatibility Jamo to Hangul Jamo)
   [String.fromCharCode(0x317F)]: String.fromCharCode(0x1140), // △ → ᅀ (archaic initial consonant)
-  [String.fromCharCode(0x3186)]: String.fromCharCode(0x1141), // ㆆ → ᅁ (archaic initial consonant)
+  [String.fromCharCode(0x3186)]: String.fromCharCode(0x1159), // ㆆ → ᅙ (archaic initial consonant)
   [String.fromCharCode(0x3181)]: String.fromCharCode(0x114C), // ㆁ → ᅌ (archaic initial consonant)
   [String.fromCharCode(0xA97C)]: String.fromCharCode(0xA97C), // ꥼ → ꥼ (archaic initial consonant)
-  [String.fromCharCode(0x3171)]: String.fromCharCode(0x1144), // ㅱ → ᅄ (archaic initial consonant)
-  [String.fromCharCode(0x3165)]: String.fromCharCode(0x1145), // ㅥ → ᅅ (archaic initial consonant)
-  [String.fromCharCode(0x3180)]: String.fromCharCode(0x1146), // ㆀ → ᅆ (archaic initial consonant)
-  [String.fromCharCode(0x1119)]: String.fromCharCode(0x1147), // ᄙ → ᅇ (archaic initial consonant)
-  [String.fromCharCode(0x3185)]: String.fromCharCode(0x1148), // ㆅ → ᅈ (archaic initial consonant)
-  [String.fromCharCode(0x3178)]: String.fromCharCode(0x1149), // ㅸ → ᅉ (archaic initial consonant)
-  [String.fromCharCode(0x3179)]: String.fromCharCode(0x114A), // ㅹ → ᅊ (archaic initial consonant)
-  [String.fromCharCode(0x111C)]: String.fromCharCode(0x114B), // ᄼ → ᅋ (archaic initial consonant)
-  [String.fromCharCode(0x111E)]: String.fromCharCode(0x114C), // ᄾ → ᅌ (archaic initial consonant)
-  [String.fromCharCode(0x111D)]: String.fromCharCode(0x114D), // ᄽ → ᅍ (archaic initial consonant)
-  [String.fromCharCode(0x111F)]: String.fromCharCode(0x114E), // ᄿ → ᅎ (archaic initial consonant)
-  [String.fromCharCode(0x114E)]: String.fromCharCode(0x114F), // ᅎ → ᅏ (archaic initial consonant)
+  [String.fromCharCode(0x3171)]: String.fromCharCode(0x111D), // ㅱ → ᄝ (archaic initial consonant)
+  [String.fromCharCode(0x3165)]: String.fromCharCode(0x1114), // ㅥ → ᄔ (archaic initial consonant)
+  [String.fromCharCode(0x3180)]: String.fromCharCode(0x1147), // ㆀ → ᅇ (archaic initial consonant)
+  [String.fromCharCode(0x1119)]: String.fromCharCode(0x1119), // ᄙ → ᄙ (archaic initial consonant)
+  [String.fromCharCode(0x3185)]: String.fromCharCode(0x1158), // ㆅ → ᅘ (archaic initial consonant)
+  [String.fromCharCode(0x3178)]: String.fromCharCode(0x112B), // ㅸ → ᄫ (archaic initial consonant)
+  [String.fromCharCode(0x3179)]: String.fromCharCode(0x112C), // ㅹ → ᄬ (archaic initial consonant)
+  [String.fromCharCode(0x111C)]: String.fromCharCode(0x111C), // ᄼ → ᄼ (archaic initial consonant)
+  [String.fromCharCode(0x111E)]: String.fromCharCode(0x111E), // ᄾ → ᄾ (archaic initial consonant)
+  [String.fromCharCode(0x111D)]: String.fromCharCode(0x111D), // ᄽ → ᄽ (archaic initial consonant)
+  [String.fromCharCode(0x111F)]: String.fromCharCode(0x111F), // ᄿ → ᄿ (archaic initial consonant)
+  [String.fromCharCode(0x114E)]: String.fromCharCode(0x114E), // ᅎ → ᅎ (archaic initial consonant)
   [String.fromCharCode(0x1150)]: String.fromCharCode(0x1150), // ᅐ → ᅐ (archaic initial consonant)
-  [String.fromCharCode(0x114F)]: String.fromCharCode(0x1151), // ᅏ → ᅑ (archaic initial consonant)
-  [String.fromCharCode(0x1151)]: String.fromCharCode(0x1152), // ᅑ → ᅒ (archaic initial consonant)
+  [String.fromCharCode(0x114F)]: String.fromCharCode(0x114F), // ᅏ → ᅏ  (archaic initial consonant)
+  [String.fromCharCode(0x1151)]: String.fromCharCode(0x1151), // ᅑ → ᅑ (archaic initial consonant)
   
   // Medial vowels
   [String.fromCharCode(0x314F)]: String.fromCharCode(0x1161), // ㅏ → ᅡ
@@ -85,7 +85,7 @@ export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
   [String.fromCharCode(0x3163)]: String.fromCharCode(0x1175), // ㅣ → ᅵ
   
   // Archaic medial vowels
-  [String.fromCharCode(0x318D)]: String.fromCharCode(0x1197), // ㆍ → ᆞ (archaic medial vowel)
+  [String.fromCharCode(0x318D)]: String.fromCharCode(0x119E), // ㆍ → ᆞ (archaic medial vowel)
   [String.fromCharCode(0x11A2)]: String.fromCharCode(0x11A2), // ᆢ → ᆢ (archaic medial vowel)
   
   // Final consonants
@@ -94,9 +94,9 @@ export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
   [String.fromCharCode(0x3134)]: String.fromCharCode(0x11AB), // ㄴ → ᆫ
   [String.fromCharCode(0x3137)]: String.fromCharCode(0x11AE), // ㄷ → ᆮ
   [String.fromCharCode(0x3138)]: String.fromCharCode(0x11AF), // ㄹ → ᆯ
-  [String.fromCharCode(0x3139)]: String.fromCharCode(0x11B7), // ㅁ → ᆷ
-  [String.fromCharCode(0x3141)]: String.fromCharCode(0x11B8), // ㅂ → ᆸ
-  [String.fromCharCode(0x3142)]: String.fromCharCode(0x11B9), // ㅃ → ᆹ
+  [String.fromCharCode(0x3141)]: String.fromCharCode(0x11B7), // ㅁ → ᆷ
+  [String.fromCharCode(0x3142)]: String.fromCharCode(0x11B8), // ㅂ → ᆸ
+  [String.fromCharCode(0x3143)]: String.fromCharCode(0xD7E6), // ㅃ → ퟦ
   [String.fromCharCode(0x3145)]: String.fromCharCode(0x11BA), // ㅅ → ᆺ
   [String.fromCharCode(0x3146)]: String.fromCharCode(0x11BB), // ㅆ → ᆻ
   [String.fromCharCode(0x3147)]: String.fromCharCode(0x11BC), // ㅇ → ᆼ
@@ -106,7 +106,7 @@ export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
   [String.fromCharCode(0x314B)]: String.fromCharCode(0x11C0), // ㅌ → ᇀ
   [String.fromCharCode(0x314C)]: String.fromCharCode(0x11C1), // ㅍ → ᇁ
   [String.fromCharCode(0x314D)]: String.fromCharCode(0x11C2), // ㅎ → ᇂ
-  [String.fromCharCode(0x314E)]: String.fromCharCode(0x11C2), // ㅎ → ᇂ (alternative)
+  // [String.fromCharCode(0x314E)]: String.fromCharCode(0x11C2), // ㅎ → ᇂ (alternative)
 }
 
 // Mapping from complex final consonants to their component parts
