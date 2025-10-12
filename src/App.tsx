@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import KoreanKeyboard from './components/KoreanKeyboard.tsx'
 import { processKoreanInput } from './utils/koreanKeyboard.js'
+import { convertCompatibilityToHangulJamo, isCompatibilityJamo } from './utils/unicode.js'
 import type { Note } from './types/korean.js'
 
 function App() {
@@ -148,7 +149,7 @@ function App() {
   }, [])
 
   const handleKeyboardText = useCallback((text: string) => {
-    console.log('🔍 SIMPLE: handleKeyboardText called with:', text)
+    console.log('🔍 ARCHAIC: handleKeyboardText called with:', text)
     
     setNoteContent(prev => {
       const textarea = document.querySelector('#note-content') as HTMLTextAreaElement
@@ -158,33 +159,58 @@ function App() {
         const before = prev.substring(0, start)
         const after = prev.substring(end)
         
-        console.log('🔍 SIMPLE: Position:', start, 'to', end)
-        console.log('🔍 SIMPLE: Before:', before)
-        console.log('🔍 SIMPLE: After:', after)
+        console.log('🔍 ARCHAIC: Position:', start, 'to', end)
+        console.log('🔍 ARCHAIC: Before:', before)
+        console.log('🔍 ARCHAIC: After:', after)
         
-        // Simple approach: add the character and then compose the entire text
+        // Process the input normally first
         const rawContent = before + text + after
         const composedContent = processKoreanInput(rawContent)
-        console.log('🔍 SIMPLE: Raw content:', rawContent)
-        console.log('🔍 SIMPLE: Composed content:', composedContent)
+        console.log('🔍 ARCHAIC: Raw content:', rawContent)
+        console.log('🔍 ARCHAIC: Composed content:', composedContent)
         
-        // Check if archaic jamo are present (composition returned separate characters)
-        const hasArchaicJamo = composedContent !== rawContent && composedContent.includes('ᅀ') || composedContent.includes('ᅠ') || composedContent.includes('ᆫ')
+        // Check if the composed content contains archaic jamo that need special handling
+        const hasArchaicJamo = composedContent.includes('ᅀ') || composedContent.includes('ᅠ') || composedContent.includes('ᆫ')
         
         if (hasArchaicJamo) {
-          console.log('🔍 SIMPLE: Archaic jamo detected, using DOM manipulation')
-          // Use DOM manipulation to insert text like pasting
+          console.log('🔍 ARCHAIC: Archaic jamo detected, using InsertText with Hangul Jamo conversion')
+          
+          // Convert Compatibility Jamo to Hangul Jamo for proper rendering
+          const hangulContent = convertCompatibilityToHangulJamo(composedContent)
+          console.log('🔍 ARCHAIC: Converted to Hangul Jamo:', hangulContent)
+          
+          // Use InsertText API for proper rendering
           setTimeout(() => {
-            // Insert the composed content directly into the textarea
-            textarea.value = composedContent
-            const newPosition = start + text.length
-            textarea.setSelectionRange(newPosition, newPosition)
             textarea.focus()
             
-            // Trigger input event to ensure React state is updated
-            const inputEvent = new Event('input', { bubbles: true })
-            textarea.dispatchEvent(inputEvent)
+            // Use InsertText API if available
+            if (document.execCommand) {
+              const success = document.execCommand('insertText', false, hangulContent)
+              console.log('🔍 ARCHAIC: InsertText command executed:', success)
+              
+              if (success) {
+                // Trigger composition events for better browser handling
+                const compositionStartEvent = new CompositionEvent('compositionstart', { bubbles: true })
+                textarea.dispatchEvent(compositionStartEvent)
+                
+                const compositionEndEvent = new CompositionEvent('compositionend', { 
+                  bubbles: true,
+                  data: hangulContent
+                })
+                textarea.dispatchEvent(compositionEndEvent)
+              }
+            } else {
+              // Fallback to direct value assignment
+              textarea.value = hangulContent
+              textarea.setSelectionRange(start + hangulContent.length, start + hangulContent.length)
+              
+              // Trigger input event
+              const inputEvent = new Event('input', { bubbles: true })
+              textarea.dispatchEvent(inputEvent)
+            }
           }, 0)
+          
+          return hangulContent
         } else {
           // Normal cursor positioning for regular characters
           setTimeout(() => {
@@ -192,9 +218,9 @@ function App() {
             textarea.setSelectionRange(newPosition, newPosition)
             textarea.focus()
           }, 0)
+          
+          return composedContent
         }
-        
-        return composedContent
       }
       return prev + text
     })
