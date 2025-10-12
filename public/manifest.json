@@ -1,15 +1,15 @@
 {
-  "name": "Old Korean Notetaker PWA",
-  "short_name": "OldKoreanNotes",
+  "name": "Archaic Korean Notetaker PWA",
+  "short_name": "옛한글",
   "description": "A notetaking app with Korean keyboard supporting archaic letters",
   "version": "1.0.0",
-  "timestamp": "2025-10-12T21:01:57.766Z",
-  "start_url": "/",
+  "timestamp": "2025-10-12T22:41:54.032Z",
+  "start_url": "/korean-keyboard/",
   "display": "standalone",
   "background_color": "#1a1a1a",
   "theme_color": "#1a1a1a",
   "orientation": "portrait-primary",
-  "scope": "/",
+  "scope": "/korean-keyboard/",
   "lang": "en",
   "categories": [
     "productivity",
@@ -29,7 +29,7 @@
       "name": "New Note",
       "short_name": "New",
       "description": "Create a new note",
-      "url": "/?action=new",
+      "url": "/korean-keyboard/?action=new",
       "icons": [
         {
           "src": "./icons/icon.png",
