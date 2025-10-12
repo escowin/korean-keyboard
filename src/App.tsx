@@ -296,13 +296,15 @@ function App() {
     })
   }, [])
 
-  // Handle textarea focus - prevent native keyboard on mobile
+  // Handle textarea focus - manage keyboard visibility
   const handleTextareaFocus = useCallback((e: React.FocusEvent<HTMLTextAreaElement>) => {
     if (isMobile) {
-      // Prevent the native keyboard from appearing
-      e.target.blur()
       // Ensure our custom keyboard is visible
       setIsKeyboardVisible(true)
+      // Small delay to prevent native keyboard
+      setTimeout(() => {
+        e.target.blur()
+      }, 10)
     }
   }, [isMobile])
 
@@ -323,10 +325,24 @@ function App() {
     if (isMobile) {
       // Ensure our custom keyboard is visible when clicking on textarea
       setIsKeyboardVisible(true)
-      // Prevent the native keyboard from appearing
-      e.currentTarget.blur()
     }
   }, [isMobile])
+
+  // Handle overlay click - prevent native keyboard
+  const handleOverlayClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    // Ensure our custom keyboard is visible
+    setIsKeyboardVisible(true)
+  }, [])
+
+  // Handle overlay touch - prevent native keyboard
+  const handleOverlayTouch = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    // Ensure our custom keyboard is visible
+    setIsKeyboardVisible(true)
+  }, [])
 
   const renderNotesList = () => {
     if (notes.length === 0) {
@@ -397,19 +413,31 @@ function App() {
           </div>
           
           <div className="note-editor">
-            <textarea 
-              className="note-textarea korean-text" 
-              id="note-content"
-              value={noteContent}
-              onChange={(e) => setNoteContent(e.target.value)}
-              onFocus={handleTextareaFocus}
-              onBlur={handleTextareaBlur}
-              onClick={handleTextareaClick}
-              placeholder="Start typing your note here..."
-              rows={10}
-              readOnly={isMobile}
-              inputMode="none"
-            />
+            <div className="textarea-container">
+              <textarea 
+                className="note-textarea korean-text" 
+                id="note-content"
+                value={noteContent}
+                onChange={(e) => setNoteContent(e.target.value)}
+                onFocus={handleTextareaFocus}
+                onBlur={handleTextareaBlur}
+                onClick={handleTextareaClick}
+                placeholder="Start typing your note here..."
+                rows={10}
+                inputMode="none"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck="false"
+              />
+              {isMobile && (
+                <div 
+                  className="textarea-overlay"
+                  onClick={handleOverlayClick}
+                  onTouchStart={handleOverlayTouch}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>

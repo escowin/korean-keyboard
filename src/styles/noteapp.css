@@ -161,6 +161,12 @@
   overflow: hidden;
 }
 
+.textarea-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 .note-textarea {
   width: 100%;
   height: 100%;
@@ -187,6 +193,18 @@
 
 .note-textarea::placeholder {
   color: var(--color-text-muted);
+}
+
+.textarea-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 1;
+  cursor: text;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Keyboard Container */
@@ -376,5 +394,16 @@
     left: 0;
     right: 0;
     z-index: 1000;
+  }
+  
+  /* Overlay improvements for mobile */
+  .textarea-overlay {
+    z-index: 2; /* Higher than textarea but lower than keyboard */
+  }
+  
+  /* Ensure textarea is still accessible for programmatic updates */
+  .note-textarea {
+    position: relative;
+    z-index: 0;
   }
 }
