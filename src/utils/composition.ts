@@ -119,13 +119,11 @@ export function canFormComplexFinal(first: string, second: string): string | nul
     [String.fromCharCode(0x11A8) + String.fromCharCode(0x3145)]: 'ᆪ',  // ㄱ + ㅅ = ㄳ (using Compatibility Jamo)
     [String.fromCharCode(0x11AB) + String.fromCharCode(0x3148)]: 'ᆬ',  // ㄴ + ㅈ = ㄵ
     [String.fromCharCode(0x11AB) + String.fromCharCode(0x314E)]: 'ᆭ',  // ㄴ + ㅎ = ㄶ
-
-
     [String.fromCharCode(0x11AF) + String.fromCharCode(0x3131)]: 'ᆰ',  // ㄹ + ㄱ = ㄺ
     [String.fromCharCode(0x11AF) + String.fromCharCode(0x3141)]: 'ᆱ',  // ㄹ + ㅁ = ㄻ
     [String.fromCharCode(0x11AF) + String.fromCharCode(0x3142)]: 'ᆲ',  // ㄹ + ㅂ = ㄼ
     [String.fromCharCode(0x11AF) + String.fromCharCode(0x3145)]: 'ᆳ',  // ㄹ + ㅅ = ㄽ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3137)]: 'ᆴ',  // ㄹ + ㅌ = ㄾ
+    [String.fromCharCode(0x11AF) + String.fromCharCode(0x314C)]: 'ᆴ',  // ㄹ + ㅌ = ㄾ
     [String.fromCharCode(0x11AF) + String.fromCharCode(0x3147)]: 'ᆵ',  // ㄹ + ㅍ = ㄿ
     [String.fromCharCode(0x11AF) + String.fromCharCode(0x314E)]: 'ᆶ',  // ㄹ + ㅎ = ㅀ
     [String.fromCharCode(0x11B8) + String.fromCharCode(0x3145)]: 'ᆹ',  // ㅂ + ㅅ = ㅄ
