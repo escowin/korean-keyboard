@@ -85,8 +85,9 @@ The Archaic Korean Keyboard PWA is a Progressive Web Application that provides a
   - [ ] Smart composition suggestions
   - [ ] Auto-complete for common words
   - [ ] Input method switching (한글/영어)
-  - [ ] Number and symbol input modes
-  - [ ] Emoji picker integration
+  - [ ] **Number and symbol input modes (123 button)**
+  - [ ] **Hanja conversion functionality (emoji button replacement)**
+  - [ ] **Middle Korean input support (Hunminjeongeum style)**
 
 - [ ] **Note Management Enhancements**
   - [ ] Note categories and tags
@@ -244,10 +245,11 @@ The Archaic Korean Keyboard PWA is a Progressive Web Application that provides a
 
 #### 5.1 Advanced Korean Language Features
 - [ ] **Historical Text Support**
-  - [ ] Middle Korean support
-  - [ ] Classical Korean literature
+  - [ ] **Middle Korean input system (Hunminjeongeum style)**
+  - [ ] Classical Korean literature support
   - [ ] Historical document input
   - [ ] Academic research tools
+  - [ ] **Hanja (Chinese character) conversion and input**
 
 - [ ] **Language Learning Features**
   - [ ] Character pronunciation guides
