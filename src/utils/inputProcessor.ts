@@ -230,10 +230,11 @@ export function processKoreanInput(input: string): string {
         } else {
           // Cannot form complex final, check if next character is a vowel
           if (i < input.length - 1 && isVowel(input[i + 1])) {
-            // Next character is a vowel, complete current syllable and store final consonant
-            result += char
+            // Next character is a vowel, recompose syllable without final consonant and store final consonant
+            const syllableWithoutFinal = composeSyllable(decomposed.initial, decomposed.medial, '')
+            result += syllableWithoutFinal
             previousFinalConsonant = decomposed.final
-            console.log(`   ✅ Syllable "${char}" complete, storing final consonant "${decomposed.final}" for next syllable`)
+            console.log(`   ✅ Syllable "${char}" recomposed without final as "${syllableWithoutFinal}", storing final consonant "${decomposed.final}" for next syllable`)
           } else {
             // No vowel follows, complete current syllable
             result += char
