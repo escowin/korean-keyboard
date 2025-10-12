@@ -174,15 +174,39 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     hideArchaicPopup() // Hide any existing popup
     
     const rect = keyElement.getBoundingClientRect()
-    // More accurate width calculation: 32px minWidth + 24px padding (12px each side) + 8px gap between variants
-    const popupWidth = variants.length * (32 + 24) + (variants.length - 1) * 8 + 16 // 16px for popup padding
-    // Center the popup directly above the key
-    const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
-    const calculatedBottom = window.innerHeight - rect.top + 5 // Just 5px above the key
+    
+    // Calculate popup width more accurately
+    // Each variant: 32px min width + 8px padding (4px each side) + 4px gap between variants
+    const variantWidth = 32 + 8 // 40px per variant
+    const gapWidth = (variants.length - 1) * 4 // 4px gap between variants
+    const popupPadding = 16 // 8px padding on each side
+    const popupWidth = (variants.length * variantWidth) + gapWidth + popupPadding
+    
+    // Center the popup horizontally above the key
+    let calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
+    
+    // Ensure popup doesn't go off-screen horizontally
+    const margin = 8 // 8px margin from screen edge
+    if (calculatedLeft < margin) {
+      calculatedLeft = margin
+    } else if (calculatedLeft + popupWidth > window.innerWidth - margin) {
+      calculatedLeft = window.innerWidth - popupWidth - margin
+    }
+    
+    // Position popup directly above the key with small gap
+    const gapAboveKey = 8 // 8px gap above the key
+    const estimatedPopupHeight = 48 // Estimated popup height (32px content + 16px padding)
+    let calculatedTop = rect.top - estimatedPopupHeight - gapAboveKey
+    
+    // If popup would go above screen, position it below the key instead
+    if (calculatedTop < margin) {
+      calculatedTop = rect.bottom + gapAboveKey
+    }
     
     console.log('🎯 Popup positioning for key:', keyValue)
     console.log('   Key rect:', { left: rect.left, top: rect.top, width: rect.width, height: rect.height })
-    console.log('   Calculated position:', { left: calculatedLeft, bottom: calculatedBottom })
+    console.log('   Popup width:', popupWidth)
+    console.log('   Calculated position:', { left: calculatedLeft, top: calculatedTop })
     console.log('   Window size:', { width: window.innerWidth, height: window.innerHeight })
     
     const popupElement = {
@@ -190,7 +214,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
       variants,
       position: {
         left: calculatedLeft,
-        bottom: calculatedBottom
+        top: calculatedTop
       }
     }
     
@@ -245,7 +269,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
           style={{
             position: 'fixed',
             left: `${popup.position.left}px`,
-            bottom: `${popup.position.bottom}px`,
+            top: `${popup.position.top}px`,
             zIndex: 1000,
             display: 'flex',
             gap: '4px',
