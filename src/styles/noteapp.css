@@ -171,7 +171,10 @@
   line-height: 1.6;
   resize: none;
   outline: none;
-  font-family: inherit;
+  font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', 'Noto Sans CJK KR', 'D2Coding', sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-feature-settings: "liga" 1, "kern" 1;
+  font-feature-settings: "liga" 1, "kern" 1;
 }
 
 .note-textarea::placeholder {

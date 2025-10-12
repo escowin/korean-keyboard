@@ -202,7 +202,7 @@ function App() {
         console.log('🔍 ARCHAIC: Should use archaic handling:', shouldUseArchaicHandling)
         
         if (shouldUseArchaicHandling) {
-          console.log('🔍 ARCHAIC: Archaic jamo detected, using InsertText with Hangul Jamo conversion')
+          console.log('🔍 ARCHAIC: Archaic jamo detected, using React state with Hangul Jamo conversion')
           console.log('🔍 ARCHAIC: Original composed content:', composedContent)
           
           // Convert Compatibility Jamo to Hangul Jamo for proper rendering
@@ -218,39 +218,16 @@ function App() {
             }
           })
           
-          // Use InsertText API for proper rendering
+          // Use React state management instead of DOM manipulation
+          // Set cursor position after state update
           setTimeout(() => {
+            const newPosition = start + hangulContent.length
+            textarea.setSelectionRange(newPosition, newPosition)
             textarea.focus()
-            
-            // Use InsertText API if available
-            if (document.execCommand) {
-              const success = document.execCommand('insertText', false, hangulContent)
-              console.log('🔍 ARCHAIC: InsertText command executed:', success)
-              
-              if (success) {
-                // Trigger composition events for better browser handling
-                const compositionStartEvent = new CompositionEvent('compositionstart', { bubbles: true })
-                textarea.dispatchEvent(compositionStartEvent)
-                
-                const compositionEndEvent = new CompositionEvent('compositionend', { 
-                  bubbles: true,
-                  data: hangulContent
-                })
-                textarea.dispatchEvent(compositionEndEvent)
-              }
-            } else {
-              // Fallback to direct value assignment
-              textarea.value = hangulContent
-              textarea.setSelectionRange(start + hangulContent.length, start + hangulContent.length)
-              
-              // Trigger input event
-              const inputEvent = new Event('input', { bubbles: true })
-              textarea.dispatchEvent(inputEvent)
-            }
           }, 0)
           
-          // Don't update React state when using DOM manipulation to avoid duplication
-          return prev
+          // Return the converted content for React state update
+          return hangulContent
         } else {
           // Normal cursor positioning for regular characters
           setTimeout(() => {
