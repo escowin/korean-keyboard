@@ -43,7 +43,7 @@
 
 ## 🔧 Major Issues
 
-### 3. Complex Medial Jamo Not Supported ✅ RESOLVED
+### 2. Complex Medial Jamo Not Supported ✅ RESOLVED
 **Priority:** Medium  
 **Status:** Closed  
 **Description:** App can handle simple initial + medial combinations, but fails with complex medial vowels (diphthongs).
@@ -76,7 +76,7 @@
 
 ---
 
-### 4. Complex Final Consonants Not Supported ✅ RESOLVED
+### 3. Complex Final Consonants Not Supported ✅ RESOLVED
 **Priority:** Medium  
 **Status:** Closed  
 **Description:** App cannot handle complex final consonants (consonant clusters at the end of syllables).
@@ -110,7 +110,7 @@
 
 ---
 
-### 5. Variant Popup Positioning
+### 4. Variant Popup Positioning
 **Priority:** Medium  
 **Status:** Open  
 **Description:** Long-press variant popup has correct height relative to the pressed key, but is positioned too far to the right.
@@ -141,7 +141,7 @@ const calculatedLeft = rect.left + (rect.width / 2) - (popupWidth / 2)
 
 ## 🏛️ Archaic Jamo Issues
 
-### 6. Archaic Jamo Block Composition
+### 5. Archaic Jamo Block Composition
 **Priority:** Medium  
 **Status:** Open  
 **Description:** Archaic jamo characters are incorrectly mapped and/or not mapped at all to compose syllabic blocks.
