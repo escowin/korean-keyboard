@@ -1,17 +1,31 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { KEYBOARD_LAYOUT, getArchaicVariants, getShiftedCharacter } from '../utils/koreanKeyboard.js'
 
-const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
+interface KoreanKeyboardProps {
+  onKeyPress: (key: string) => void
+  onTextInput: (text: string) => void
+}
+
+interface PopupState {
+  keyValue: string
+  variants: string[]
+  position: {
+    bottom: number
+  }
+}
+
+const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
   const [isShiftPressed, setIsShiftPressed] = useState(false)
-  const [popup, setPopup] = useState(null)
-  const [currentKey, setCurrentKey] = useState(null)
-  const longPressTimer = useRef(null)
+  const [popup, setPopup] = useState<PopupState | null>(null)
+  const [, setCurrentKey] = useState<string | null>(null)
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null)
   const longPressDelay = 500 // ms
 
   // Handle clicking outside popup to close it
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (popup && !event.target.closest('.archaic-popup') && !event.target.closest('.key')) {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Element | null
+      if (popup && target && !target.closest('.archaic-popup') && !target.closest('.key')) {
         hideArchaicPopup()
       }
     }
@@ -28,7 +42,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
   }, [popup])
 
 
-  const getKeyClass = (key) => {
+  const getKeyClass = (key: string) => {
     const classes = ['key']
     
     if (key === 'shift') classes.push('key--shift')
@@ -42,7 +56,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     return classes.join(' ')
   }
 
-  const getKeyContent = (key) => {
+  const getKeyContent = (key: string) => {
     switch (key) {
       case 'shift':
         return (
@@ -76,7 +90,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     }
   }
 
-  const handleKeyDown = useCallback((keyValue, event) => {
+  const handleKeyDown = useCallback((keyValue: string, event: React.MouseEvent | React.TouchEvent) => {
     event.preventDefault()
     setCurrentKey(keyValue)
     
@@ -85,7 +99,8 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     if (variants.length > 1) {
       longPressTimer.current = setTimeout(() => {
         // Find the actual key element (the one with data-key attribute)
-        const keyElement = event.target.closest('[data-key]') || event.target
+        const target = event.target as Element
+        const keyElement = (target.closest('[data-key]') || target) as HTMLElement
         showArchaicPopup(keyValue, variants, keyElement)
       }, longPressDelay)
     }
@@ -93,7 +108,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     // Don't process the key immediately - wait for click or key up
   }, [])
 
-  const handleKeyUp = useCallback((keyValue, event) => {
+  const handleKeyUp = useCallback((_keyValue: string, event: React.MouseEvent | React.TouchEvent) => {
     event.preventDefault()
     
     // Clear long press timer
@@ -107,7 +122,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     setCurrentKey(null)
   }, [])
 
-  const handleKeyClick = useCallback((keyValue, event) => {
+  const handleKeyClick = useCallback((keyValue: string, event: React.MouseEvent) => {
     event.preventDefault()
     // console.log('🖱️ handleKeyClick called with:', keyValue, 'current shift state:', isShiftPressed)
     
@@ -127,7 +142,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     processKeyPress(keyValue)
   }, [popup, isShiftPressed])
 
-  const processKeyPress = (keyValue) => {
+  const processKeyPress = (keyValue: string) => {
     // console.log('🔑 processKeyPress called with:', keyValue, 'current shift state:', isShiftPressed)
     // console.log('🔍 KEYBOARD DEBUG: Key pressed:', keyValue)
     switch (keyValue) {
@@ -173,7 +188,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     }
   }
 
-  const showArchaicPopup = (keyValue, variants, keyElement) => {
+  const showArchaicPopup = (keyValue: string, variants: string[], keyElement: HTMLElement) => {
     hideArchaicPopup() // Hide any existing popup
     
     const rect = keyElement.getBoundingClientRect()
@@ -195,16 +210,16 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     setPopup(null)
   }
 
-  const handleVariantClick = (variant) => {
+  const handleVariantClick = (variant: string) => {
     onTextInput(variant)
     hideArchaicPopup()
     setCurrentKey(null)
   }
 
-  const renderRow = (keys, rowClass) => {
+  const renderRow = (keys: string[], rowClass: string) => {
     return (
       <div className={`keyboard-row ${rowClass}`}>
-        {keys.map((key, index) => (
+        {keys.map((key: string, index: number) => (
           <div
             key={`${rowClass}-${index}`}
             className={getKeyClass(key)}
@@ -251,7 +266,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
           }}
         >
-          {popup.variants.map((variant, index) => (
+          {popup.variants.map((variant: string, index: number) => (
             <div
               key={index}
               className="archaic-variant"
@@ -268,12 +283,14 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
                 transition: 'all 0.2s ease'
               }}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = 'var(--color-accent, #007acc)'
-                e.target.style.color = 'white'
+                const target = e.target as HTMLElement
+                target.style.backgroundColor = 'var(--color-accent, #007acc)'
+                target.style.color = 'white'
               }}
               onMouseLeave={(e) => {
-                e.target.style.backgroundColor = 'var(--color-background-primary, #333)'
-                e.target.style.color = 'inherit'
+                const target = e.target as HTMLElement
+                target.style.backgroundColor = 'var(--color-background-primary, #333)'
+                target.style.color = 'inherit'
               }}
             >
               <span className="korean-text">{variant}</span>
