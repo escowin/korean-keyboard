@@ -1,6 +1,6 @@
 # Archaic Korean Keyboard PWA - Complete Development Plan
 
-*Last Updated: October 11, 2025*
+*Last Updated: October 12, 2025*
 
 ## Project Overview
 
@@ -19,6 +19,8 @@ The Archaic Korean Keyboard PWA is a Progressive Web Application that provides a
 - **Responsive Design**: Works on desktop, tablet, and mobile devices
 - **Long-press Functionality**: Hold keys to access character variants
 - **Unicode Support**: Comprehensive Unicode ranges for Korean characters
+- **✅ FIXED**: ㄹ final consonant issue with archaic jamo (Unicode mapping corrected)
+- **✅ COMPLETE**: All core Korean input functionality working perfectly
 
 ### 🔄 Current Branch: `feature/frontend-keys`
 - Core Korean input processor implemented
@@ -71,7 +73,7 @@ The Archaic Korean Keyboard PWA is a Progressive Web Application that provides a
 
 ### Phase 2: Enhancement & Polish 🚧 IN PROGRESS
 **Timeline**: 2-3 weeks
-**Status**: Planning
+**Status**: Active Development
 
 #### 2.1 User Experience Improvements
 - [ ] **Keyboard Customization**
@@ -82,11 +84,14 @@ The Archaic Korean Keyboard PWA is a Progressive Web Application that provides a
   - [ ] Custom key layouts
 
 - [ ] **Advanced Input Features**
+  - [ ] **Arrow key navigation for block composition (HIGH PRIORITY)**
+  - [ ] **Text selection and copy functionality (HIGH PRIORITY)**
+  - [ ] **Fix mobile long press bug - show variants first, then select (HIGH PRIORITY)**
+  - [ ] **Number and symbol input modes (123 button) (MEDIUM PRIORITY)**
+  - [ ] **Hanja conversion functionality (emoji button replacement) (MEDIUM PRIORITY)**
   - [ ] Smart composition suggestions
   - [ ] Auto-complete for common words
   - [ ] Input method switching (한글/영어)
-  - [ ] **Number and symbol input modes (123 button)**
-  - [ ] **Hanja conversion functionality (emoji button replacement)**
   - [ ] **Middle Korean input support (Hunminjeongeum style)**
 
 - [ ] **Note Management Enhancements**
@@ -97,7 +102,57 @@ The Archaic Korean Keyboard PWA is a Progressive Web Application that provides a
   - [ ] Note templates
   - [ ] Rich text formatting (bold, italic, lists)
 
-#### 2.2 Performance Optimization
+#### 2.2 New Feature Requirements (October 2025)
+- [ ] **Arrow Key Navigation (HIGH PRIORITY)**
+  - [ ] Right arrow key ends current syllable block and starts new one
+  - [ ] Left arrow key allows editing previous syllable blocks
+  - [ ] Up/Down arrows navigate between lines in note app
+  - [ ] Visual feedback for cursor position
+  - [ ] Integration with existing syllable composition logic
+
+- [ ] **Text Selection and Copy (HIGH PRIORITY)**
+  - [ ] Mouse/touch text selection in note app
+  - [ ] Copy functionality (Ctrl+C, right-click context menu)
+  - [ ] Paste functionality (Ctrl+V, right-click context menu)
+  - [ ] Cut functionality (Ctrl+X, right-click context menu)
+  - [ ] PWA clipboard API integration
+
+- [ ] **Mobile Long Press Bug Fix (HIGH PRIORITY)**
+  - [ ] Long press shows variant popup first (no immediate character entry)
+  - [ ] User selects variant from popup
+  - [ ] Only selected variant is entered
+  - [ ] Maintain existing desktop behavior
+  - [ ] Fix `handleKeyDown` and `handleKeyUp` logic
+
+- [ ] **Number Shift Mode (MEDIUM PRIORITY)**
+  - [ ] 123 button toggles number/punctuation mode
+  - [ ] Modern numbers (0-9)
+  - [ ] Historic punctuation marks
+  - [ ] Tone marks and diacritics
+  - [ ] Modern punctuation (!@#$%^&*()_+-=[]{}|;':",./<>?)
+  - [ ] Toggle between Korean and number modes
+
+- [ ] **Hanja Button Functionality (MEDIUM PRIORITY)**
+  - [ ] Option 1: Handwriting recognition for Hanja input
+  - [ ] Option 2: Select Korean text, then click Hanja button to convert
+  - [ ] Show list of possible Hanja characters
+  - [ ] Korean-to-Hanja mapping database
+  - [ ] Integration with handwriting recognition API
+
+- [ ] **Archaic Complex Medial Input Resolution (MEDIUM PRIORITY)**
+  - [ ] Fix Unicode conversion for complex archaic medials
+  - [ ] Additional mappings in `ARCHAIC_COMPLEX_MEDIAL_MAPPINGS`
+  - [ ] Integration with existing archaic jamo system
+  - [ ] Test all complex medial combinations
+
+- [ ] **Expanded Consonant Cluster Possibilities (LOW PRIORITY)**
+  - [ ] Support all possible consonant cluster combinations
+  - [ ] Allow archaic consonant clusters
+  - [ ] Expand `COMPLEX_FINAL_TO_COMPONENTS` mapping
+  - [ ] Include all Hangul Jamo area values from [Wikipedia reference](https://en.wikipedia.org/wiki/List_of_Hangul_jamo)
+  - [ ] Integration with existing composition system
+
+#### 2.3 Performance Optimization
 - [ ] **Bundle Optimization**
   - [ ] Code splitting
   - [ ] Lazy loading components
@@ -110,7 +165,7 @@ The Archaic Korean Keyboard PWA is a Progressive Web Application that provides a
   - [ ] Battery usage optimization
   - [ ] Smooth animations
 
-#### 2.3 Accessibility & Internationalization
+#### 2.4 Accessibility & Internationalization
 - [ ] **Accessibility**
   - [ ] Screen reader support
   - [ ] Keyboard navigation
@@ -124,7 +179,7 @@ The Archaic Korean Keyboard PWA is a Progressive Web Application that provides a
   - [ ] Locale-specific formatting
   - [ ] Cultural adaptations
 
-#### 2.4 Testing & Quality Assurance
+#### 2.5 Testing & Quality Assurance
 - [ ] **Automated Testing**
   - [ ] Unit tests for Korean input logic
   - [ ] Component testing
@@ -343,8 +398,19 @@ The Archaic Korean Keyboard PWA is a Progressive Web Application that provides a
 - [x] Archaic characters accessible
 - [x] Note-taking functionality complete
 - [x] Offline functionality working
+- [x] All modern Korean syllable composition working perfectly
+- [x] Complex medial jamo (diphthongs) fully supported
+- [x] Complex final consonants fully supported
+- [x] Complex final decomposition fully supported
+- [x] ㄹ final consonant issue with archaic jamo resolved
 
 ### Phase 2 Metrics
+- [ ] **Arrow key navigation working correctly**
+- [ ] **Text selection and copy functionality working**
+- [ ] **Mobile long press bug fixed**
+- [ ] **Number shift mode implemented**
+- [ ] **Hanja button functionality working**
+- [ ] **Archaic complex medial input resolved**
 - [ ] User engagement > 70%
 - [ ] Performance score > 90
 - [ ] Accessibility score > 95

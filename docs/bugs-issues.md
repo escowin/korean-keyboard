@@ -223,10 +223,10 @@
 
 ---
 
-### 7. Archaic Initial + Medial + ㄹ Final Consonant Issue
+### 7. Archaic Initial + Medial + ㄹ Final Consonant Issue ✅ RESOLVED
 **Priority:** Medium  
-**Status:** Open  
-**Description:** When using archaic initial and medial jamo with ㄹ as the final consonant, the ㄹ doesn't render correctly in its final position.
+**Status:** Closed  
+**Description:** When using archaic initial and medial jamo with ㄹ as the final consonant, the ㄹ wasn't rendering correctly in its final position.
 
 **Expected Behavior:**
 - `△ㅗㄹ` should compose to `ᅀᅩᆯ` (archaic initial + medial + ㄹ final)
@@ -234,21 +234,201 @@
 - ㄹ should render correctly as a final consonant with archaic jamo
 
 **Actual Behavior:**
-- ㄹ final consonant doesn't render correctly when combined with archaic initial & medial
-- May become initial for next syllable instead of staying as final
-- Issue specific to ㄹ final consonant with archaic jamo combinations
+- ✅ ㄹ final consonant now renders correctly when combined with archaic initial & medial
+- ✅ Fixed Unicode mapping issue in `COMPATIBILITY_TO_HANGUL_JAMO_FINAL`
+- ✅ Changed incorrect U+3138 (ㄸ) to correct U+3139 (ㄹ) in mappings
 
 **Technical Details:**
-- Issue occurs when archaic initial + medial + ㄹ final is composed
-- May be related to Unicode mapping for ㄹ final consonant with archaic jamo
-- Could be in final consonant conversion or composition logic
-- Affects only ㄹ final consonant, other finals work correctly
+- ✅ Fixed Unicode mapping bug where ㄹ (U+3139) was incorrectly mapped using U+3138 (ㄸ)
+- ✅ Updated both `COMPATIBILITY_TO_HANGUL_JAMO_FINAL` and `COMPATIBILITY_TO_HANGUL_JAMO_INITIAL` mappings
+- ✅ Now `ᄒᆞㄹ` correctly converts to `ᄒᆞᆯ` when archaic jamo is present
+- ✅ ㄹ behaves consistently with other consonants like ㄴ in archaic contexts
+
+**Resolution:**
+- ✅ Fixed Unicode mapping in `src/utils/unicode.ts` line 70
+- ✅ Updated both initial and final consonant mappings for consistency
+- ✅ All archaic jamo + ㄹ final combinations now work correctly
 
 **Test Cases:**
-- `△ㅗㄹ` → `ᅀᅩᆯ` ❌ (ㄹ final not rendering correctly)
-- `ㆆㅏㄹ` → `ᅙᅡᆯ` ❌ (ㄹ final not rendering correctly)
-- `ㅸㅜㄹ` → `ᄫᅮᆯ` ❌ (ㄹ final not rendering correctly)
-- `△ㅏㄴ` → `ᅀᅡᆫ` ✅ (other finals work correctly)
+- `△ㅗㄹ` → `ᅀᅩᆯ` ✅ (ㄹ final now rendering correctly)
+- `ㆆㅏㄹ` → `ᅙᅡᆯ` ✅ (ㄹ final now rendering correctly)
+- `ㅸㅜㄹ` → `ᄫᅮᆯ` ✅ (ㄹ final now rendering correctly)
+- `ᄒᆞㄹ` → `ᄒᆞᆯ` ✅ (archaic medial + ㄹ final working)
+- `△ㅏㄴ` → `ᅀᅡᆫ` ✅ (other finals continue to work correctly)
+
+---
+
+## 🚀 New Feature Requirements
+
+### 8. Arrow Key Navigation for Block Composition
+**Priority:** High  
+**Status:** Open  
+**Description:** Users need the ability to end or return to block composition using arrow keys.
+
+**Expected Behavior:**
+- Right arrow key should end current syllable block and start new one
+- Next consonant should become initial regardless of previous letter position
+- Left arrow key should allow editing previous syllable blocks
+- Up/Down arrows should navigate between lines in note app
+
+**Technical Details:**
+- Need to implement arrow key event handling in keyboard component
+- Should work with both physical keyboard and on-screen keyboard
+- Must integrate with existing syllable composition logic
+- Should provide visual feedback for cursor position
+
+**Test Cases:**
+- `ㅅㅗ` + Right Arrow + `ㄱ` → `소ㄱ` (new syllable block)
+- `ㅅㅗㅎ` + Left Arrow + `ㄱ` → `소ㄱ` (edit previous block)
+
+---
+
+### 9. Text Selection and Copy Functionality
+**Priority:** High  
+**Status:** Open  
+**Description:** With OS keyboard disabled, users cannot select or copy text.
+
+**Expected Behavior:**
+- Users should be able to select text with mouse/touch
+- Copy functionality should work (Ctrl+C, right-click context menu)
+- Paste functionality should work (Ctrl+V, right-click context menu)
+- Cut functionality should work (Ctrl+X, right-click context menu)
+
+**Technical Details:**
+- Need to implement text selection in note app
+- Add keyboard shortcuts for copy/paste/cut
+- Implement context menu for right-click actions
+- Ensure compatibility with PWA clipboard API
+
+**Test Cases:**
+- Select text with mouse → Copy with Ctrl+C → Paste elsewhere
+- Right-click selected text → Copy from context menu
+- Select text → Cut with Ctrl+X → Paste elsewhere
+
+---
+
+### 10. Mobile Long Press Bug
+**Priority:** High  
+**Status:** Open  
+**Description:** Long press on mobile enters the key character immediately, then shows variants.
+
+**Expected Behavior:**
+- Long press should show variant popup first
+- User selects variant from popup
+- Only selected variant should be entered
+- No immediate character entry on long press
+
+**Actual Behavior:**
+- Long press enters base character immediately
+- Then shows variant popup
+- User selection adds additional character
+- Results in base character + selected variant
+
+**Technical Details:**
+- Issue in `handleKeyDown` and `handleKeyUp` logic
+- Need to prevent immediate character entry on long press
+- Should only enter character after variant selection or timeout
+- Must maintain existing desktop behavior
+
+**Test Cases:**
+- Long press `ㅏ` → Show variants → Select `ㅑ` → Only `ㅑ` entered
+- Long press `ㄱ` → Show variants → Select `ㄲ` → Only `ㄲ` entered
+
+---
+
+### 11. Number Shift Mode
+**Priority:** Medium  
+**Status:** Open  
+**Description:** Need a number shift mode for numbers, historic & modern punctuation, tone marks.
+
+**Expected Behavior:**
+- 123 button should toggle number/punctuation mode
+- Should include modern numbers (0-9)
+- Should include historic punctuation marks
+- Should include tone marks and diacritics
+- Should include modern punctuation (!@#$%^&*()_+-=[]{}|;':",./<>?)
+
+**Technical Details:**
+- Need to create number/punctuation keyboard layout
+- Should toggle between Korean and number modes
+- Need to map all required characters
+- Should maintain shift state for uppercase/lowercase variants
+
+**Test Cases:**
+- Press 123 → Show number layout → Press 1 → Enter "1"
+- Press 123 → Show punctuation → Press ! → Enter "!"
+- Press 123 → Show historic marks → Press appropriate key
+
+---
+
+### 12. Hanja Button Functionality
+**Priority:** Medium  
+**Status:** Open  
+**Description:** Hanja button should allow handwriting or text conversion to Chinese characters.
+
+**Expected Behavior:**
+- Option 1: Handwriting recognition for Hanja input
+- Option 2: Select Korean text, then click Hanja button to convert
+- Should show list of possible Hanja characters
+- User can select appropriate character from list
+
+**Technical Details:**
+- Need to implement Hanja conversion system
+- May require integration with handwriting recognition API
+- Need Korean-to-Hanja mapping database
+- Should work with both individual characters and words
+
+**Test Cases:**
+- Type `한국` → Select text → Click Hanja → Show `韓國` option
+- Click Hanja button → Show handwriting area → Draw character → Recognize
+
+---
+
+### 13. Archaic Complex Medial Input Resolution
+**Priority:** Medium  
+**Status:** Open  
+**Description:** Need to resolve archaic complex medial input to get correct Hangul Jamo values.
+
+**Expected Behavior:**
+- Complex archaic medials should input correctly
+- Should convert to proper Hangul Jamo Unicode values
+- Should work with archaic initial and final consonants
+- Should render as combined syllable blocks
+
+**Technical Details:**
+- Need to fix Unicode conversion for complex archaic medials
+- May need additional mappings in `ARCHAIC_COMPLEX_MEDIAL_MAPPINGS`
+- Should integrate with existing archaic jamo system
+- Need to test all complex medial combinations
+
+**Test Cases:**
+- `△ퟅㄴ` → `ᅀퟅᆫ` (complex archaic vowel)
+- `ㆆᆟㄴ` → `ᅙᆟᆫ` (complex archaic vowel)
+- `ㅸퟆㄴ` → `ᄫퟆᆫ` (complex archaic vowel)
+
+---
+
+### 14. Expanded Consonant Cluster Possibilities
+**Priority:** Low  
+**Status:** Open  
+**Description:** Allow all Hangul Jamo area values to be composed as consonant clusters.
+
+**Expected Behavior:**
+- Support all possible consonant cluster combinations
+- Allow archaic consonant clusters
+- Should work with both initial and final positions
+- Should render correctly as syllable blocks
+
+**Technical Details:**
+- Need to expand `COMPLEX_FINAL_TO_COMPONENTS` mapping
+- Should include all Hangul Jamo area values from [Wikipedia reference](https://en.wikipedia.org/wiki/List_of_Hangul_jamo)
+- May need additional Unicode mappings
+- Should integrate with existing composition system
+
+**Test Cases:**
+- Test all possible consonant cluster combinations
+- Verify archaic consonant clusters work
+- Ensure proper rendering in syllable blocks
 
 ---
 
@@ -314,7 +494,14 @@
 | Complex Final Consonants | Medium | Closed | Medium | Medium |
 | Variant Popup Position | Medium | Compromise | Low | Low |
 | Archaic Jamo Blocks | Medium | Closed | High | Medium |
-| ㄹ Final with Archaic Jamo | Medium | Open | Medium | Medium |
+| ㄹ Final with Archaic Jamo | Medium | Closed | Medium | Medium |
+| Arrow Key Navigation | High | Open | Medium | High |
+| Text Selection & Copy | High | Open | Medium | High |
+| Mobile Long Press Bug | High | Open | Low | Medium |
+| Number Shift Mode | Medium | Open | Medium | Medium |
+| Hanja Functionality | Medium | Open | High | Medium |
+| Archaic Complex Medial | Medium | Open | Medium | Medium |
+| Expanded Consonant Clusters | Low | Open | High | Low |
 | Complex Archaic Vowels | Low | Pending | Low | Low |
 | Microsoft IME Research | Low | Research | High | Low |
 
@@ -350,19 +537,25 @@ The Korean keyboard now behaves exactly like a standard Korean keyboard for all 
    - ✅ **COMPLETED**: Variant popup positioning (compromise solution implemented)
    - ✅ **COMPLETED**: Archaic vowel integration (ㆍ, ᆢ)
    - ✅ **COMPLETED**: GitHub Actions setup for PWA deployment
-   - Fix ㄹ final consonant issue with archaic initial & medial jamo
-   - Add complex archaic vowel medials (ퟅ, ᆟ, ퟆ, ᆠ, ᆡ)
+   - ✅ **COMPLETED**: ㄹ final consonant issue with archaic initial & medial jamo
+   - **NEW**: Implement arrow key navigation for block composition
+   - **NEW**: Add text selection and copy functionality
+   - **NEW**: Fix mobile long press bug (show variants first, then select)
 
 2. **Short Term (Next 2 Weeks):**
    - ✅ **COMPLETED**: All modern Korean syllable composition working perfectly
    - ✅ **COMPLETED**: App now behaves exactly like a standard Korean keyboard for modern letters
    - ✅ **COMPLETED**: Archaic jamo block composition working
-   - Resolve ㄹ final consonant rendering issue with archaic jamo
-   - Correct variant popup positioning
-   - Comprehensive testing of all archaic Korean input scenarios
+   - ✅ **COMPLETED**: ㄹ final consonant rendering issue with archaic jamo
+   - **NEW**: Implement number shift mode (123 button functionality)
+   - **NEW**: Add Hanja button functionality (handwriting or text conversion)
+   - **NEW**: Resolve archaic complex medial input for correct Hangul Jamo values
+   - Comprehensive testing of all new features
 
 3. **Medium Term (Next Month):**
    - ✅ **COMPLETED**: Archaic jamo composition working
+   - **NEW**: Expand consonant cluster possibilities using all Hangul Jamo area values
+   - **NEW**: Add complex archaic vowel medials (ퟅ, ᆟ, ퟆ, ᆠ, ᆡ)
    - Polish archaic character support
    - Advanced Korean input features (double consonants, etc.)
    - Performance optimization
@@ -371,6 +564,7 @@ The Korean keyboard now behaves exactly like a standard Korean keyboard for all 
    - Full archaic character support with all variants
    - Mobile-specific enhancements
    - Advanced Korean language features
+   - Cross-platform integration (iOS/Android keyboards)
 
 ## 🧪 Testing Strategy
 
@@ -408,8 +602,9 @@ The Korean keyboard now behaves exactly like a standard Korean keyboard for all 
 - `ㅸㅏㄴ` → `ᄫᅡᆫ` ✅ (working)
 - `ㅱㅏㄴ` → `ᄝᅡᆫ` ✅ (working)
 - `ㅥㅏㄴ` → `ᄔᅡᆫ` ✅ (working)
-- `△ㅗㄹ` → `ᅀᅩᆯ` ❌ (ㄹ final issue)
-- `ㆆㅏㄹ` → `ᅙᅡᆯ` ❌ (ㄹ final issue)
+- `△ㅗㄹ` → `ᅀᅩᆯ` ✅ (ㄹ final issue fixed)
+- `ㆆㅏㄹ` → `ᅙᅡᆯ` ✅ (ㄹ final issue fixed)
+- `ᄒᆞㄹ` → `ᄒᆞᆯ` ✅ (archaic medial + ㄹ final working)
 
 ## 📝 Notes
 
@@ -424,12 +619,13 @@ The Korean keyboard now behaves exactly like a standard Korean keyboard for all 
 - ✅ **ARCHAIC JAMO MILESTONE**: All archaic jamo now working with corrected Unicode mappings
 - ✅ **ARCHAIC JAMO COMPLETE**: All archaic initial consonants working (△, ㆆ, ㆁ, ꥼ, ㅱ, ㅥ, ㆀ, ᄙ, ㆅ, ㅸ, ㅹ, etc.)
 - ✅ Archaic jamo render as combined blocks when typed
-- ✅ Reverted to working commit f144619 with stable archaic jamo support
-- ⚠️ Only remaining issue: ㄹ final consonant with archaic initial & medial jamo
+- ✅ **FIXED**: ㄹ final consonant issue with archaic initial & medial jamo (Unicode mapping corrected)
+- ✅ **NEW MILESTONE**: All core Korean input functionality complete - ready for advanced features
+- **NEW FOCUS**: User experience improvements and advanced input features
 - All issues should be tested across different browsers
 - Consider implementing a test suite for Korean input scenarios
 - Console logging is working correctly (user had console filter set to 'errors' only)
-- Next focus: Fix ㄹ final consonant issue and variant popup positioning
+- Next focus: Arrow key navigation, text selection, mobile UX improvements, and number/Hanja modes
 
 ---
 
