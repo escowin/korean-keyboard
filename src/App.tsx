@@ -170,7 +170,27 @@ function App() {
         console.log('🔍 ARCHAIC: Composed content:', composedContent)
         
         // Check if the composed content contains archaic jamo that need special handling
-        const hasArchaicJamo = composedContent.includes('ᅀ') || composedContent.includes('ᅠ') || composedContent.includes('ᆫ')
+        console.log('🔍 ARCHAIC: Checking for archaic jamo in:', composedContent)
+        console.log('🔍 ARCHAIC: Composed content length:', composedContent.length)
+        console.log('🔍 ARCHAIC: Character breakdown:')
+        composedContent.split('').forEach((char, index) => {
+          const code = char.charCodeAt(0)
+          console.log(`  ${index}: "${char}" = U+${code.toString(16).toUpperCase().padStart(4, '0')} (${code})`)
+        })
+        
+        console.log('🔍 ARCHAIC: Contains ᅀ:', composedContent.includes('ᅀ'))
+        console.log('🔍 ARCHAIC: Contains ᅠ:', composedContent.includes('ᅠ'))
+        console.log('🔍 ARCHAIC: Contains ᆫ:', composedContent.includes('ᆫ'))
+        
+        // Check if we have archaic jamo by looking for specific Unicode ranges
+        // Archaic jamo are typically in the range 0x1140+ (outside standard composition range)
+        const hasArchaicJamo = composedContent.split('').some(char => {
+          const code = char.charCodeAt(0)
+          // Check for archaic initial consonants (0x1140+)
+          return code >= 0x1140 && code <= 0x114F
+        })
+        
+        console.log('🔍 ARCHAIC: Has archaic jamo:', hasArchaicJamo)
         
         if (hasArchaicJamo) {
           console.log('🔍 ARCHAIC: Archaic jamo detected, using InsertText with Hangul Jamo conversion')
