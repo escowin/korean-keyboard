@@ -17,7 +17,7 @@ import type {
 
 import { 
   UNICODE_RANGES, 
-  ARCHAIC_MAPPINGS,
+  VARIANT_MAPPINGS,
   composeSyllable,
   isConsonant,
   isVowel
@@ -100,7 +100,7 @@ export class KoreanInputProcessor {
    * @returns Array of variants
    */
   public getArchaicVariants(char: string): string[] {
-    return ARCHAIC_MAPPINGS[char] || [char];
+    return VARIANT_MAPPINGS[char] || [char];
   }
 
   /**
@@ -260,7 +260,7 @@ export class KoreanInputProcessor {
 
   private isArchaicCharacter(char: string): boolean {
     // Check if character is in archaic mappings
-    for (const variants of Object.values(ARCHAIC_MAPPINGS)) {
+    for (const variants of Object.values(VARIANT_MAPPINGS)) {
       if (variants.includes(char) && variants[0] !== char) {
         return true;
       }

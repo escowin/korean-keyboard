@@ -9,7 +9,7 @@ export {
   KEYBOARD_LAYOUT, 
   SHIFT_MAPPINGS, 
   ARCHAIC_TO_MODERN_MAPPING, 
-  ARCHAIC_MAPPINGS,
+  VARIANT_MAPPINGS,
   getArchaicVariants,
   getShiftedCharacter
 } from './keyboardLayout.js'

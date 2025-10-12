@@ -197,7 +197,7 @@ korean-keyboard/
 ### Adding New Features
 
 1. **New Archaic Characters**:
-   - Add to `ARCHAIC_MAPPINGS` in `koreanKeyboard.js`
+   - Add to `VARIANT_MAPPINGS` in `koreanKeyboard.js`
    - Update Unicode ranges if needed
    - Test composition logic
 

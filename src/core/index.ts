@@ -17,7 +17,7 @@ export type {
   KoreanPosition,
   KoreanCharacterType,
   KeyboardLayout,
-  ArchaicMappings,
+  VariantMappings,
   KoreanUnicodeRanges,
   KeyboardEventHandlers,
   Note,
@@ -31,7 +31,7 @@ export type {
 // Utilities (re-exported for convenience)
 export {
   KEYBOARD_LAYOUT,
-  ARCHAIC_MAPPINGS,
+  VARIANT_MAPPINGS,
   UNICODE_RANGES,
   composeSyllable,
   isConsonant,

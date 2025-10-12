@@ -66,9 +66,11 @@ export const UNICODE_RANGES: KoreanUnicodeRanges = {
   
   // Archaic initial consonants (some can be used in syllable composition)
   ARCHAIC_INITIAL_CONSONANTS: {
-    'ㅸ': 0x1170, 'ㅿ': 0x113F, 'ㆆ': 0x1146, 'ᅎ': 0x114E, 'ᅏ': 0x114F, 
-    'ᅐ': 0x1150, 'ᅑ': 0x1151, 'ᄔ': 0x1114, 'ᅇ': 0x1115, 'ᄙ': 0x1116, 
-    'ᄼ': 0x113C, 'ᄾ': 0x113E, 'ᅙ': 0x1155
+    'ㅥ': 0x1114, 'ᄙ': 0x1119, 'ㅱ': 0x111D, 'ㅸ': 0x112B, 'ㅹ': 0x112C, 
+    'ᄼ': 0x113C, 'ᄽ': 0x113D, 'ᄾ': 0x113E, 'ᄿ': 0x113F, 'ㅿ': 0x1140, 
+    'ㆀ': 0x1147, 'ㆁ': 0x114C, 'ᅎ': 0x114E, 'ᅏ': 0x114F, 'ᅐ': 0x1150, 
+    'ᅑ': 0x1151, 'ᅔ': 0x1154, 'ᅕ': 0x1155, 'ㆄ': 0x1157, 'ㆅ': 0x1158, 
+    'ㆆ': 0x1159, 'ꥼ': 0xA97C
   },
   
   // Medial vowels (중성)
@@ -88,7 +90,10 @@ export const UNICODE_RANGES: KoreanUnicodeRanges = {
     'ㅀ': 0x11B6, 'ㅁ': 0x11B7, 'ㅂ': 0x11B8, 'ㅃ': 0x11B8, 'ㅄ': 0x11B9, 
     'ㅅ': 0x11BA, 'ㅆ': 0x11BB, 'ㅇ': 0x11BC, 'ㅈ': 0x11BD, 'ㅉ': 0x11BD, 
     'ㅊ': 0x11BE, 'ㅋ': 0x11BF, 'ㅌ': 0x11C0, 'ㅍ': 0x11C1, 'ㅎ': 0x11C2,
-    'ㅸ': 0x11B9, 'ㅿ': 0x11BF, 'ㆆ': 0x11C7
+
+    // Archaic finals: note, not every archaic jamo has a final position
+    'ㅥ': 0x11FF, 'ㅱ': 0x11E2, 'ㅸ': 0x11E6, 'ㅿ': 0x11EB, 'ㆁ': 0x11F0, 
+    'ㆄ': 0x11F4, 'ㆆ': 0x11C2,
   }
 }
 

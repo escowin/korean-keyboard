@@ -3,13 +3,13 @@
  * Handles Dubeolsik layout, shift mappings, and archaic variants
  */
 
-import type { KeyboardLayout, ArchaicMappings } from '../types/korean.js';
+import type { KeyboardLayout, VariantMappings } from '../types/korean.js';
 
 // Dubeolsik keyboard layout based on the image
 export const KEYBOARD_LAYOUT: KeyboardLayout = {
-  row1: ['ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅛ', 'ㅕ', 'ㅑ', 'ㅐ', 'ㅔ'],
-  row2: ['ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ', 'ㆍ'],
-  row3: ['shift', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅠ', 'ㅜ', 'ㅡ', 'backspace'],
+  row1: ['ㅿ', 'ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅛ', 'ㅕ', 'ㅑ', 'ㅐ', 'ㅔ'],
+  row2: ['ㆆ', 'ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ', 'ㆍ'],
+  row3: ['shift','ㆁ', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅠ', 'ㅜ', 'ㅡ', 'backspace'],
   row4: ['123', 'emoji', 'space', 'enter']
 }
 
@@ -20,35 +20,37 @@ export const SHIFT_MAPPINGS: Record<string, string> = {
   'ㅐ': 'ㅒ', 'ㅔ': 'ㅖ',
   
   // Archaic variants unique to this keyboard
-  'ㄴ': 'ᄔ', 'ㄹ': 'ᄙ', 'ㅇ': 'ᅇ', 'ㅎ': 'ᅘ', 'ㆍ': 'ᆢ'
+  'ㄴ': 'ㅥ', 'ㄹ': 'ᄙ', 'ㅇ': 'ㆀ', 'ㅎ': 'ㆅ', 
+  'ㆆ' : 'ꥼ', 'ㅁ': 'ㅱ', 'ㅍ': 'ㆄ', 'ㆍ': 'ᆢ'
 }
 
 // Mapping from archaic consonants to modern equivalents for composition
 export const ARCHAIC_TO_MODERN_MAPPING: Record<string, string> = {
-  'ㅸ': 'ㅂ', 'ㅿ': 'ㅅ', 'ㆆ': 'ㅇ', 'ᅎ': 'ㅈ', 'ᅏ': 'ㅈ', 
-  'ᅐ': 'ㅈ', 'ᅑ': 'ㅈ', 'ᄔ': 'ㄴ', 'ᅇ': 'ㅇ', 'ᄙ': 'ㄹ', 
-  'ᄼ': 'ㅅ', 'ᄾ': 'ㅅ', 'ᅙ': 'ㅎ'
+  'ㅸ': 'ㅂ', 'ㅹ': 'ㅂ', 'ᅐ': 'ㅈ', 'ᅑ': 'ㅈ', 'ᅎ': 'ㅈ', 'ᅏ': 'ㅈ',
+  'ᄼ': 'ㅅ', 'ᄾ': 'ㅅ', 'ㅱ': 'ㅁ', 'ᄔ': 'ㄴ', 'ᄙ': 'ㄹ',
+  'ㆀ': 'ㅇ', 'ㆅ': 'ㅎ', 'ᅔ': 'ㅊ', 'ᅕ': 'ㅊ',
+  'ㆄ': 'ㅍ'
 }
 
-// Archaic letter mappings for long-press functionality
-export const ARCHAIC_MAPPINGS: ArchaicMappings = {
-  // Consonants with archaic variants
+// Variant letter mappings for long-press functionality
+export const VARIANT_MAPPINGS: VariantMappings = {
+  // Consonants
   'ㅂ': ['ㅂ', 'ㅃ', 'ㅸ', 'ㅹ'],
   'ㅈ': ['ㅈ', 'ㅉ', 'ᅎ', 'ᅐ', 'ᅏ', 'ᅑ'],
   'ㄷ': ['ㄷ', 'ㄸ'],
   'ㄱ': ['ㄱ', 'ㄲ'],
-  'ㅅ': ['ㅅ', 'ㅆ', 'ㅿ', 'ᄼ', 'ᄾ','ᄽ', 'ᄿ'],
+  'ㅅ': ['ㅅ', 'ㅆ', 'ᄼ', 'ᄾ','ᄽ', 'ᄿ'],
   'ㅁ': ['ㅁ', 'ㅱ'],
   'ㄴ': ['ㄴ', 'ㅥ'],
-  'ㅇ': ['ㅇ', 'ㆁ', 'ᅇ'],
+  'ㅇ': ['ㅇ', 'ㆀ'],
   'ㄹ': ['ㄹ', 'ᄙ'],
-  'ㅎ': ['ㅎ', 'ㆆ', 'ㆅ'],
+  'ㅎ': ['ㅎ', 'ㆅ'],
   'ㅋ': ['ㅋ'],
   'ㅌ': ['ㅌ'],
   'ㅊ': ['ㅊ', 'ᅔ', 'ᅕ'],
   'ㅍ': ['ㅍ', 'ㆄ'],
   
-  // Vowels with archaic variants
+  // Vowels
   'ㅏ': ['ㅏ'],
   'ㅑ': ['ㅑ'],
   'ㅓ': ['ㅓ'],
@@ -79,7 +81,7 @@ export const ARCHAIC_MAPPINGS: ArchaicMappings = {
  * @returns Array of variants including the base character
  */
 export function getArchaicVariants(char: string): string[] {
-  return ARCHAIC_MAPPINGS[char] || [char]
+  return VARIANT_MAPPINGS[char] || [char]
 }
 
 /**

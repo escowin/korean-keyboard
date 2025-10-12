@@ -48,7 +48,7 @@ export interface KoreanUnicodeRanges {
 }
 
 // Archaic character mappings
-export type ArchaicMappings = Record<string, string[]>;
+export type VariantMappings = Record<string, string[]>;
 
 // Keyboard event handlers
 export interface KeyboardEventHandlers {
