@@ -552,6 +552,7 @@ export function processKoreanInput(input: string): string {
   
   let result = ''
   let currentSyllable = { initial: '', medial: '', final: '' }
+  let previousFinalConsonant = ''
   
   for (let i = 0; i < input.length; i++) {
     const char = input[i]
@@ -566,6 +567,7 @@ export function processKoreanInput(input: string): string {
       if (currentSyllable.initial) {
         result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
         currentSyllable = { initial: '', medial: '', final: '' }
+        previousFinalConsonant = ''
       }
       
       // Decompose the syllable
@@ -588,16 +590,25 @@ export function processKoreanInput(input: string): string {
             currentSyllable = { initial: decomposed.initial, medial: decomposed.medial, final: complexFinal }
             console.log(`   ✅ Formed complex final "${decomposed.final}" + "${nextChar}" = "${complexFinal}"`)
             i++ // Skip the next character since we used it
-          } else {
-            // Cannot form complex final, complete current syllable
+        } else {
+          // Cannot form complex final, check if next character is a vowel
+          if (i < input.length - 1 && isVowel(input[i + 1])) {
+            // Next character is a vowel, complete current syllable and store final consonant
             result += char
+            previousFinalConsonant = decomposed.final
+            console.log(`   ✅ Syllable "${char}" complete, storing final consonant "${decomposed.final}" for next syllable`)
+          } else {
+            // No vowel follows, complete current syllable
+            result += char
+            previousFinalConsonant = ''
             console.log(`   ✅ Syllable "${char}" already complete, adding to result`)
           }
-        } else {
-          // No more characters, complete current syllable
-          result += char
-          console.log(`   ✅ Syllable "${char}" already complete, adding to result`)
         }
+      } else {
+        // No more characters, complete current syllable
+        result += char
+        console.log(`   ✅ Syllable "${char}" already complete, adding to result`)
+      }
       }
     } else if (isConsonant(char)) {
       if (currentSyllable.initial && currentSyllable.medial) {
@@ -665,9 +676,17 @@ export function processKoreanInput(input: string): string {
           currentSyllable.medial = char
         }
       } else {
-        // Standalone vowel
-        console.log(`   ✅ Standalone vowel "${char}"`)
-        result += char
+        // Check if we have a previous final consonant to use as initial
+        if (previousFinalConsonant) {
+          // Start new syllable with previous final consonant as initial
+          currentSyllable = { initial: previousFinalConsonant, medial: char, final: '' }
+          previousFinalConsonant = ''
+          console.log(`   ✅ Starting new syllable with previous final "${currentSyllable.initial}" + "${char}"`)
+        } else {
+          // Standalone vowel
+          console.log(`   ✅ Standalone vowel "${char}"`)
+          result += char
+        }
       }
     } else {
       // Non-Korean character, complete current syllable if any
@@ -675,6 +694,7 @@ export function processKoreanInput(input: string): string {
       if (currentSyllable.initial) {
         result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
         currentSyllable = { initial: '', medial: '', final: '' }
+        previousFinalConsonant = ''
       }
       result += char
     }
