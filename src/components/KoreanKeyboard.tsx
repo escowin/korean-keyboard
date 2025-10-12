@@ -177,13 +177,14 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
     hideArchaicPopup() // Hide any existing popup
     
     const rect = keyElement.getBoundingClientRect()
-    const calculatedBottom = window.innerHeight - rect.top + 5 // Just 5px above the key
+    const gapAboveKey = 10
     
     const popupElement = {
       keyValue,
       variants,
       position: {
-        bottom: calculatedBottom
+        bottom: window.innerHeight - rect.top + gapAboveKey
+        // No left positioning - let CSS handle centering
       }
     }
     
@@ -238,6 +239,8 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }) => {
           style={{
             position: 'fixed',
             bottom: `${popup.position.bottom}px`,
+            left: '50%',
+            transform: 'translateX(-50%)',
             zIndex: 1000,
             display: 'flex',
             gap: '4px',
