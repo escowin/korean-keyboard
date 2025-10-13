@@ -165,79 +165,6 @@ export const ARCHAIC_CONSONANT_MAPPINGS: { [key: string]: { initial: string, fin
   [String.fromCharCode(0xA97C)]: { initial: String.fromCharCode(0xA97C) }, // ꥼ → ꥼ
 }
 
-// Legacy mapping for backward compatibility (will be deprecated)
-export const COMPATIBILITY_TO_HANGUL_JAMO: { [key: string]: string } = {
-  // Archaic initial consonants (Compatibility Jamo to Hangul Jamo)
-  [String.fromCharCode(0x317F)]: String.fromCharCode(0x1140), // △ → ᅀ (archaic initial consonant)
-  [String.fromCharCode(0x3186)]: String.fromCharCode(0x1159), // ㆆ → ᅙ (archaic initial consonant)
-  [String.fromCharCode(0x3181)]: String.fromCharCode(0x114C), // ㆁ → ᅌ (archaic initial consonant)
-  [String.fromCharCode(0xA97C)]: String.fromCharCode(0xA97C), // ꥼ → ꥼ (archaic initial consonant)
-  [String.fromCharCode(0x3171)]: String.fromCharCode(0x111D), // ㅱ → ᄝ (archaic initial consonant)
-  [String.fromCharCode(0x3165)]: String.fromCharCode(0x1114), // ㅥ → ᄔ (archaic initial consonant)
-  [String.fromCharCode(0x3180)]: String.fromCharCode(0x1147), // ㆀ → ᅇ (archaic initial consonant)
-  [String.fromCharCode(0x1119)]: String.fromCharCode(0x1119), // ᄙ → ᄙ (archaic initial consonant)
-  [String.fromCharCode(0x3185)]: String.fromCharCode(0x1158), // ㆅ → ᅘ (archaic initial consonant)
-  [String.fromCharCode(0x3178)]: String.fromCharCode(0x112B), // ㅸ → ᄫ (archaic initial consonant)
-  [String.fromCharCode(0x3179)]: String.fromCharCode(0x112C), // ㅹ → ᄬ (archaic initial consonant)
-  [String.fromCharCode(0x111C)]: String.fromCharCode(0x111C), // ᄼ → ᄼ (archaic initial consonant)
-  [String.fromCharCode(0x111E)]: String.fromCharCode(0x111E), // ᄾ → ᄾ (archaic initial consonant)
-  [String.fromCharCode(0x111D)]: String.fromCharCode(0x111D), // ᄽ → ᄽ (archaic initial consonant)
-  [String.fromCharCode(0x111F)]: String.fromCharCode(0x111F), // ᄿ → ᄿ (archaic initial consonant)
-  [String.fromCharCode(0x114E)]: String.fromCharCode(0x114E), // ᅎ → ᅎ (archaic initial consonant)
-  [String.fromCharCode(0x1150)]: String.fromCharCode(0x1150), // ᅐ → ᅐ (archaic initial consonant)
-  [String.fromCharCode(0x114F)]: String.fromCharCode(0x114F), // ᅏ → ᅏ  (archaic initial consonant)
-  [String.fromCharCode(0x1151)]: String.fromCharCode(0x1151), // ᅑ → ᅑ (archaic initial consonant)
-  
-  // Medial vowels
-  [String.fromCharCode(0x314F)]: String.fromCharCode(0x1161), // ㅏ → ᅡ
-  [String.fromCharCode(0x3150)]: String.fromCharCode(0x1162), // ㅐ → ᅢ
-  [String.fromCharCode(0x3151)]: String.fromCharCode(0x1163), // ㅑ → ᅣ
-  [String.fromCharCode(0x3152)]: String.fromCharCode(0x1164), // ㅒ → ᅤ
-  [String.fromCharCode(0x3153)]: String.fromCharCode(0x1165), // ㅓ → ᅥ
-  [String.fromCharCode(0x3154)]: String.fromCharCode(0x1166), // ㅔ → ᅦ
-  [String.fromCharCode(0x3155)]: String.fromCharCode(0x1167), // ㅕ → ᅧ
-  [String.fromCharCode(0x3156)]: String.fromCharCode(0x1168), // ㅖ → ᅨ
-  [String.fromCharCode(0x3157)]: String.fromCharCode(0x1169), // ㅗ → ᅩ
-  [String.fromCharCode(0x3158)]: String.fromCharCode(0x116A), // ㅘ → ᅪ
-  [String.fromCharCode(0x3159)]: String.fromCharCode(0x116B), // ㅙ → ᅫ
-  [String.fromCharCode(0x315A)]: String.fromCharCode(0x116C), // ㅚ → ᅬ
-  [String.fromCharCode(0x315B)]: String.fromCharCode(0x116D), // ㅛ → ᅭ
-  [String.fromCharCode(0x315C)]: String.fromCharCode(0x116E), // ㅜ → ᅮ
-  [String.fromCharCode(0x315D)]: String.fromCharCode(0x116F), // ㅝ → ᅯ
-  [String.fromCharCode(0x315E)]: String.fromCharCode(0x1170), // ㅞ → ᅰ
-  [String.fromCharCode(0x315F)]: String.fromCharCode(0x1171), // ㅟ → ᅱ
-  [String.fromCharCode(0x3160)]: String.fromCharCode(0x1172), // ㅠ → ᅲ
-  [String.fromCharCode(0x3161)]: String.fromCharCode(0x1173), // ㅡ → ᅳ
-  [String.fromCharCode(0x3162)]: String.fromCharCode(0x1174), // ㅢ → ᅴ
-  [String.fromCharCode(0x3163)]: String.fromCharCode(0x1175), // ㅣ → ᅵ
-  
-  // Archaic medial vowels
-  [String.fromCharCode(0x318D)]: String.fromCharCode(0x119E), // ㆍ → ᆞ (archaic medial vowel)
-  [String.fromCharCode(0x11A2)]: String.fromCharCode(0x11A2), // ᆢ → ᆢ (archaic medial vowel)
-  
-  // Initial consonants (prefer initial forms for compatibility jamo)
-  [String.fromCharCode(0x3131)]: String.fromCharCode(0x1100), // ㄱ → ᄀ
-  [String.fromCharCode(0x3132)]: String.fromCharCode(0x1101), // ㄲ → ᄁ
-  [String.fromCharCode(0x3134)]: String.fromCharCode(0x1102), // ㄴ → ᄂ
-  [String.fromCharCode(0x3137)]: String.fromCharCode(0x1103), // ㄷ → ᄃ
-  [String.fromCharCode(0x3139)]: String.fromCharCode(0x1105), // ㄹ → ᄅ
-  [String.fromCharCode(0x3141)]: String.fromCharCode(0x1106), // ㅁ → ᄆ
-  [String.fromCharCode(0x3142)]: String.fromCharCode(0x1107), // ㅂ → ᄇ
-  [String.fromCharCode(0x3143)]: String.fromCharCode(0x1108), // ㅃ → ᄈ
-  [String.fromCharCode(0x3145)]: String.fromCharCode(0x1109), // ㅅ → ᄉ
-  [String.fromCharCode(0x3146)]: String.fromCharCode(0x110A), // ㅆ → ᄊ
-  [String.fromCharCode(0x3147)]: String.fromCharCode(0x110B), // ㅇ → ᄋ
-  [String.fromCharCode(0x3148)]: String.fromCharCode(0x110C), // ㅈ → ᄌ
-  [String.fromCharCode(0x3149)]: String.fromCharCode(0x110E), // ㅊ → ᄎ
-  [String.fromCharCode(0x314A)]: String.fromCharCode(0x110F), // ㅋ → ᄏ
-  [String.fromCharCode(0x314B)]: String.fromCharCode(0x1110), // ㅌ → ᄐ
-  [String.fromCharCode(0x314C)]: String.fromCharCode(0x1111), // ㅍ → ᄑ
-  [String.fromCharCode(0x314D)]: String.fromCharCode(0x1112), // ㅎ → ᄒ
-  
-  // Archaic final consonants
-  [String.fromCharCode(0x11EB)]: String.fromCharCode(0x11EB), // ᇫ → ᇫ (archaic final consonant)
-  [String.fromCharCode(0x25B2)]: String.fromCharCode(0x11EB), // ▲ → ᇫ (triangle to archaic final consonant)
-}
 
 // Archaic complex medial mappings (ㆍ + vowel combinations)
 export const ARCHAIC_COMPLEX_MEDIAL_MAPPINGS: { [key: string]: string } = {
@@ -510,9 +437,12 @@ export function convertCompatibilityToHangulJamo(text: string, preferInitial: bo
       if (finalChar) return finalChar
     }
     
-    // Fallback to legacy mapping
-    const hangulChar = COMPATIBILITY_TO_HANGUL_JAMO[char]
-    return hangulChar || char // Return original if no mapping exists
+    // Fallback to vowel mapping
+    const vowelChar = COMPATIBILITY_TO_HANGUL_JAMO_VOWEL[char]
+    if (vowelChar) return vowelChar
+    
+    // Return original if no mapping exists
+    return char
   }).join('')
 }
 
@@ -544,9 +474,12 @@ export function convertCompatibilityToHangulJamoContextAware(text: string): stri
       if (initialChar) return initialChar
     }
     
-    // Fallback to legacy mapping
-    const hangulChar = COMPATIBILITY_TO_HANGUL_JAMO[char]
-    return hangulChar || char
+    // Fallback to vowel mapping
+    const vowelChar = COMPATIBILITY_TO_HANGUL_JAMO_VOWEL[char]
+    if (vowelChar) return vowelChar
+    
+    // Return original if no mapping exists
+    return char
   }).join('')
 }
 
@@ -620,16 +553,18 @@ export function convertToHangulJamoFinal(char: string): string {
  * @returns Hangul Jamo character or original if no mapping exists
  */
 export function convertToHangulJamoMedial(char: string): string {
-  // Medial vowels mapping (already correct in the existing mapping)
-  const hangulChar = COMPATIBILITY_TO_HANGUL_JAMO[char]
-  return hangulChar || char
+  // Use the dedicated vowel mapping
+  const vowelChar = COMPATIBILITY_TO_HANGUL_JAMO_VOWEL[char]
+  return vowelChar || char
 }
 
 /**
  * Check if a character is a Compatibility Jamo that should be converted
  */
 export function isCompatibilityJamo(char: string): boolean {
-  return char in COMPATIBILITY_TO_HANGUL_JAMO
+  return char in COMPATIBILITY_TO_HANGUL_JAMO_INITIAL ||
+         char in COMPATIBILITY_TO_HANGUL_JAMO_FINAL ||
+         char in COMPATIBILITY_TO_HANGUL_JAMO_VOWEL
 }
 
 /**
