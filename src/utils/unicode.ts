@@ -267,7 +267,6 @@ export function isVowel(char: string): boolean {
          (code >= 0xD7C5 && code <= 0xD7C6)    // Extended archaic vowels
 }
 
-
 /**
  * Get the Unicode code for an initial consonant
  * @param char - Jamo character

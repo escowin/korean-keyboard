@@ -8,7 +8,6 @@
 export { 
   KEYBOARD_LAYOUT, 
   SHIFT_MAPPINGS, 
-  ARCHAIC_TO_MODERN_MAPPING, 
   VARIANT_MAPPINGS,
   getVariants,
   getShiftedCharacter

@@ -9,7 +9,6 @@ import {
   COMPLEX_FINAL_DECOMPOSITION
 } from './unicode.js'
 
-
 /**
  * Compose Korean syllable as Hangul Jamo sequence
  * Simplified approach: always return Hangul Jamo sequences and let browser render as blocks
