@@ -263,19 +263,9 @@ export function processKoreanInput(input: string): string {
           currentSyllable.medial = char
         }
       } else {
-        // Check if we have a previous final consonant to use as initial
-        if (previousFinalConsonant) {
-          // Convert final consonant to initial consonant
-          const initialConsonant = convertFinalToInitial(previousFinalConsonant)
-          // Start new syllable with converted initial consonant
-          currentSyllable = { initial: initialConsonant, medial: char, final: '' }
-          previousFinalConsonant = ''
-          console.log(`   ✅ Starting new syllable with converted initial "${currentSyllable.initial}" + "${char}"`)
-        } else {
-          // Standalone vowel
-          console.log(`   ✅ Standalone vowel "${char}"`)
-          result += char
-        }
+        // Standalone vowel - with simplified approach, we don't need to handle previous final consonants
+        console.log(`   ✅ Standalone vowel "${char}"`)
+        result += char
       }
     } else {
       // Non-Korean character, complete current syllable if any
@@ -283,7 +273,6 @@ export function processKoreanInput(input: string): string {
       if (currentSyllable.initial) {
         result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
         currentSyllable = { initial: '', medial: '', final: '' }
-        previousFinalConsonant = ''
       }
       result += char
     }
