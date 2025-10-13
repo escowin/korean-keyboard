@@ -241,7 +241,15 @@ export function processKoreanInput(input: string): string {
           // Cannot form complex medial, complete current syllable and start new one
           console.log(`   ✅ Cannot form complex medial, completing syllable and starting new with "${char}"`)
           result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
-          currentSyllable = { initial: '', medial: char, final: '' }
+          
+          // If we had a final consonant, convert it to initial for the new syllable
+          if (currentSyllable.final) {
+            const initialConsonant = convertFinalToInitial(currentSyllable.final)
+            currentSyllable = { initial: initialConsonant, medial: char, final: '' }
+            console.log(`   ✅ Converted final "${currentSyllable.final}" to initial "${initialConsonant}" for new syllable`)
+          } else {
+            currentSyllable = { initial: '', medial: char, final: '' }
+          }
         }
       } else if (currentSyllable.initial) {
         // Check if we can form a complex medial with existing medial
