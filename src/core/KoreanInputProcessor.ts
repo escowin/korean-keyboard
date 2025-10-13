@@ -269,11 +269,16 @@ export class KoreanInputProcessor {
   }
 
   private hasKorean(text: string): boolean {
-    return /[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7AF]/.test(text);
+    // With simplified approach, we only work with Hangul Jamo and Compatibility Jamo
+    return /[\u1100-\u11FF\u3130-\u318F]/.test(text);
   }
 
   private countSyllables(text: string): number {
-    return (text.match(/[\uAC00-\uD7AF]/g) || []).length;
+    // With simplified Hangul Jamo approach, we don't have precomposed syllables to count
+    // The browser renders Hangul Jamo sequences as syllable blocks visually
+    // For compatibility with the interface, return 0 since we can't accurately count syllables
+    // without parsing the jamo sequence structure
+    return 0;
   }
 
   private createResult(processedText: string, hasKorean: boolean, syllablesComposed: number): KoreanInputResult {
