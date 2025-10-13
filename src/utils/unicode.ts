@@ -1,189 +1,263 @@
 /**
  * Korean Unicode Utilities
- * Handles Unicode ranges, mappings, and character type detection
+ * Unified table-based approach for all Korean characters
+ * All characters convert from Hangul Compatibility to Hangul Jamo Area
  */
 
 import type { KoreanUnicodeRanges } from '../types/korean.js';
 
-// Mapping from final consonants to their corresponding initial consonants
-export const FINAL_TO_INITIAL_MAPPING: { [key: string]: string } = {
-  [String.fromCharCode(0x11A8)]: String.fromCharCode(0x1100), // ᆨ → ᄀ (ㄱ)
-  [String.fromCharCode(0x11B0)]: String.fromCharCode(0x1100), // ᆰ → ᄀ (ㄱ)
-  [String.fromCharCode(0x11A9)]: String.fromCharCode(0x1101), // ᆩ → ᄁ (ㄲ)
-  [String.fromCharCode(0x11AB)]: String.fromCharCode(0x1102), // ᆫ → ᄂ (ㄴ)
-  [String.fromCharCode(0x11AE)]: String.fromCharCode(0x1103), // ᆮ → ᄃ (ㄷ)
-  [String.fromCharCode(0xD7CD)]: String.fromCharCode(0x1103), // ퟍ → ᄃ (ㄷ)
-  [String.fromCharCode(0x11AF)]: String.fromCharCode(0x1105), // ᆯ → ᄅ (ㄹ)
-  [String.fromCharCode(0x11B7)]: String.fromCharCode(0x1106), // ᆷ → ᄆ (ㅁ)
-  [String.fromCharCode(0x11B1)]: String.fromCharCode(0x1106), // ᆱ → ᄆ (ㅁ)
-  [String.fromCharCode(0x11B8)]: String.fromCharCode(0x1107), // ᆸ → ᄇ (ㅂ)
-  [String.fromCharCode(0x11B2)]: String.fromCharCode(0x1107), // ᆲ → ᄇ (ㅂ)
-  [String.fromCharCode(0xD7E6)]: String.fromCharCode(0x1107), // ퟦ → ᄇ (ㅂ)
-  [String.fromCharCode(0x11BA)]: String.fromCharCode(0x1109), // ᆺ → ᄉ (ㅅ)
-  [String.fromCharCode(0x11AA)]: String.fromCharCode(0x1109), // ᆪ → ᄉ (ㅅ)
-  [String.fromCharCode(0x11B3)]: String.fromCharCode(0x1109), // ᆳ → ᄉ (ㅅ)
-  [String.fromCharCode(0x11B9)]: String.fromCharCode(0x1109), // ᆹ → ᄉ (ㅅ)
-  [String.fromCharCode(0x11BB)]: String.fromCharCode(0x1109), // ᆻ → ᄉ (ㅅ)
-  [String.fromCharCode(0x11BC)]: String.fromCharCode(0x110B), // ᆼ → ᄋ (ㅇ)
-  [String.fromCharCode(0x11BD)]: String.fromCharCode(0x110C), // ᆽ → ᄌ (ㅈ)
-  [String.fromCharCode(0x11AC)]: String.fromCharCode(0x110C), // ᆬ → ᄌ (ㅈ)
-  [String.fromCharCode(0x11BE)]: String.fromCharCode(0x110E), // ᆾ → ᄎ (ㅊ)
-  [String.fromCharCode(0x11BF)]: String.fromCharCode(0x110F), // ᆿ → ᄏ (ㅋ)
-  [String.fromCharCode(0x11C0)]: String.fromCharCode(0x1110), // ᇀ → ᄐ (ㅌ)
-  [String.fromCharCode(0x11B4)]: String.fromCharCode(0x1110), // ᆴ → ᄐ (ㅌ)
-  [String.fromCharCode(0x11C1)]: String.fromCharCode(0x1111), // ᇁ → ᄑ (ㅍ)
-  [String.fromCharCode(0x11B5)]: String.fromCharCode(0x1111), // ᆵ → ᄑ (ㅍ)
-  [String.fromCharCode(0x11C2)]: String.fromCharCode(0x1112), // ᇂ → ᄒ (ㅎ)
-  [String.fromCharCode(0x11AD)]: String.fromCharCode(0x1112), // ᆭ → ᄒ (ㅎ)
-  [String.fromCharCode(0x11B6)]: String.fromCharCode(0x1112), // ᆶ → ᄒ (ㅎ)
-}
-
-// Mapping from Compatibility Jamo to Hangul Jamo Initial consonants
-export const COMPATIBILITY_TO_HANGUL_JAMO_INITIAL: { [key: string]: string } = {
-  // Regular initial consonants
-  [String.fromCharCode(0x3131)]: String.fromCharCode(0x1100), // ㄱ → ᄀ
-  [String.fromCharCode(0x3132)]: String.fromCharCode(0x1101), // ㄲ → ᄁ
-  [String.fromCharCode(0x3134)]: String.fromCharCode(0x1102), // ㄴ → ᄂ
-  [String.fromCharCode(0x3137)]: String.fromCharCode(0x1103), // ㄷ → ᄃ
-  [String.fromCharCode(0x3138)]: String.fromCharCode(0x1104), // ㄸ → ᄄ
-  [String.fromCharCode(0x3139)]: String.fromCharCode(0x1105), // ㄹ → ᄅ
-  [String.fromCharCode(0x3141)]: String.fromCharCode(0x1106), // ㅁ → ᄆ
-  [String.fromCharCode(0x3142)]: String.fromCharCode(0x1107), // ㅂ → ᄇ
-  [String.fromCharCode(0x3143)]: String.fromCharCode(0x1108), // ㅃ → ᄈ
-  [String.fromCharCode(0x3145)]: String.fromCharCode(0x1109), // ㅅ → ᄉ
-  [String.fromCharCode(0x3146)]: String.fromCharCode(0x110A), // ㅆ → ᄊ
-  [String.fromCharCode(0x3147)]: String.fromCharCode(0x110B), // ㅇ → ᄋ
-  [String.fromCharCode(0x3148)]: String.fromCharCode(0x110C), // ㅈ → ᄌ
-  [String.fromCharCode(0x3149)]: String.fromCharCode(0x110D), // ㅉ → ᄍ
-  [String.fromCharCode(0x314A)]: String.fromCharCode(0x110E), // ㅊ → ᄎ
-  [String.fromCharCode(0x314B)]: String.fromCharCode(0x110F), // ㅋ → ᄏ
-  [String.fromCharCode(0x314C)]: String.fromCharCode(0x1110), // ㅌ → ᄐ
-  [String.fromCharCode(0x314D)]: String.fromCharCode(0x1111), // ㅍ → ᄑ
-  [String.fromCharCode(0x314E)]: String.fromCharCode(0x1112), // ㅎ → ᄒ
-  
-  // Archaic initial consonants
-  [String.fromCharCode(0x3165)]: String.fromCharCode(0x1114), // ㅥ → ᄔ
-  [String.fromCharCode(0x3171)]: String.fromCharCode(0x111D), // ㅱ → ᄝ
-  [String.fromCharCode(0x3178)]: String.fromCharCode(0x112B), // ㅸ → ᄫ
-  [String.fromCharCode(0x3179)]: String.fromCharCode(0x112C), // ㅹ → ᄬ
-  [String.fromCharCode(0x317F)]: String.fromCharCode(0x1140), // ㅿ → ᅀ
-  [String.fromCharCode(0x3180)]: String.fromCharCode(0x1147), // ㆀ → ᅇ
-  [String.fromCharCode(0x3181)]: String.fromCharCode(0x114C), // ㆁ → ᅌ
-  [String.fromCharCode(0x3184)]: String.fromCharCode(0x1157), // ㆄ → ᅗ
-  [String.fromCharCode(0x3185)]: String.fromCharCode(0x1158), // ㆅ → ᅘ
-  [String.fromCharCode(0x3186)]: String.fromCharCode(0x1159), // ㆆ → ᅙ
-}
-
-// Mapping from Compatibility Jamo to Hangul Jamo Final consonants
-export const COMPATIBILITY_TO_HANGUL_JAMO_FINAL: { [key: string]: string } = {
-  // Regular final consonants
-  [String.fromCharCode(0x3131)]: String.fromCharCode(0x11A8), // ㄱ → ᆨ
-  [String.fromCharCode(0x3132)]: String.fromCharCode(0x11A9), // ㄲ → ᆩ
-  [String.fromCharCode(0x3134)]: String.fromCharCode(0x11AB), // ㄴ → ᆫ
-  [String.fromCharCode(0x3137)]: String.fromCharCode(0x11AE), // ㄷ → ᆮ
-  [String.fromCharCode(0x3138)]: String.fromCharCode(0xD7CD), // ㄸ → ퟍ
-  [String.fromCharCode(0x3139)]: String.fromCharCode(0x11AF), // ㄹ → ᆯ
-  [String.fromCharCode(0x3141)]: String.fromCharCode(0x11B7), // ㅁ → ᆷ
-  [String.fromCharCode(0x3142)]: String.fromCharCode(0x11B8), // ㅂ → ᆸ
-  [String.fromCharCode(0x3143)]: String.fromCharCode(0xD7E6), // ㅃ → ퟦ
-  [String.fromCharCode(0x3145)]: String.fromCharCode(0x11BA), // ㅅ → ᆺ
-  [String.fromCharCode(0x3146)]: String.fromCharCode(0x11BB), // ㅆ → ᆻ
-  [String.fromCharCode(0x3147)]: String.fromCharCode(0x11BC), // ㅇ → ᆼ
-  [String.fromCharCode(0x3148)]: String.fromCharCode(0x11BD), // ㅈ → ᆽ
-  [String.fromCharCode(0x3149)]: String.fromCharCode(0xD7F9), // ㅉ → ퟹ
-  [String.fromCharCode(0x314A)]: String.fromCharCode(0x11BE), // ㅊ → ᆾ
-  [String.fromCharCode(0x314B)]: String.fromCharCode(0x11BF), // ㅋ → ᆿ
-  [String.fromCharCode(0x314C)]: String.fromCharCode(0x11C0), // ㅌ → ᇀ
-  [String.fromCharCode(0x314D)]: String.fromCharCode(0x11C1), // ㅍ → ᇁ
-  [String.fromCharCode(0x314E)]: String.fromCharCode(0x11C2), // ㅎ → ᇂ
-  
-  // Archaic final consonants (only those that have final forms)
-  [String.fromCharCode(0x3165)]: String.fromCharCode(0x11FF), // ㅥ → ᇿ
-  [String.fromCharCode(0x3171)]: String.fromCharCode(0x11E2), // ㅱ → ᇢ
-  [String.fromCharCode(0x3178)]: String.fromCharCode(0x11E6), // ㅸ → ᇦ
-  [String.fromCharCode(0x317F)]: String.fromCharCode(0x11EB), // ㅿ → ᇫ
-  [String.fromCharCode(0x3181)]: String.fromCharCode(0x11F0), // ㆁ → ᇰ
-  [String.fromCharCode(0x3184)]: String.fromCharCode(0x11F4), // ㆄ → ᇴ
-  [String.fromCharCode(0x3186)]: String.fromCharCode(0x11F9), // ㆆ → ᇹ
-}
-
-// Mapping from Compatibility Jamo to Hangul Jamo Vowels
-export const COMPATIBILITY_TO_HANGUL_JAMO_VOWEL: { [key: string]: string } = {
-  // Regular vowels
-  [String.fromCharCode(0x314F)]: String.fromCharCode(0x1161), // ㅏ → ᅡ
-  [String.fromCharCode(0x3150)]: String.fromCharCode(0x1162), // ㅐ → ᅢ
-  [String.fromCharCode(0x3151)]: String.fromCharCode(0x1163), // ㅑ → ᅣ
-  [String.fromCharCode(0x3152)]: String.fromCharCode(0x1164), // ㅒ → ᅤ
-  [String.fromCharCode(0x3153)]: String.fromCharCode(0x1165), // ㅓ → ᅥ
-  [String.fromCharCode(0x3154)]: String.fromCharCode(0x1166), // ㅔ → ᅦ
-  [String.fromCharCode(0x3155)]: String.fromCharCode(0x1167), // ㅕ → ᅧ
-  [String.fromCharCode(0x3156)]: String.fromCharCode(0x1168), // ㅖ → ᅨ
-  [String.fromCharCode(0x3157)]: String.fromCharCode(0x1169), // ㅗ → ᅩ
-  [String.fromCharCode(0x3158)]: String.fromCharCode(0x116A), // ㅘ → ᅪ
-  [String.fromCharCode(0x3159)]: String.fromCharCode(0x116B), // ㅙ → ᅫ
-  [String.fromCharCode(0x315A)]: String.fromCharCode(0x116C), // ㅚ → ᅬ
-  [String.fromCharCode(0x315B)]: String.fromCharCode(0x116D), // ㅛ → ᅭ
-  [String.fromCharCode(0x315C)]: String.fromCharCode(0x116E), // ㅜ → ᅮ
-  [String.fromCharCode(0x315D)]: String.fromCharCode(0x116F), // ㅝ → ᅯ
-  [String.fromCharCode(0x315E)]: String.fromCharCode(0x1170), // ㅞ → ᅰ
-  [String.fromCharCode(0x315F)]: String.fromCharCode(0x1171), // ㅟ → ᅱ
-  [String.fromCharCode(0x3160)]: String.fromCharCode(0x1172), // ㅠ → ᅲ
-  [String.fromCharCode(0x3161)]: String.fromCharCode(0x1173), // ㅡ → ᅳ
-  [String.fromCharCode(0x3162)]: String.fromCharCode(0x1174), // ㅢ → ᅴ
-  [String.fromCharCode(0x3163)]: String.fromCharCode(0x1175), // ㅣ → ᅵ
-  
-  // Archaic vowels
-  [String.fromCharCode(0x318D)]: String.fromCharCode(0x119E), // ㆍ → ᆞ
-  [String.fromCharCode(0xD7C5)]: String.fromCharCode(0xD7C5), // ퟅ → ퟅ (ㆍ + ㅏ)
-  [String.fromCharCode(0x119F)]: String.fromCharCode(0x119F), // ᆟ → ᆟ (ㆍ + ㅓ)
-  [String.fromCharCode(0xD7C6)]: String.fromCharCode(0xD7C6), // ퟆ → ퟆ (ㆍ + ㅔ)
-  [String.fromCharCode(0x11A0)]: String.fromCharCode(0x11A0), // ᆠ → ᆠ (ㆍ + ㅜ)
-  [String.fromCharCode(0x11A1)]: String.fromCharCode(0x11A1), // ᆡ → ᆡ (ㆍ + ㅣ)
-}
-
-// Unicode ranges for Korean characters
-export const UNICODE_RANGES: KoreanUnicodeRanges = {
-  // Initial consonants (초성) - Modern Korean only
-  INITIAL_CONSONANTS: {
-    'ㄱ': 0x1100, 'ㄲ': 0x1101, 'ㄴ': 0x1102, 'ㄷ': 0x1103, 'ㄸ': 0x1104,
-    'ㄹ': 0x1105, 'ㅁ': 0x1106, 'ㅂ': 0x1107, 'ㅃ': 0x1108, 'ㅅ': 0x1109,
-    'ㅆ': 0x110A, 'ㅇ': 0x110B, 'ㅈ': 0x110C, 'ㅉ': 0x110D, 'ㅊ': 0x110E,
-    'ㅋ': 0x110F, 'ㅌ': 0x1110, 'ㅍ': 0x1111, 'ㅎ': 0x1112
+// Unified Korean character table - all characters treated equally
+// Based on official Unicode charts: consonant and vowel sort order
+const KOREAN_CHARACTER_TABLE = {
+  // Consonants (자음) - following official consonant sort order
+  consonants: {
+    'ㄱ': { initial: 0x1100, final: 0x11A8, compatibility: 0x3131 },
+    'ㄲ': { initial: 0x1101, final: 0x11A9, compatibility: 0x3132 },
+    'ㄴ': { initial: 0x1102, final: 0x11AB, compatibility: 0x3134 },
+    'ㄷ': { initial: 0x1103, final: 0x11AE, compatibility: 0x3137 },
+    'ㄸ': { initial: 0x1104, final: 0xD7CD, compatibility: 0x3138 },
+    'ㄹ': { initial: 0x1105, final: 0x11AF, compatibility: 0x3139 },
+    'ㅁ': { initial: 0x1106, final: 0x11B7, compatibility: 0x3141 },
+    'ㅂ': { initial: 0x1107, final: 0x11B8, compatibility: 0x3142 },
+    'ㅃ': { initial: 0x1108, final: 0xD7E6, compatibility: 0x3143 },
+    'ㅅ': { initial: 0x1109, final: 0x11BA, compatibility: 0x3145 },
+    'ㅆ': { initial: 0x110A, final: 0x11BB, compatibility: 0x3146 },
+    'ㅇ': { initial: 0x110B, final: 0x11BC, compatibility: 0x3147 },
+    'ㅈ': { initial: 0x110C, final: 0x11BD, compatibility: 0x3148 },
+    'ㅉ': { initial: 0x110D, final: 0xD7F9, compatibility: 0x3149 },
+    'ㅊ': { initial: 0x110E, final: 0x11BE, compatibility: 0x314A },
+    'ㅋ': { initial: 0x110F, final: 0x11BF, compatibility: 0x314B },
+    'ㅌ': { initial: 0x1110, final: 0x11C0, compatibility: 0x314C },
+    'ㅍ': { initial: 0x1111, final: 0x11C1, compatibility: 0x314D },
+    'ㅎ': { initial: 0x1112, final: 0x11C2, compatibility: 0x314E },
+    
+    // Archaic consonants (treated equally)
+    'ㅥ': { initial: 0x1114, final: 0x11FF, compatibility: 0x3165 },
+    'ᄙ': { initial: 0x1119, final: null, compatibility: null },
+    'ㅱ': { initial: 0x111D, final: 0x11E2, compatibility: 0x3171 },
+    'ㅸ': { initial: 0x112B, final: 0x11E6, compatibility: 0x3178 },
+    'ㅹ': { initial: 0x112C, final: null, compatibility: 0x3179 },
+    'ᄼ': { initial: 0x113C, final: null, compatibility: null },
+    'ᄽ': { initial: 0x113D, final: null, compatibility: null },
+    'ᄾ': { initial: 0x113E, final: null, compatibility: null },
+    'ᄿ': { initial: 0x113F, final: null, compatibility: null },
+    'ㅿ': { initial: 0x1140, final: 0x11EB, compatibility: 0x317F },
+    'ㆀ': { initial: 0x1147, final: null, compatibility: 0x3180 },
+    'ㆁ': { initial: 0x114C, final: 0x11F0, compatibility: 0x3181 },
+    'ᅎ': { initial: 0x114E, final: null, compatibility: null },
+    'ᅏ': { initial: 0x114F, final: null, compatibility: null },
+    'ᅐ': { initial: 0x1150, final: null, compatibility: null },
+    'ᅑ': { initial: 0x1151, final: null, compatibility: null },
+    'ᅔ': { initial: 0x1154, final: null, compatibility: null },
+    'ᅕ': { initial: 0x1155, final: null, compatibility: null },
+    'ㆄ': { initial: 0x1157, final: 0x11F4, compatibility: 0x3184 },
+    'ㆅ': { initial: 0x1158, final: null, compatibility: 0x3185 },
+    'ㆆ': { initial: 0x1159, final: 0x11F9, compatibility: 0x3186 },
+    'ꥼ': { initial: 0xA97C, final: null, compatibility: null }
   },
   
-  // Archaic initial consonants (some can be used in syllable composition)
-  ARCHAIC_INITIAL_CONSONANTS: {
-    'ㅥ': 0x1114, 'ᄙ': 0x1119, 'ㅱ': 0x111D, 'ㅸ': 0x112B, 'ㅹ': 0x112C, 
-    'ᄼ': 0x113C, 'ᄽ': 0x113D, 'ᄾ': 0x113E, 'ᄿ': 0x113F, 'ㅿ': 0x1140, 
-    'ㆀ': 0x1147, 'ㆁ': 0x114C, 'ᅎ': 0x114E, 'ᅏ': 0x114F, 'ᅐ': 0x1150, 
-    'ᅑ': 0x1151, 'ᅔ': 0x1154, 'ᅕ': 0x1155, 'ㆄ': 0x1157, 'ㆅ': 0x1158, 
-    'ㆆ': 0x1159, 'ꥼ': 0xA97C
-  },
-  
-  // Medial vowels (중성)
-  MEDIAL_VOWELS: {
-    'ㅏ': 0x1161, 'ㅐ': 0x1162, 'ㅑ': 0x1163, 'ㅒ': 0x1164, 'ㅓ': 0x1165,
-    'ㅔ': 0x1166, 'ㅕ': 0x1167, 'ㅖ': 0x1168, 'ㅗ': 0x1169, 'ㅘ': 0x116A,
-    'ㅙ': 0x116B, 'ㅚ': 0x116C, 'ㅛ': 0x116D, 'ㅜ': 0x116E, 'ㅝ': 0x116F,
-    'ㅞ': 0x1170, 'ㅟ': 0x1171, 'ㅠ': 0x1172, 'ㅡ': 0x1173, 'ㅢ': 0x1174,
-    'ㅣ': 0x1175, 'ㆍ': 0x1196, 'ᆢ': 0x11A2, 'ퟅ': 0xD7C5, 'ᆟ': 0x119F,
-    'ퟆ': 0xD7C6, 'ᆠ': 0x11A0, 'ᆡ': 0x11A1
-  },
-  
-  // Final consonants (종성) - Correct Unicode mappings
-  FINAL_CONSONANTS: {
-    'ㄱ': 0x11A8, 'ㄲ': 0x11A9, 'ㄳ': 0x11AA, 'ㄴ': 0x11AB, 'ㄵ': 0x11AC,
-    'ㄶ': 0x11AD, 'ㄷ': 0x11AE, 'ㄸ': 0x11AE, 'ㄹ': 0x11AF, 'ㄺ': 0x11B0, 
-    'ㄻ': 0x11B1, 'ㄼ': 0x11B2, 'ㄽ': 0x11B3, 'ㄾ': 0x11B4, 'ㄿ': 0x11B5, 
-    'ㅀ': 0x11B6, 'ㅁ': 0x11B7, 'ㅂ': 0x11B8, 'ㅃ': 0x11B8, 'ㅄ': 0x11B9, 
-    'ㅅ': 0x11BA, 'ㅆ': 0x11BB, 'ㅇ': 0x11BC, 'ㅈ': 0x11BD, 'ㅉ': 0x11BD, 
-    'ㅊ': 0x11BE, 'ㅋ': 0x11BF, 'ㅌ': 0x11C0, 'ㅍ': 0x11C1, 'ㅎ': 0x11C2,
-
-    // Archaic finals: note, not every archaic jamo has a final position
-    'ㅥ': 0x11FF, 'ㅱ': 0x11E2, 'ㅸ': 0x11E6, 'ㅿ': 0x11EB, 'ㆁ': 0x11F0, 
-    'ㆄ': 0x11F4, 'ㆆ': 0x11C2,
+  // Vowels (모음) - following official vowel sort order
+  vowels: {
+    'ㅏ': { medial: 0x1161, compatibility: 0x314F },
+    'ㅐ': { medial: 0x1162, compatibility: 0x3150 },
+    'ㅑ': { medial: 0x1163, compatibility: 0x3151 },
+    'ㅒ': { medial: 0x1164, compatibility: 0x3152 },
+    'ㅓ': { medial: 0x1165, compatibility: 0x3153 },
+    'ㅔ': { medial: 0x1166, compatibility: 0x3154 },
+    'ㅕ': { medial: 0x1167, compatibility: 0x3155 },
+    'ㅖ': { medial: 0x1168, compatibility: 0x3156 },
+    'ㅗ': { medial: 0x1169, compatibility: 0x3157 },
+    'ㅘ': { medial: 0x116A, compatibility: 0x3158 },
+    'ㅙ': { medial: 0x116B, compatibility: 0x3159 },
+    'ㅚ': { medial: 0x116C, compatibility: 0x315A },
+    'ㅛ': { medial: 0x116D, compatibility: 0x315B },
+    'ㅜ': { medial: 0x116E, compatibility: 0x315C },
+    'ㅝ': { medial: 0x116F, compatibility: 0x315D },
+    'ㅞ': { medial: 0x1170, compatibility: 0x315E },
+    'ㅟ': { medial: 0x1171, compatibility: 0x315F },
+    'ㅠ': { medial: 0x1172, compatibility: 0x3160 },
+    'ㅡ': { medial: 0x1173, compatibility: 0x3161 },
+    'ㅢ': { medial: 0x1174, compatibility: 0x3162 },
+    'ㅣ': { medial: 0x1175, compatibility: 0x3163 },
+    
+    // Archaic vowels (treated equally)
+    'ㆍ': { medial: 0x119E, compatibility: 0x318D },
+    'ᆢ': { medial: 0x11A2, compatibility: null },
+    'ᆟ': { medial: 0x119F, compatibility: null }, // ㆍ + ㅓ
+    'ᆠ': { medial: 0x11A0, compatibility: null }, // ㆍ + ㅜ
+    'ᆡ': { medial: 0x11A1, compatibility: null }, // ㆍ + ㅣ
+    'ퟅ': { medial: 0xD7C5, compatibility: null }, // ㆍ + ㅏ
+    'ퟆ': { medial: 0xD7C6, compatibility: null }  // ㆍ + ㅔ
   }
 }
+
+// Complex combinations table
+const COMPLEX_COMBINATIONS = {
+  medials: {
+    // Modern complex medials
+    'ㅗㅏ': { result: 'ㅘ', medial: 0x116A },
+    'ㅗㅐ': { result: 'ㅙ', medial: 0x116B },
+    'ㅗㅣ': { result: 'ㅚ', medial: 0x116C },
+    'ㅜㅓ': { result: 'ㅝ', medial: 0x116F },
+    'ㅜㅔ': { result: 'ㅞ', medial: 0x1170 },
+    'ㅜㅣ': { result: 'ㅟ', medial: 0x1171 },
+    'ㅡㅣ': { result: 'ㅢ', medial: 0x1174 },
+    
+    // Archaic complex medials
+    'ᆞㅏ': { result: 'ퟅ', medial: 0xD7C5 },
+    'ᆞㅓ': { result: 'ᆟ', medial: 0x119F },
+    'ᆞㅔ': { result: 'ퟆ', medial: 0xD7C6 },
+    'ᆞㅜ': { result: 'ᆠ', medial: 0x11A0 },
+    'ᆞㅣ': { result: 'ᆡ', medial: 0x11A1 }
+  },
+  
+  finals: {
+    // Complex final combinations
+    'ㄱㅅ': { result: 'ㄳ', final: 0x11AA },
+    'ㄴㅈ': { result: 'ㄵ', final: 0x11AC },
+    'ㄴㅎ': { result: 'ㄶ', final: 0x11AD },
+    'ㄹㄱ': { result: 'ㄺ', final: 0x11B0 },
+    'ㄹㅁ': { result: 'ㄻ', final: 0x11B1 },
+    'ㄹㅂ': { result: 'ㄼ', final: 0x11B2 },
+    'ㄹㅅ': { result: 'ㄽ', final: 0x11B3 },
+    'ㄹㅌ': { result: 'ㄾ', final: 0x11B4 },
+    'ㄹㅍ': { result: 'ㄿ', final: 0x11B5 },
+    'ㄹㅎ': { result: 'ㅀ', final: 0x11B6 },
+    'ㅂㅅ': { result: 'ㅄ', final: 0x11B9 }
+  }
+}
+
+// Helper function to get character by Unicode code
+function getCharByCode(code: number): string {
+  return String.fromCharCode(code)
+}
+
+// Generate mappings from the unified table
+function generateMappings() {
+  const initialMappings: { [key: string]: string } = {}
+  const finalMappings: { [key: string]: string } = {}
+  const vowelMappings: { [key: string]: string } = {}
+  const finalToInitialMappings: { [key: string]: string } = {}
+  
+  // Generate consonant mappings
+  Object.entries(KOREAN_CHARACTER_TABLE.consonants).forEach(([char, data]) => {
+    if (data.compatibility !== null) {
+      const compatibilityChar = getCharByCode(data.compatibility)
+      if (data.initial !== null) {
+        initialMappings[compatibilityChar] = getCharByCode(data.initial)
+      }
+      if (data.final !== null) {
+        finalMappings[compatibilityChar] = getCharByCode(data.final)
+        // Create final to initial mapping
+        if (data.initial !== null) {
+          finalToInitialMappings[getCharByCode(data.final)] = getCharByCode(data.initial)
+        }
+      }
+    }
+  })
+  
+  // Generate vowel mappings
+  Object.entries(KOREAN_CHARACTER_TABLE.vowels).forEach(([char, data]) => {
+    if (data.compatibility !== null) {
+      const compatibilityChar = getCharByCode(data.compatibility)
+      vowelMappings[compatibilityChar] = getCharByCode(data.medial)
+    }
+  })
+  
+  return {
+    initialMappings,
+    finalMappings,
+    vowelMappings,
+    finalToInitialMappings
+  }
+}
+
+// Generate complex mappings
+function generateComplexMappings() {
+  const complexMedialMappings: { [key: string]: string } = {}
+  const complexFinalMappings: { [key: string]: string } = {}
+  const complexFinalDecomposition: { [key: string]: { first: string, second: string } } = {}
+  
+  // Generate complex medial mappings
+  Object.entries(COMPLEX_COMBINATIONS.medials).forEach(([combination, data]) => {
+    const [first, second] = combination.split('')
+    const firstChar = getCharByCode(KOREAN_CHARACTER_TABLE.vowels[first].medial)
+    const secondChar = getCharByCode(KOREAN_CHARACTER_TABLE.vowels[second].compatibility)
+    const key = firstChar + secondChar
+    complexMedialMappings[key] = getCharByCode(data.medial)
+  })
+  
+  // Generate complex final mappings
+  Object.entries(COMPLEX_COMBINATIONS.finals).forEach(([combination, data]) => {
+    const [first, second] = combination.split('')
+    const firstChar = getCharByCode(KOREAN_CHARACTER_TABLE.consonants[first].final)
+    const secondChar = getCharByCode(KOREAN_CHARACTER_TABLE.consonants[second].compatibility)
+    const key = firstChar + secondChar
+    complexFinalMappings[key] = getCharByCode(data.final)
+    
+    // Create decomposition mapping
+    complexFinalDecomposition[getCharByCode(data.final)] = {
+      first: getCharByCode(KOREAN_CHARACTER_TABLE.consonants[first].final),
+      second: getCharByCode(KOREAN_CHARACTER_TABLE.consonants[second].initial)
+    }
+  })
+  
+  return {
+    complexMedialMappings,
+    complexFinalMappings,
+    complexFinalDecomposition
+  }
+}
+
+// Generate all mappings
+const mappings = generateMappings()
+const complexMappings = generateComplexMappings()
+
+// Export the generated mappings
+export const COMPATIBILITY_TO_HANGUL_JAMO_INITIAL = mappings.initialMappings
+export const COMPATIBILITY_TO_HANGUL_JAMO_FINAL = mappings.finalMappings
+export const COMPATIBILITY_TO_HANGUL_JAMO_VOWEL = mappings.vowelMappings
+export const FINAL_TO_INITIAL_MAPPING = mappings.finalToInitialMappings
+export const COMPLEX_MEDIAL_MAPPINGS = complexMappings.complexMedialMappings
+export const COMPLEX_FINAL_MAPPINGS = complexMappings.complexFinalMappings
+export const COMPLEX_FINAL_DECOMPOSITION = complexMappings.complexFinalDecomposition
+
+// Generate UNICODE_RANGES from the unified table for backward compatibility
+function generateUnicodeRanges(): KoreanUnicodeRanges {
+  const initialConsonants: { [key: string]: number } = {}
+  const archaicInitialConsonants: { [key: string]: number } = {}
+  const medialVowels: { [key: string]: number } = {}
+  const finalConsonants: { [key: string]: number } = {}
+  
+  // Generate consonant ranges
+  Object.entries(KOREAN_CHARACTER_TABLE.consonants).forEach(([char, data]) => {
+    if (data.initial !== null) {
+      if (data.compatibility !== null) {
+        initialConsonants[char] = data.initial
+      } else {
+        archaicInitialConsonants[char] = data.initial
+      }
+    }
+    if (data.final !== null) {
+      finalConsonants[char] = data.final
+    }
+  })
+  
+  // Generate vowel ranges
+  Object.entries(KOREAN_CHARACTER_TABLE.vowels).forEach(([char, data]) => {
+    medialVowels[char] = data.medial
+  })
+  
+  return {
+    INITIAL_CONSONANTS: initialConsonants,
+    ARCHAIC_INITIAL_CONSONANTS: archaicInitialConsonants,
+    MEDIAL_VOWELS: medialVowels,
+    FINAL_CONSONANTS: finalConsonants
+  }
+}
+
+export const UNICODE_RANGES = generateUnicodeRanges()
+
 
 /**
  * Convert a final consonant to its corresponding initial consonant
@@ -390,54 +464,4 @@ export function isCompatibilityJamo(char: string): boolean {
          char in COMPATIBILITY_TO_HANGUL_JAMO_VOWEL
 }
 
-// Complex medial combinations (diphthongs)
-export const COMPLEX_MEDIAL_MAPPINGS: { [key: string]: string } = {
-  // Modern complex medials
-  [String.fromCharCode(0x1169) + String.fromCharCode(0x314F)]: String.fromCharCode(0x116A),  // ㅗ + ㅏ = ᅪ (Hangul Jamo)
-  [String.fromCharCode(0x1169) + String.fromCharCode(0x3150)]: String.fromCharCode(0x116B),  // ㅗ + ㅐ = ᅫ (Hangul Jamo)
-  [String.fromCharCode(0x1169) + String.fromCharCode(0x3163)]: String.fromCharCode(0x116C),  // ㅗ + ㅣ = ᅬ (Hangul Jamo)
-  [String.fromCharCode(0x116E) + String.fromCharCode(0x3153)]: String.fromCharCode(0x116F),  // ㅜ + ㅓ = ᅯ (Hangul Jamo)
-  [String.fromCharCode(0x116E) + String.fromCharCode(0x3154)]: String.fromCharCode(0x1170),  // ㅜ + ㅔ = ᅰ (Hangul Jamo)
-  [String.fromCharCode(0x116E) + String.fromCharCode(0x3163)]: String.fromCharCode(0x1171),  // ㅜ + ㅣ = ᅱ (Hangul Jamo)
-  [String.fromCharCode(0x1173) + String.fromCharCode(0x3163)]: String.fromCharCode(0x1174),  // ㅡ + ㅣ = ᅴ (Hangul Jamo)
-  
-  // Archaic complex medials (ㆍ + vowel combinations)
-  [String.fromCharCode(0x119E) + String.fromCharCode(0x314F)]: String.fromCharCode(0xD7C5),  // ᆞ + ㅏ = ퟅ (Hangul Jamo)
-  [String.fromCharCode(0x119E) + String.fromCharCode(0x3153)]: String.fromCharCode(0x119F),  // ᆞ + ㅓ = ᆟ (Hangul Jamo)
-  [String.fromCharCode(0x119E) + String.fromCharCode(0x3154)]: String.fromCharCode(0xD7C6),  // ᆞ + ㅔ = ퟆ (Hangul Jamo)
-  [String.fromCharCode(0x119E) + String.fromCharCode(0x315C)]: String.fromCharCode(0x11A0),  // ᆞ + ㅜ = ᆠ (Hangul Jamo)
-  [String.fromCharCode(0x119E) + String.fromCharCode(0x3163)]: String.fromCharCode(0x11A1)   // ᆞ + ㅣ = ᆡ (Hangul Jamo)
-}
-
-// Complex final combinations (consonant clusters)
-export const COMPLEX_FINAL_MAPPINGS: { [key: string]: string } = {
-  // Modern complex finals
-  [String.fromCharCode(0x11A8) + String.fromCharCode(0x3145)]: 'ᆪ',  // ㄱ + ㅅ = ㄳ (using Compatibility Jamo)
-  [String.fromCharCode(0x11AB) + String.fromCharCode(0x3148)]: 'ᆬ',  // ㄴ + ㅈ = ㄵ
-  [String.fromCharCode(0x11AB) + String.fromCharCode(0x314E)]: 'ᆭ',  // ㄴ + ㅎ = ㄶ
-  [String.fromCharCode(0x11AF) + String.fromCharCode(0x3131)]: 'ᆰ',  // ㄹ + ㄱ = ㄺ
-  [String.fromCharCode(0x11AF) + String.fromCharCode(0x3141)]: 'ᆱ',  // ㄹ + ㅁ = ㄻ
-  [String.fromCharCode(0x11AF) + String.fromCharCode(0x3142)]: 'ᆲ',  // ㄹ + ㅂ = ㄼ
-  [String.fromCharCode(0x11AF) + String.fromCharCode(0x3145)]: 'ᆳ',  // ㄹ + ㅅ = ㄽ
-  [String.fromCharCode(0x11AF) + String.fromCharCode(0x314C)]: 'ᆴ',  // ㄹ + ㅌ = ㄾ
-  [String.fromCharCode(0x11AF) + String.fromCharCode(0x3147)]: 'ᆵ',  // ㄹ + ㅍ = ㄿ
-  [String.fromCharCode(0x11AF) + String.fromCharCode(0x314E)]: 'ᆶ',  // ㄹ + ㅎ = ㅀ
-  [String.fromCharCode(0x11B8) + String.fromCharCode(0x3145)]: 'ᆹ',  // ㅂ + ㅅ = ㅄ
-}
-
-// Complex final decomposition (reverse mapping)
-export const COMPLEX_FINAL_DECOMPOSITION: { [key: string]: { first: string, second: string } } = {
-  // Modern complex finals (reverse mapping) - using Hangul Jamo values
-  [String.fromCharCode(0x11AA)]: { first: String.fromCharCode(0x11A8), second: String.fromCharCode(0x1109) }, // ㄳ → ㄱ + ㅅ
-  [String.fromCharCode(0x11AC)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x110C) }, // ㄵ → ㄴ + ㅈ
-  [String.fromCharCode(0x11AD)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x1112) }, // ㄶ → ㄴ + ㅎ
-  [String.fromCharCode(0x11B0)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1100) }, // ㄺ → ㄹ + ㄱ
-  [String.fromCharCode(0x11B1)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1106) }, // ㄻ → ㄹ + ㅁ
-  [String.fromCharCode(0x11B2)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1107) }, // ㄼ → ㄹ + ㅂ
-  [String.fromCharCode(0x11B3)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1109) }, // ㄽ → ㄹ + ㅅ
-  [String.fromCharCode(0x11B4)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1110) }, // ㄾ → ㄹ + ㅌ
-  [String.fromCharCode(0x11B5)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1111) }, // ㄿ → ㄹ + ㅍ
-  [String.fromCharCode(0x11B6)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1112) }, // ㅀ → ㄹ + ㅎ
-  [String.fromCharCode(0x11B9)]: { first: String.fromCharCode(0x11B8), second: String.fromCharCode(0x1109) }, // ㅄ → ㅂ + ㅅ
-}
 
