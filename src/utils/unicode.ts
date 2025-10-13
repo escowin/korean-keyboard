@@ -381,9 +381,19 @@ export function decomposeComplexFinal(complexFinal: string): { first: string, se
  * @returns Whether the character is a Korean consonant
  */
 export function isConsonant(char: string): boolean {
-  return char in UNICODE_RANGES.INITIAL_CONSONANTS || 
-         char in UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS ||
-         char in UNICODE_RANGES.FINAL_CONSONANTS
+  // Check if it's a Compatibility Jamo consonant
+  if (char in UNICODE_RANGES.INITIAL_CONSONANTS || 
+      char in UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS ||
+      char in UNICODE_RANGES.FINAL_CONSONANTS) {
+    return true
+  }
+  
+  // Check if it's a Hangul Jamo consonant (U+1100-U+11FF)
+  const code = char.charCodeAt(0)
+  return (code >= 0x1100 && code <= 0x1112) || // Initial consonants
+         (code >= 0x1114 && code <= 0x1159) || // Archaic initial consonants  
+         (code >= 0x11A8 && code <= 0x11C2) || // Final consonants
+         (code >= 0x11E2 && code <= 0x11FF)    // Archaic final consonants
 }
 
 /**
@@ -401,7 +411,16 @@ export function isModernConsonant(char: string): boolean {
  * @returns Whether the character is a Korean vowel
  */
 export function isVowel(char: string): boolean {
-  return char in UNICODE_RANGES.MEDIAL_VOWELS
+  // Check if it's a Compatibility Jamo vowel
+  if (char in UNICODE_RANGES.MEDIAL_VOWELS) {
+    return true
+  }
+  
+  // Check if it's a Hangul Jamo vowel (U+1161-U+1175, U+119E-U+11A2)
+  const code = char.charCodeAt(0)
+  return (code >= 0x1161 && code <= 0x1175) || // Regular medial vowels
+         (code >= 0x119E && code <= 0x11A2) || // Archaic medial vowels
+         (code >= 0xD7C5 && code <= 0xD7C6)    // Extended archaic vowels
 }
 
 /**
