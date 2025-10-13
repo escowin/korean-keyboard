@@ -228,7 +228,6 @@ export function convertCompatibilityToHangulJamoByContext(char: string, context:
   return char
 }
 
-
 /**
  * Check if a character is a Korean consonant (modern or archaic)
  * @param char - Character to check
@@ -250,7 +249,6 @@ export function isConsonant(char: string): boolean {
          (code >= 0x11E2 && code <= 0x11FF)    // Archaic final consonants
 }
 
-
 /**
  * Check if a character is a Korean vowel
  * @param char - Character to check
@@ -269,16 +267,6 @@ export function isVowel(char: string): boolean {
          (code >= 0xD7C5 && code <= 0xD7C6)    // Extended archaic vowels
 }
 
-/**
- * Check if a character is a composed Hangul syllable
- * @param char - Character to check
- * @returns True if the character is a composed Hangul syllable
- */
-export function isComposedHangulSyllable(char: string): boolean {
-  const code = char.charCodeAt(0)
-  // Hangul Syllables range: 0xAC00-0xD7AF
-  return code >= 0xAC00 && code <= 0xD7AF
-}
 
 /**
  * Get the Unicode code for an initial consonant
@@ -364,7 +352,6 @@ export function convertCompatibilityToHangulJamo(text: string, preferInitial: bo
     return char
   }).join('')
 }
-
 
 /**
  * Convert Compatibility Jamo to Hangul Jamo for initial consonants
