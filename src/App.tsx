@@ -374,7 +374,7 @@ function App() {
     <div className="note-app">
       <header className="app-header">
         <div className="app-title-container">
-          <img src={iconSvg} alt="Old Korean Notetaker" className="app-icon" />
+          <img src={iconSvg} alt="Archaic Korean Notetaker" className="app-icon" />
           <h1 className="app-title">옛정음필기</h1>
         </div>
         <div className="header-actions">
@@ -438,7 +438,7 @@ function App() {
                 onFocus={handleTextareaFocus}
                 onBlur={handleTextareaBlur}
                 onClick={handleTextareaClick}
-                placeholder="Start typing your note here..."
+                placeholder="여기에 기록을 쓰십시오"
                 rows={10}
                 inputMode="none"
                 autoComplete="off"

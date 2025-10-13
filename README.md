@@ -126,21 +126,15 @@ Hold down any key for 500ms to see available variants:
 
 ### Korean Input Processing
 
-The app implements a sophisticated Korean input system:
+The app implements a sophisticated Korean input system using a simplified Hangul Jamo approach:
 
-1. **Jamo Recognition**: Identifies consonants and vowels
-2. **Syllable Composition**: Uses Unicode algorithms to compose syllables
-3. **Complex Medials**: Supports diphthongs (ㅘ, ㅙ, ㅚ, ㅝ, ㅞ, ㅟ, ㅢ)
-4. **Complex Finals**: Supports consonant clusters (ㄺ, ㄻ, ㄼ, ㄽ, ㄾ, ㄿ, ㅀ, etc.)
-5. **Archaic Support**: Maps archaic letters to proper Unicode ranges
-6. **Final-to-Initial Transition**: Properly handles final consonants becoming initials
-
-### Unicode Support
-
-- **Initial Consonants**: 0x1100-0x1112, 0x113F, 0x1146, 0x114E-0x1151, 0x1155, 0x1170
-- **Medial Vowels**: 0x1161-0x1175, 0x1197
-- **Final Consonants**: 0x11A8-0x11C7
-- **Syllable Blocks**: 0xAC00-0xD7AF
+1. **Jamo Recognition**: Identifies consonants and vowels in both Compatibility and Hangul Jamo ranges
+2. **Unified Processing**: All characters (modern and archaic) are converted to Hangul Jamo Area (U+1100-U+11FF)
+3. **Syllable Composition**: Uses simplified concatenation approach - browser renders Hangul Jamo sequences as syllable blocks
+4. **Complex Medials**: Supports diphthongs (ㅘ, ㅙ, ㅚ, ㅝ, ㅞ, ㅟ, ㅢ) with proper Hangul Jamo conversion
+5. **Complex Finals**: Supports consonant clusters (ㄺ, ㄻ, ㄼ, ㄽ, ㄾ, ㄿ, ㅀ, etc.) with decomposition
+6. **Archaic Support**: Seamlessly handles archaic letters through unified Hangul Jamo conversion
+7. **Korean Orthography**: Properly handles final-to-initial transitions and complex final decomposition
 
 ## Browser Support
 
@@ -188,10 +182,11 @@ korean-keyboard/
 
 ### Adding New Features
 
-1. **New Archaic Letters**: Add to `VARIANT_MAPPINGS` in `keyboardLayout.ts`, update Unicode ranges in `unicode.ts`
+1. **New Archaic Letters**: Add to `VARIANT_MAPPINGS` in `keyboardLayout.ts`, update Unicode mappings in `unicode.ts`
 2. **Keyboard Layout Changes**: Modify `KEYBOARD_LAYOUT` in `keyboardLayout.ts`, update CSS styles
 3. **New App Features**: Add components in `src/components/`, update styles in `src/styles/`
-4. **Future Features**: 123 Button (numbers/symbols), Hanja conversion, Middle Korean input
+4. **Unified Processing**: All new Korean characters automatically work through the Hangul Jamo conversion system
+5. **Future Features**: Arrow key navigation, text selection/copy, number shift mode, Hanja conversion
 
 ### Code Style
 
