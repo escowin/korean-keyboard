@@ -134,8 +134,6 @@ export const COMPATIBILITY_TO_HANGUL_JAMO_VOWEL: { [key: string]: string } = {
   
   // Archaic vowels
   [String.fromCharCode(0x318D)]: String.fromCharCode(0x119E), // ㆍ → ᆞ
-  
-  // Archaic complex medials (precomposed forms)
   [String.fromCharCode(0xD7C5)]: String.fromCharCode(0xD7C5), // ퟅ → ퟅ (ㆍ + ㅏ)
   [String.fromCharCode(0x119F)]: String.fromCharCode(0x119F), // ᆟ → ᆟ (ㆍ + ㅓ)
   [String.fromCharCode(0xD7C6)]: String.fromCharCode(0xD7C6), // ퟆ → ퟆ (ㆍ + ㅔ)
@@ -252,14 +250,6 @@ export function isConsonant(char: string): boolean {
          (code >= 0x11E2 && code <= 0x11FF)    // Archaic final consonants
 }
 
-/**
- * Check if a character is a modern Korean consonant (can be used in syllable composition)
- * @param char - Character to check
- * @returns Whether the character is a modern Korean consonant
- */
-export function isModernConsonant(char: string): boolean {
-  return char in UNICODE_RANGES.INITIAL_CONSONANTS
-}
 
 /**
  * Check if a character is a Korean vowel

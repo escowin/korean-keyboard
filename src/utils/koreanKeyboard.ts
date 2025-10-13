@@ -24,7 +24,6 @@ export {
   convertFinalToInitial,
   convertCompatibilityToHangulJamoByContext,
   isConsonant,
-  isModernConsonant,
   isVowel
 } from './unicode.js'
 
