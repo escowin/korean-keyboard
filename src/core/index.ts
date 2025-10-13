@@ -36,7 +36,7 @@ export {
   composeSyllable,
   isConsonant,
   isVowel,
-  getArchaicVariants,
+  getVariants,
   processKoreanInput
 } from '../utils/koreanKeyboard.js';
 

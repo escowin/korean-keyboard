@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { KEYBOARD_LAYOUT, getArchaicVariants, getShiftedCharacter } from '../utils/koreanKeyboard.js'
+import { KEYBOARD_LAYOUT, getVariants, getShiftedCharacter } from '../utils/koreanKeyboard.js'
 
 interface KoreanKeyboardProps {
   onKeyPress: (key: string) => void
@@ -117,7 +117,7 @@ const KoreanKeyboard = ({ onKeyPress, onTextInput }: KoreanKeyboardProps) => {
     }
     
     // Start long press timer for characters with archaic variants
-    const variants = getArchaicVariants(keyValue)
+    const variants = getVariants(keyValue)
     if (variants.length > 1) {
       longPressTimer.current = setTimeout(() => {
         // Find the actual key element (the one with data-key attribute)

@@ -3,6 +3,12 @@
  * Handles syllable composition, complex medials, and complex finals
  */
 
+import { 
+  COMPLEX_MEDIAL_MAPPINGS,
+  COMPLEX_FINAL_MAPPINGS,
+  COMPLEX_FINAL_DECOMPOSITION
+} from './unicode.js'
+
 
 /**
  * Compose Korean syllable as Hangul Jamo sequence
@@ -42,27 +48,8 @@ export function composeSyllable(initial: string, medial: string, final: string =
 export function canFormComplexMedial(first: string, second: string): string | null {
   console.log(`🔍 canFormComplexMedial called with: "${first}" (U+${first.charCodeAt(0).toString(16).toUpperCase()}) + "${second}" (U+${second.charCodeAt(0).toString(16).toUpperCase()})`)
   
-  // Check for modern and archaic complex medials
-  const complexMedials: { [key: string]: string } = {
-    // Modern complex medials
-    [String.fromCharCode(0x1169) + String.fromCharCode(0x314F)]: String.fromCharCode(0x116A),  // ㅗ + ㅏ = ᅪ (Hangul Jamo)
-    [String.fromCharCode(0x1169) + String.fromCharCode(0x3150)]: String.fromCharCode(0x116B),  // ㅗ + ㅐ = ᅫ (Hangul Jamo)
-    [String.fromCharCode(0x1169) + String.fromCharCode(0x3163)]: String.fromCharCode(0x116C),  // ㅗ + ㅣ = ᅬ (Hangul Jamo)
-    [String.fromCharCode(0x116E) + String.fromCharCode(0x3153)]: String.fromCharCode(0x116F),  // ㅜ + ㅓ = ᅯ (Hangul Jamo)
-    [String.fromCharCode(0x116E) + String.fromCharCode(0x3154)]: String.fromCharCode(0x1170),  // ㅜ + ㅔ = ᅰ (Hangul Jamo)
-    [String.fromCharCode(0x116E) + String.fromCharCode(0x3163)]: String.fromCharCode(0x1171),  // ㅜ + ㅣ = ᅱ (Hangul Jamo)
-    [String.fromCharCode(0x1173) + String.fromCharCode(0x3163)]: String.fromCharCode(0x1174),  // ㅡ + ㅣ = ᅴ (Hangul Jamo)
-    
-    // Archaic complex medials (ㆍ + vowel combinations)
-    [String.fromCharCode(0x119E) + String.fromCharCode(0x314F)]: String.fromCharCode(0xD7C5),  // ᆞ + ㅏ = ퟅ (Hangul Jamo)
-    [String.fromCharCode(0x119E) + String.fromCharCode(0x3153)]: String.fromCharCode(0x119F),  // ᆞ + ㅓ = ᆟ (Hangul Jamo)
-    [String.fromCharCode(0x119E) + String.fromCharCode(0x3154)]: String.fromCharCode(0xD7C6),  // ᆞ + ㅔ = ퟆ (Hangul Jamo)
-    [String.fromCharCode(0x119E) + String.fromCharCode(0x315C)]: String.fromCharCode(0x11A0),  // ᆞ + ㅜ = ᆠ (Hangul Jamo)
-    [String.fromCharCode(0x119E) + String.fromCharCode(0x3163)]: String.fromCharCode(0x11A1)   // ᆞ + ㅣ = ᆡ (Hangul Jamo)
-  }
-  
   const combination = first + second
-  const result = complexMedials[combination]
+  const result = COMPLEX_MEDIAL_MAPPINGS[combination]
   
   if (result) {
     console.log(`🔗 Complex medial formed: "${first}" + "${second}" = "${result}" (U+${result.charCodeAt(0).toString(16).toUpperCase()})`)
@@ -79,23 +66,8 @@ export function canFormComplexMedial(first: string, second: string): string | nu
  * @returns Complex final character or null if not combinable
  */
 export function canFormComplexFinal(first: string, second: string): string | null {
-  const complexFinals: { [key: string]: string } = {
-    // moern complex finals
-    [String.fromCharCode(0x11A8) + String.fromCharCode(0x3145)]: 'ᆪ',  // ㄱ + ㅅ = ㄳ (using Compatibility Jamo)
-    [String.fromCharCode(0x11AB) + String.fromCharCode(0x3148)]: 'ᆬ',  // ㄴ + ㅈ = ㄵ
-    [String.fromCharCode(0x11AB) + String.fromCharCode(0x314E)]: 'ᆭ',  // ㄴ + ㅎ = ㄶ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3131)]: 'ᆰ',  // ㄹ + ㄱ = ㄺ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3141)]: 'ᆱ',  // ㄹ + ㅁ = ㄻ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3142)]: 'ᆲ',  // ㄹ + ㅂ = ㄼ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3145)]: 'ᆳ',  // ㄹ + ㅅ = ㄽ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x314C)]: 'ᆴ',  // ㄹ + ㅌ = ㄾ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x3147)]: 'ᆵ',  // ㄹ + ㅍ = ㄿ
-    [String.fromCharCode(0x11AF) + String.fromCharCode(0x314E)]: 'ᆶ',  // ㄹ + ㅎ = ㅀ
-    [String.fromCharCode(0x11B8) + String.fromCharCode(0x3145)]: 'ᆹ',  // ㅂ + ㅅ = ㅄ
-  }
-  
   const combination = first + second
-  const result = complexFinals[combination]
+  const result = COMPLEX_FINAL_MAPPINGS[combination]
   
   if (result) {
     console.log(`🔗 Complex final formed: "${first}" + "${second}" = "${result}"`)
@@ -110,22 +82,7 @@ export function canFormComplexFinal(first: string, second: string): string | nul
  * @returns Object with first and second components, or null if not a complex final
  */
 export function decomposeComplexFinal(complexFinal: string): { first: string, second: string } | null {
-  const complexFinals: { [key: string]: { first: string, second: string } } = {
-    // Modern complex finals (reverse mapping) - using Hangul Jamo values
-    [String.fromCharCode(0x11AA)]: { first: String.fromCharCode(0x11A8), second: String.fromCharCode(0x1109) }, // ㄳ → ㄱ + ㅅ
-    [String.fromCharCode(0x11AC)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x110C) }, // ㄵ → ㄴ + ㅈ
-    [String.fromCharCode(0x11AD)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x1112) }, // ㄶ → ㄴ + ㅎ
-    [String.fromCharCode(0x11B0)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1100) }, // ㄺ → ㄹ + ㄱ
-    [String.fromCharCode(0x11B1)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1106) }, // ㄻ → ㄹ + ㅁ
-    [String.fromCharCode(0x11B2)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1107) }, // ㄼ → ㄹ + ㅂ
-    [String.fromCharCode(0x11B3)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1109) }, // ㄽ → ㄹ + ㅅ
-    [String.fromCharCode(0x11B4)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1110) }, // ㄾ → ㄹ + ㅌ
-    [String.fromCharCode(0x11B5)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1111) }, // ㄿ → ㄹ + ㅍ
-    [String.fromCharCode(0x11B6)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1112) }, // ㅀ → ㄹ + ㅎ
-    [String.fromCharCode(0x11B9)]: { first: String.fromCharCode(0x11B8), second: String.fromCharCode(0x1109) }, // ㅄ → ㅂ + ㅅ
-  }
-  
-  const components = complexFinals[complexFinal]
+  const components = COMPLEX_FINAL_DECOMPOSITION[complexFinal]
   if (components) {
     console.log(`🔍 Decomposing complex final "${complexFinal}" to: "${components.first}" + "${components.second}"`)
     return components

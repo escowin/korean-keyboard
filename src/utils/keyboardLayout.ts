@@ -24,14 +24,6 @@ export const SHIFT_MAPPINGS: Record<string, string> = {
   'ㆆ': 'ꥼ', 'ㅁ': 'ㅱ', 'ㅍ': 'ㆄ', 'ㆍ': 'ᆢ'
 }
 
-// Mapping from archaic consonants to modern equivalents for composition
-export const ARCHAIC_TO_MODERN_MAPPING: Record<string, string> = {
-  'ㅸ': 'ㅂ', 'ㅹ': 'ㅂ', 'ᅐ': 'ㅈ', 'ᅑ': 'ㅈ', 'ᅎ': 'ㅈ', 'ᅏ': 'ㅈ',
-  'ᄼ': 'ㅅ', 'ᄾ': 'ㅅ', 'ㅱ': 'ㅁ', 'ᄔ': 'ㄴ', 'ᄙ': 'ㄹ',
-  'ㆀ': 'ㅇ', 'ㆅ': 'ㅎ', 'ᅔ': 'ㅊ', 'ᅕ': 'ㅊ',
-  'ㆄ': 'ㅍ'
-}
-
 // Variant letter mappings for long-press functionality
 export const VARIANT_MAPPINGS: VariantMappings = {
   // Consonants
@@ -77,11 +69,11 @@ export const VARIANT_MAPPINGS: VariantMappings = {
 }
 
 /**
- * Get archaic variants for a character
+ * Get variants for a character key
  * @param char - Base character
  * @returns Array of variants including the base character
  */
-export function getArchaicVariants(char: string): string[] {
+export function getVariants(char: string): string[] {
   return VARIANT_MAPPINGS[char] || [char]
 }
 

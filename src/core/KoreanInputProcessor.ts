@@ -6,17 +6,15 @@
 
 import type { 
   KoreanCharacter, 
-  SyllableComposition,
   KoreanInputResult,
-  KoreanInputError,
   KoreanInputErrorDetails,
   CompositionState,
   KoreanPosition,
-  KoreanCharacterType
 } from '../types/korean.js';
 
+import { KoreanInputError } from '../types/korean.js';
+
 import { 
-  UNICODE_RANGES, 
   VARIANT_MAPPINGS,
   composeSyllable,
   isConsonant,
@@ -99,7 +97,7 @@ export class KoreanInputProcessor {
    * @param char - Base character
    * @returns Array of variants
    */
-  public getArchaicVariants(char: string): string[] {
+  public getVariants(char: string): string[] {
     return VARIANT_MAPPINGS[char] || [char];
   }
 
@@ -109,7 +107,7 @@ export class KoreanInputProcessor {
    * @returns Whether the character has variants
    */
   public hasArchaicVariants(char: string): boolean {
-    const variants = this.getArchaicVariants(char);
+    const variants = this.getVariants(char);
     return variants.length > 1;
   }
 
@@ -132,7 +130,7 @@ export class KoreanInputProcessor {
       type: isConsonantChar ? 'consonant' : 'vowel',
       position: this.determinePosition(char),
       isArchaic: this.isArchaicCharacter(char),
-      archaicVariants: this.getArchaicVariants(char)
+      archaicVariants: this.getVariants(char)
     };
   }
 

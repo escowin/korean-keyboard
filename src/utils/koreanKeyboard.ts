@@ -10,7 +10,7 @@ export {
   SHIFT_MAPPINGS, 
   ARCHAIC_TO_MODERN_MAPPING, 
   VARIANT_MAPPINGS,
-  getArchaicVariants,
+  getVariants,
   getShiftedCharacter
 } from './keyboardLayout.js'
 
@@ -21,6 +21,9 @@ export {
   COMPATIBILITY_TO_HANGUL_JAMO_INITIAL,
   COMPATIBILITY_TO_HANGUL_JAMO_FINAL,
   COMPATIBILITY_TO_HANGUL_JAMO_VOWEL,
+  COMPLEX_MEDIAL_MAPPINGS,
+  COMPLEX_FINAL_MAPPINGS,
+  COMPLEX_FINAL_DECOMPOSITION,
   convertFinalToInitial,
   convertCompatibilityToHangulJamoByContext,
   isConsonant,
