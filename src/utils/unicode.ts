@@ -134,7 +134,6 @@ export const COMPATIBILITY_TO_HANGUL_JAMO_VOWEL: { [key: string]: string } = {
   
   // Archaic vowels
   [String.fromCharCode(0x318D)]: String.fromCharCode(0x119E), // ㆍ → ᆞ
-  [String.fromCharCode(0x318E)]: String.fromCharCode(0x11A1), // ㆎ → ᆡ
   
   // Archaic complex medials (precomposed forms)
   [String.fromCharCode(0xD7C5)]: String.fromCharCode(0xD7C5), // ퟅ → ퟅ (ㆍ + ㅏ)
