@@ -79,7 +79,7 @@ export function processKoreanInput(input: string): string {
         const complexMedial = canFormComplexMedial(currentSyllable.medial, char)
         if (complexMedial) {
           // Replace the existing medial with the complex medial
-          console.log(`   ✅ Forming complex medial: "${currentSyllable.medial}" + "${char}" = "${complexMedial}"`)
+          console.log(`   ✅ Forming complex medial: "${currentSyllable.medial}" (U+${currentSyllable.medial.charCodeAt(0).toString(16).toUpperCase()}) + "${char}" (U+${char.charCodeAt(0).toString(16).toUpperCase()}) = "${complexMedial}" (U+${complexMedial.charCodeAt(0).toString(16).toUpperCase()})`)
           currentSyllable.medial = complexMedial
         } else {
           // Cannot form complex medial, complete current syllable and start new one

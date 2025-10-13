@@ -22,12 +22,16 @@ export function composeSyllable(initial: string, medial: string, final: string =
   if (!initial && !final) return medial
   if (!medial && !final) return initial
   
-  console.log('🔤 composeSyllable (simplified) called with:', { initial, medial, final })
+  console.log('🔤 composeSyllable (simplified) called with:', {
+    initial: `${initial} (U+${initial ? initial.charCodeAt(0).toString(16).toUpperCase() : 'N/A'})`,
+    medial: `${medial} (U+${medial ? medial.charCodeAt(0).toString(16).toUpperCase() : 'N/A'})`,
+    final: `${final} (U+${final ? final.charCodeAt(0).toString(16).toUpperCase() : 'N/A'})`
+  })
   
   // Simply concatenate the components - browser will render as syllable block
   // This works for both modern and archaic Korean characters
   const result = initial + medial + final
-  console.log('   🎯 Returning Hangul Jamo sequence:', result, '(browser will render as block)')
+  console.log('   🎯 Returning Hangul Jamo sequence:', `${result} (U+${result ? result.split('').map(c => c.charCodeAt(0).toString(16).toUpperCase()).join(', U+') : 'N/A'})`, '(browser will render as block)')
   
   return result
 }
@@ -39,13 +43,13 @@ export function composeSyllable(initial: string, medial: string, final: string =
  * @returns Complex medial character or null if not combinable
  */
 export function canFormComplexMedial(first: string, second: string): string | null {
-  console.log(`🔍 canFormComplexMedial called with: "${first}" + "${second}"`)
+  console.log(`🔍 canFormComplexMedial called with: "${first}" (U+${first.charCodeAt(0).toString(16).toUpperCase()}) + "${second}" (U+${second.charCodeAt(0).toString(16).toUpperCase()})`)
   
   // Check for archaic complex medials first (ㆍ + vowel combinations)
   const archaicCombination = first + second
   const archaicResult = ARCHAIC_COMPLEX_MEDIAL_MAPPINGS[archaicCombination]
   if (archaicResult) {
-    console.log(`🏛️ Archaic complex medial formed: "${first}" + "${second}" = "${archaicResult}"`)
+    console.log(`🏛️ Archaic complex medial formed: "${first}" + "${second}" = "${archaicResult}" (U+${archaicResult.charCodeAt(0).toString(16).toUpperCase()})`)
     return archaicResult
   }
   
@@ -64,7 +68,8 @@ export function canFormComplexMedial(first: string, second: string): string | nu
   const result = complexMedials[combination]
   
   if (result) {
-    console.log(`🔗 Complex medial formed: "${first}" + "${second}" = "${result}"`)
+    console.log(`🔗 Complex medial formed: "${first}" + "${second}" = "${result}" (U+${result.charCodeAt(0).toString(16).toUpperCase()})`)
+    console.log(`   📊 Combination key: "${combination}" (U+${combination.split('').map(c => c.charCodeAt(0).toString(16).toUpperCase()).join(', U+')})`)
   }
   
   return result || null
