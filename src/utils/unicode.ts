@@ -117,11 +117,11 @@ const COMPLEX_COMBINATIONS = {
     'ㅡㅣ': { result: 'ㅢ', medial: 0x1174 },
     
     // Archaic complex medials
-    'ᆞㅏ': { result: 'ퟅ', medial: 0xD7C5 },
-    'ᆞㅓ': { result: 'ᆟ', medial: 0x119F },
-    'ᆞㅔ': { result: 'ퟆ', medial: 0xD7C6 },
-    'ᆞㅜ': { result: 'ᆠ', medial: 0x11A0 },
-    'ᆞㅣ': { result: 'ᆡ', medial: 0x11A1 }
+    'ㆍㅏ': { result: 'ퟅ', medial: 0xD7C5 },
+    'ㆍㅓ': { result: 'ᆟ', medial: 0x119F },
+    'ㆍㅔ': { result: 'ퟆ', medial: 0xD7C6 },
+    'ㆍㅜ': { result: 'ᆠ', medial: 0x11A0 },
+    'ㆍㅣ': { result: 'ᆡ', medial: 0x11A1 }
   },
   
   finals: {
