@@ -55,13 +55,13 @@ export function canFormComplexMedial(first: string, second: string): string | nu
   
   // Check for modern complex medials
   const complexMedials: { [key: string]: string } = {
-    [String.fromCharCode(0x1169) + String.fromCharCode(0x314F)]: 'ㅘ',  // ㅗ + ㅏ = ㅘ (using actual decomposition chars)
-    [String.fromCharCode(0x1169) + String.fromCharCode(0x3150)]: 'ㅙ',  // ㅗ + ㅐ = ㅙ
-    [String.fromCharCode(0x1169) + String.fromCharCode(0x3163)]: 'ㅚ',  // ㅗ + ㅣ = ㅚ
-    [String.fromCharCode(0x116C) + String.fromCharCode(0x314E)]: 'ㅝ',  // ㅜ + ㅓ = ㅝ
-    [String.fromCharCode(0x116C) + String.fromCharCode(0x3151)]: 'ㅞ',  // ㅜ + ㅔ = ㅞ
-    [String.fromCharCode(0x116C) + String.fromCharCode(0x3163)]: 'ㅟ',  // ㅜ + ㅣ = ㅟ
-    [String.fromCharCode(0x1173) + String.fromCharCode(0x3163)]: 'ㅢ'   // ㅡ + ㅣ = ㅢ
+    [String.fromCharCode(0x1169) + String.fromCharCode(0x314F)]: String.fromCharCode(0x116A),  // ㅗ + ㅏ = ᅪ (Hangul Jamo)
+    [String.fromCharCode(0x1169) + String.fromCharCode(0x3150)]: String.fromCharCode(0x116B),  // ㅗ + ㅐ = ᅫ (Hangul Jamo)
+    [String.fromCharCode(0x1169) + String.fromCharCode(0x3163)]: String.fromCharCode(0x116C),  // ㅗ + ㅣ = ᅬ (Hangul Jamo)
+    [String.fromCharCode(0x116C) + String.fromCharCode(0x314E)]: String.fromCharCode(0x116F),  // ㅜ + ㅓ = ᅯ (Hangul Jamo)
+    [String.fromCharCode(0x116C) + String.fromCharCode(0x3151)]: String.fromCharCode(0x1170),  // ㅜ + ㅔ = ᅰ (Hangul Jamo)
+    [String.fromCharCode(0x116C) + String.fromCharCode(0x3163)]: String.fromCharCode(0x1171),  // ㅜ + ㅣ = ᅱ (Hangul Jamo)
+    [String.fromCharCode(0x1173) + String.fromCharCode(0x3163)]: String.fromCharCode(0x1174)   // ㅡ + ㅣ = ᅴ (Hangul Jamo)
   }
   
   const combination = first + second
