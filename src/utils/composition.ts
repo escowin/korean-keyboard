@@ -4,20 +4,16 @@
  */
 
 import { 
-  getInitialConsonantCode, 
-  getMedialVowelCode, 
-  getFinalConsonantCode,
-  isArchaicMedialVowel,
-  getArchaicSyllable,
   ARCHAIC_COMPLEX_MEDIAL_MAPPINGS
 } from './unicode.js'
 
 /**
- * Calculate Unicode for a Korean syllable block
+ * Compose Korean syllable as Hangul Jamo sequence
+ * Simplified approach: always return Hangul Jamo sequences and let browser render as blocks
  * @param initial - Initial consonant
  * @param medial - Medial vowel
  * @param final - Final consonant (optional)
- * @returns Composed syllable
+ * @returns Hangul Jamo sequence that browser will render as syllable block
  */
 export function composeSyllable(initial: string, medial: string, final: string = ''): string {
   // Handle edge cases
@@ -26,89 +22,12 @@ export function composeSyllable(initial: string, medial: string, final: string =
   if (!initial && !final) return medial
   if (!medial && !final) return initial
   
-  console.log('🔤 composeSyllable called with:', { initial, medial, final })
+  console.log('🔤 composeSyllable (simplified) called with:', { initial, medial, final })
   
-  // Check if this involves archaic jamo that needs special handling
-  if (isArchaicMedialVowel(medial)) {
-    console.log('   🏛️ Archaic medial vowel detected:', medial)
-    
-    // Check if this is an archaic complex medial that should be composed normally
-    const isArchaicComplexMedial = Object.values(ARCHAIC_COMPLEX_MEDIAL_MAPPINGS).includes(medial)
-    if (isArchaicComplexMedial) {
-      console.log('   🏛️ Archaic complex medial detected, proceeding with normal composition')
-      // Continue with normal composition for archaic complex medials
-    } else {
-      // For simple archaic medials, try precomposed forms first
-      const archaicSyllable = getArchaicSyllable(initial, medial, final)
-      if (archaicSyllable) {
-        console.log('   ✅ Found precomposed archaic syllable:', archaicSyllable)
-        return archaicSyllable
-      } else {
-        console.log('   ⚠️ No precomposed form found, proceeding with normal composition')
-        // Continue with normal composition
-      }
-    }
-  }
-  
-  // Get Unicode codes using the specific helper functions
-  const initialCode = initial ? getInitialConsonantCode(initial) : null
-  const medialCode = medial ? getMedialVowelCode(medial) : null
-  const finalCode = final ? getFinalConsonantCode(final) : null
-  
-  console.log('   Unicode codes:', { initialCode, medialCode, finalCode })
-  
-  // If we don't have both initial and medial, return as-is
-  if (!initialCode || !medialCode) {
-    console.log('   Missing initial or medial, returning as-is')
-    return initial + medial + final
-  }
-  
-  // Validate that the initial consonant is in a valid range for composition
-  // Standard range: 0x1100-0x1112, Extended range: 0x1113-0x1116 (for some archaic characters)
-  if (initialCode < 0x1100 || initialCode > 0x1116) {
-    console.log('   ❌ Initial consonant outside valid composition range:', initialCode, 'returning as-is')
-    return initial + medial + final
-  }
-  
-  console.log('   ✅ Initial consonant in valid range, proceeding with composition')
-  
-  // Check if this is an archaic complex medial that needs special handling
-  const isArchaicComplexMedial = Object.values(ARCHAIC_COMPLEX_MEDIAL_MAPPINGS).includes(medial)
-  if (isArchaicComplexMedial) {
-    console.log('   🏛️ Archaic complex medial detected, using special composition')
-    // For archaic complex medials, we need to use a different approach
-    // They don't fit the standard composition formula, so we'll return them as-is
-    // The browser should handle the rendering properly
-    return initial + medial + final
-  }
-  
-  // Base syllable: 가 (0xAC00)
-  const base = 0xAC00
-  const initialOffset = (initialCode - 0x1100) * 21 * 28
-  const medialOffset = (medialCode - 0x1161) * 28
-  const finalOffset = finalCode ? (finalCode - 0x11A8 + 1) : 0
-  
-  console.log('   📊 Composition calculation:')
-  console.log('     base:', base, '(0xAC00)')
-  console.log('     initialOffset:', initialOffset, '(initialCode - 0x1100) * 21 * 28')
-  console.log('     medialOffset:', medialOffset, '(medialCode - 0x1161) * 28')
-  console.log('     finalOffset:', finalOffset, finalCode ? '(finalCode - 0x11A8 + 1)' : '0')
-  
-  const syllableCode = base + initialOffset + medialOffset + finalOffset
-  const result = String.fromCharCode(syllableCode)
-  console.log('   🎯 Composed syllable:', result, 'code:', syllableCode, '(0x' + syllableCode.toString(16) + ')')
-  
-  // Debug specific case: ㅅㅗㅎ should be 솧
-  if (initial === 'ㅅ' && medial === 'ㅗ' && final === 'ㅎ') {
-    console.log('   🧪 DEBUG: ㅅㅗㅎ composition test')
-    console.log('     Expected: 솧 (0x' + (0xAC00 + (0x1109 - 0x1100) * 21 * 28 + (0x1169 - 0x1161) * 28 + (0x11C2 - 0x11A8)).toString(16) + ')')
-    console.log('     Actual: ' + result + ' (0x' + syllableCode.toString(16) + ')')
-  }
-  
-  // Debug final consonant mapping
-  if (final && finalCode) {
-    console.log('   🔍 Final consonant mapping:', final, '->', finalCode, '(0x' + finalCode.toString(16) + ')')
-  }
+  // Simply concatenate the components - browser will render as syllable block
+  // This works for both modern and archaic Korean characters
+  const result = initial + medial + final
+  console.log('   🎯 Returning Hangul Jamo sequence:', result, '(browser will render as block)')
   
   return result
 }
@@ -183,28 +102,4 @@ export function canFormComplexFinal(first: string, second: string): string | nul
   return result || null
 }
 
-/**
- * Decompose a composed Hangul syllable into its components
- * @param syllable - Composed Hangul syllable
- * @returns Object with initial, medial, final components
- */
-export function decomposeHangulSyllable(syllable: string): { initial: string, medial: string, final: string } {
-  const code = syllable.charCodeAt(0)
-  const base = 0xAC00
-  const initialOffset = Math.floor((code - base) / (21 * 28))
-  const medialOffset = Math.floor(((code - base) % (21 * 28)) / 28)
-  const finalOffset = (code - base) % 28
-  
-  const initialCode = 0x1100 + initialOffset
-  const medialCode = 0x1161 + medialOffset
-  const finalCode = finalOffset > 0 ? 0x11A7 + finalOffset : null
-  
-  console.log(`🔍 Decomposing "${syllable}" (${code}):`)
-  console.log(`   Offsets: initial=${initialOffset}, medial=${medialOffset}, final=${finalOffset}`)
-  
-  return {
-    initial: String.fromCharCode(initialCode),
-    medial: String.fromCharCode(medialCode),
-    final: finalCode ? String.fromCharCode(finalCode) : ''
-  }
-}
+// decomposeHangulSyllable function removed - no longer needed with simplified approach

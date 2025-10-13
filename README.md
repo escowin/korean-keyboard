@@ -1,4 +1,4 @@
-# Korean Keyboard PWA
+# 옛정음필기: Archaic Korean Keyboard PWA
 
 A Progressive Web App (PWA) notetaking application with a built-in Korean keyboard that supports archaic Korean letters (옛한글). The app features a Dubeolsik (두벌식; 2-set) keyboard layout with long-press functionality to access modern & archaic letter variants.
 
@@ -30,7 +30,7 @@ The keyboard follows the standard Dubeolsik layout:
 Row 1: ㅿ ㅂ ㅈ ㄷ ㄱ ㅅ ㅛ ㅕ ㅑ ㅐ ㅔ
 Row 2: ㆆ ㅁ ㄴ ㅇ ㄹ ㅎ ㅗ ㅓ ㅏ ㅣ ㆍ
 Row 3: ⇧ ㆁ ㅋ ㅌ ㅊ ㅍ ㅠ ㅜ ㅡ ⌫
-Row 4: 123 😊 스페이스 ↵
+Row 4: 123 漢 스페이스 ← → ↵
 ```
 
 ### Letter Variants

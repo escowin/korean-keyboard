@@ -24,7 +24,6 @@ export {
   isConsonant,
   isModernConsonant,
   isVowel,
-  isComposedHangulSyllable,
   getInitialConsonantCode,
   getMedialVowelCode,
   getFinalConsonantCode
@@ -34,8 +33,7 @@ export {
 export { 
   composeSyllable,
   canFormComplexMedial,
-  canFormComplexFinal,
-  decomposeHangulSyllable
+  canFormComplexFinal
 } from './composition.js'
 
 // Re-export from input processor module

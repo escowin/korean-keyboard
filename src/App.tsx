@@ -428,7 +428,8 @@ function App() {
           {note.content.substring(0, 50)}{note.content.length > 50 ? '...' : ''}
         </div>
         <div className="note-item-date">
-          {new Date(note.updatedAt).toLocaleDateString()}
+          {/* change to YYYY-MM-DD */}
+          {new Date(note.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}
         </div>
       </div>
     ))

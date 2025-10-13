@@ -7,15 +7,13 @@ import type { CompositionState } from '../types/korean.js'
 import { 
   isConsonant, 
   isVowel, 
-  isComposedHangulSyllable, 
   convertFinalToInitial,
   decomposeComplexFinal
 } from './unicode.js'
 import { 
   composeSyllable, 
   canFormComplexMedial, 
-  canFormComplexFinal, 
-  decomposeHangulSyllable 
+  canFormComplexFinal
 } from './composition.js'
 
 // Global composition state for Korean input
@@ -185,81 +183,21 @@ export function getCurrentCompositionDisplay(): string {
  * @returns Processed string with composed syllables
  */
 export function processKoreanInput(input: string): string {
-  console.log('🔍 processKoreanInput called with:', input)
+  console.log('🔍 processKoreanInput (simplified) called with:', input)
   if (!input) return ''
   
   let result = ''
   let currentSyllable = { initial: '', medial: '', final: '' }
-  let previousFinalConsonant = ''
   
   for (let i = 0; i < input.length; i++) {
     const char = input[i]
-    // console.log(`🔍 Processing char ${i}: "${char}" (${isConsonant(char) ? 'consonant' : isVowel(char) ? 'vowel' : isComposedHangulSyllable(char) ? 'composed-syllable' : 'other'})`)
-    // console.log(`   Current syllable:`, currentSyllable)
+    console.log(`🔍 Processing char ${i}: "${char}" (${isConsonant(char) ? 'consonant' : isVowel(char) ? 'vowel' : 'other'})`)
+    console.log(`   Current syllable:`, currentSyllable)
     
-    if (isComposedHangulSyllable(char)) {
-      // Handle composed Hangul syllable
-      console.log(`   ✅ Composed syllable "${char}", decomposing and handling`)
-      
-      // Complete any current syllable first
-      if (currentSyllable.initial) {
-        result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
-        currentSyllable = { initial: '', medial: '', final: '' }
-        previousFinalConsonant = ''
-      }
-      
-      // Decompose the syllable
-      const decomposed = decomposeHangulSyllable(char)
-      console.log(`   📝 Decomposed "${char}" to:`, decomposed)
-      
-      // If it has no final, we can potentially add a final consonant OR another vowel to form complex medial
-      if (!decomposed.final) {
-        // This syllable can accept a final consonant or another vowel for complex medial
-        currentSyllable = decomposed
-        console.log(`   ✅ Syllable "${char}" can accept final consonant or complex medial vowel`)
-      } else {
-        // This syllable already has a final, check if there are more characters to process
-        if (i < input.length - 1) {
-          // There are more characters, check if next character can form complex final
-          const nextChar = input[i + 1]
-          const complexFinal = canFormComplexFinal(decomposed.final, nextChar)
-          if (complexFinal) {
-            // Form complex final and skip the next character
-            currentSyllable = { initial: decomposed.initial, medial: decomposed.medial, final: complexFinal }
-            console.log(`   ✅ Formed complex final "${decomposed.final}" + "${nextChar}" = "${complexFinal}"`)
-            i++ // Skip the next character since we used it
-        } else {
-          // Cannot form complex final, check if next character is a vowel
-          if (i < input.length - 1 && isVowel(input[i + 1])) {
-            // Next character is a vowel, handle complex final decomposition
-            const complexComponents = decomposeComplexFinal(decomposed.final)
-            if (complexComponents) {
-              // Complex final: keep first component in original syllable, use second for next syllable
-              const syllableWithFirstComponent = composeSyllable(decomposed.initial, decomposed.medial, complexComponents.first)
-              result += syllableWithFirstComponent
-              previousFinalConsonant = complexComponents.second
-              console.log(`   ✅ Complex final "${decomposed.final}" decomposed: keeping "${complexComponents.first}" in "${syllableWithFirstComponent}", storing "${complexComponents.second}" for next syllable`)
-            } else {
-              // Simple final: recompose syllable without final consonant and store final consonant
-              const syllableWithoutFinal = composeSyllable(decomposed.initial, decomposed.medial, '')
-              result += syllableWithoutFinal
-              previousFinalConsonant = decomposed.final
-              console.log(`   ✅ Simple final: syllable "${char}" recomposed without final as "${syllableWithoutFinal}", storing final consonant "${decomposed.final}" for next syllable`)
-            }
-          } else {
-            // No vowel follows, complete current syllable
-            result += char
-            previousFinalConsonant = ''
-            console.log(`   ✅ Syllable "${char}" already complete, adding to result`)
-          }
-        }
-      } else {
-        // No more characters, complete current syllable
-        result += char
-        console.log(`   ✅ Syllable "${char}" already complete, adding to result`)
-      }
-      }
-    } else if (isConsonant(char)) {
+    // With simplified approach, we only handle individual jamo characters
+    // Precomposed syllables should not occur in our input stream
+    
+    if (isConsonant(char)) {
       if (currentSyllable.initial && currentSyllable.medial) {
         // We have initial + medial, this could be final consonant
         if (currentSyllable.final) {
