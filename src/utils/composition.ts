@@ -58,9 +58,9 @@ export function canFormComplexMedial(first: string, second: string): string | nu
     [String.fromCharCode(0x1169) + String.fromCharCode(0x314F)]: String.fromCharCode(0x116A),  // ㅗ + ㅏ = ᅪ (Hangul Jamo)
     [String.fromCharCode(0x1169) + String.fromCharCode(0x3150)]: String.fromCharCode(0x116B),  // ㅗ + ㅐ = ᅫ (Hangul Jamo)
     [String.fromCharCode(0x1169) + String.fromCharCode(0x3163)]: String.fromCharCode(0x116C),  // ㅗ + ㅣ = ᅬ (Hangul Jamo)
-    [String.fromCharCode(0x116C) + String.fromCharCode(0x314E)]: String.fromCharCode(0x116F),  // ㅜ + ㅓ = ᅯ (Hangul Jamo)
-    [String.fromCharCode(0x116C) + String.fromCharCode(0x3151)]: String.fromCharCode(0x1170),  // ㅜ + ㅔ = ᅰ (Hangul Jamo)
-    [String.fromCharCode(0x116C) + String.fromCharCode(0x3163)]: String.fromCharCode(0x1171),  // ㅜ + ㅣ = ᅱ (Hangul Jamo)
+    [String.fromCharCode(0x116E) + String.fromCharCode(0x3153)]: String.fromCharCode(0x116F),  // ㅜ + ㅓ = ᅯ (Hangul Jamo)
+    [String.fromCharCode(0x116E) + String.fromCharCode(0x3151)]: String.fromCharCode(0x1170),  // ㅜ + ㅔ = ᅰ (Hangul Jamo)
+    [String.fromCharCode(0x116E) + String.fromCharCode(0x3163)]: String.fromCharCode(0x1171),  // ㅜ + ㅣ = ᅱ (Hangul Jamo)
     [String.fromCharCode(0x1173) + String.fromCharCode(0x3163)]: String.fromCharCode(0x1174)   // ㅡ + ㅣ = ᅴ (Hangul Jamo)
   }
   
