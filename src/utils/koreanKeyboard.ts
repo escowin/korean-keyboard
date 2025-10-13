@@ -32,7 +32,8 @@ export {
 export { 
   composeSyllable,
   canFormComplexMedial,
-  canFormComplexFinal
+  canFormComplexFinal,
+  decomposeComplexFinal
 } from './composition.js'
 
 // Re-export from input processor module

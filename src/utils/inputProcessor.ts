@@ -12,7 +12,8 @@ import {
 import { 
   composeSyllable, 
   canFormComplexMedial, 
-  canFormComplexFinal
+  canFormComplexFinal,
+  decomposeComplexFinal
 } from './composition.js'
 
 /**
@@ -87,12 +88,23 @@ export function processKoreanInput(input: string): string {
           
           // Korean orthography rule: medial after final → convert final to initial (initial-medial, initial-medial)
           if (currentSyllable.final) {
-            // Complete syllable WITHOUT final consonant (it becomes initial for next syllable)
-            result += composeSyllable(currentSyllable.initial, currentSyllable.medial, '')
-            const initialConsonant = convertFinalToInitial(currentSyllable.final)
-            const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
-            currentSyllable = { initial: initialConsonant, medial: medialChar, final: '' }
-            console.log(`   ✅ Korean orthography: medial after final → final to initial "${currentSyllable.final}" → "${initialConsonant}"`)
+            // Check if the final is a complex final that needs decomposition
+            const decomposed = decomposeComplexFinal(currentSyllable.final)
+            if (decomposed) {
+              // Complex final: retain first part as final, use second part as initial
+              result += composeSyllable(currentSyllable.initial, currentSyllable.medial, decomposed.first)
+              const initialConsonant = convertFinalToInitial(decomposed.second)
+              const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
+              currentSyllable = { initial: initialConsonant, medial: medialChar, final: '' }
+              console.log(`   ✅ Korean orthography: complex final decomposition "${currentSyllable.final}" → "${decomposed.first}" (final) + "${decomposed.second}" → "${initialConsonant}" (initial)`)
+            } else {
+              // Simple final: complete syllable WITHOUT final consonant (it becomes initial for next syllable)
+              result += composeSyllable(currentSyllable.initial, currentSyllable.medial, '')
+              const initialConsonant = convertFinalToInitial(currentSyllable.final)
+              const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
+              currentSyllable = { initial: initialConsonant, medial: medialChar, final: '' }
+              console.log(`   ✅ Korean orthography: medial after final → final to initial "${currentSyllable.final}" → "${initialConsonant}"`)
+            }
           } else {
             result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
             const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
@@ -117,12 +129,23 @@ export function processKoreanInput(input: string): string {
         } else {
           // Korean orthography rule: medial after final → convert final to initial (initial-medial, initial-medial)
           if (currentSyllable.final) {
-            // Complete syllable WITHOUT final consonant (it becomes initial for next syllable)
-            result += composeSyllable(currentSyllable.initial, currentSyllable.medial, '')
-            const initialConsonant = convertFinalToInitial(currentSyllable.final)
-            const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
-            currentSyllable = { initial: initialConsonant, medial: medialChar, final: '' }
-            console.log(`   ✅ Korean orthography: medial after final → final to initial "${currentSyllable.final}" → "${initialConsonant}"`)
+            // Check if the final is a complex final that needs decomposition
+            const decomposed = decomposeComplexFinal(currentSyllable.final)
+            if (decomposed) {
+              // Complex final: retain first part as final, use second part as initial
+              result += composeSyllable(currentSyllable.initial, currentSyllable.medial, decomposed.first)
+              const initialConsonant = convertFinalToInitial(decomposed.second)
+              const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
+              currentSyllable = { initial: initialConsonant, medial: medialChar, final: '' }
+              console.log(`   ✅ Korean orthography: complex final decomposition "${currentSyllable.final}" → "${decomposed.first}" (final) + "${decomposed.second}" → "${initialConsonant}" (initial)`)
+            } else {
+              // Simple final: complete syllable WITHOUT final consonant (it becomes initial for next syllable)
+              result += composeSyllable(currentSyllable.initial, currentSyllable.medial, '')
+              const initialConsonant = convertFinalToInitial(currentSyllable.final)
+              const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
+              currentSyllable = { initial: initialConsonant, medial: medialChar, final: '' }
+              console.log(`   ✅ Korean orthography: medial after final → final to initial "${currentSyllable.final}" → "${initialConsonant}"`)
+            }
           } else {
             // This is the first medial vowel - convert to medial form
             const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
