@@ -111,18 +111,18 @@ export function canFormComplexFinal(first: string, second: string): string | nul
  */
 export function decomposeComplexFinal(complexFinal: string): { first: string, second: string } | null {
   const complexFinals: { [key: string]: { first: string, second: string } } = {
-    // Modern complex finals (reverse mapping)
-    [String.fromCharCode(0x11AA)]: { first: String.fromCharCode(0x11A8), second: String.fromCharCode(0x3145) }, // ㄳ → ㄱ + ㅅ
-    [String.fromCharCode(0x11AC)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x3148) }, // ㄵ → ㄴ + ㅈ
-    [String.fromCharCode(0x11AD)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x314E) }, // ㄶ → ㄴ + ㅎ
-    [String.fromCharCode(0x11B0)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3131) }, // ㄺ → ㄹ + ㄱ
-    [String.fromCharCode(0x11B1)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3141) }, // ㄻ → ㄹ + ㅁ
-    [String.fromCharCode(0x11B2)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3142) }, // ㄼ → ㄹ + ㅂ
-    [String.fromCharCode(0x11B3)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3145) }, // ㄽ → ㄹ + ㅅ
-    [String.fromCharCode(0x11B4)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x314C) }, // ㄾ → ㄹ + ㅌ
-    [String.fromCharCode(0x11B5)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3147) }, // ㄿ → ㄹ + ㅍ
-    [String.fromCharCode(0x11B6)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x314E) }, // ㅀ → ㄹ + ㅎ
-    [String.fromCharCode(0x11B9)]: { first: String.fromCharCode(0x11B8), second: String.fromCharCode(0x3145) }, // ㅄ → ㅂ + ㅅ
+    // Modern complex finals (reverse mapping) - using Hangul Jamo values
+    [String.fromCharCode(0x11AA)]: { first: String.fromCharCode(0x11A8), second: String.fromCharCode(0x1109) }, // ㄳ → ㄱ + ㅅ
+    [String.fromCharCode(0x11AC)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x110C) }, // ㄵ → ㄴ + ㅈ
+    [String.fromCharCode(0x11AD)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x1112) }, // ㄶ → ㄴ + ㅎ
+    [String.fromCharCode(0x11B0)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1100) }, // ㄺ → ㄹ + ㄱ
+    [String.fromCharCode(0x11B1)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1106) }, // ㄻ → ㄹ + ㅁ
+    [String.fromCharCode(0x11B2)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1107) }, // ㄼ → ㄹ + ㅂ
+    [String.fromCharCode(0x11B3)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1109) }, // ㄽ → ㄹ + ㅅ
+    [String.fromCharCode(0x11B4)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1110) }, // ㄾ → ㄹ + ㅌ
+    [String.fromCharCode(0x11B5)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1111) }, // ㄿ → ㄹ + ㅍ
+    [String.fromCharCode(0x11B6)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x1112) }, // ㅀ → ㄹ + ㅎ
+    [String.fromCharCode(0x11B9)]: { first: String.fromCharCode(0x11B8), second: String.fromCharCode(0x1109) }, // ㅄ → ㅂ + ㅅ
   }
   
   const components = complexFinals[complexFinal]
