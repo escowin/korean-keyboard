@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import KoreanKeyboard from './components/KoreanKeyboard.tsx'
 import { processKoreanInput } from './utils/koreanKeyboard.js'
-import { convertCompatibilityToHangulJamoContextAware } from './utils/unicode.js'
 import type { Note } from './types/korean.js'
 const iconSvg = '/korean-keyboard/icons/icon.svg'
 
@@ -232,7 +231,7 @@ function App() {
   }, [])
 
   const handleKeyboardText = useCallback((text: string) => {
-    console.log('🔍 ARCHAIC: handleKeyboardText called with:', text)
+    console.log('🔍 handleKeyboardText called with:', text)
     
     setNoteContent(prev => {
       const textarea = document.querySelector('#note-content') as HTMLTextAreaElement
@@ -242,84 +241,21 @@ function App() {
         const before = prev.substring(0, start)
         const after = prev.substring(end)
         
-        console.log('🔍 ARCHAIC: Position:', start, 'to', end)
-        console.log('🔍 ARCHAIC: Before:', before)
-        
-        // Process the input normally first
+        // Process the input with unified approach - all characters treated the same
         const rawContent = before + text + after
         const composedContent = processKoreanInput(rawContent)
-        console.log('🔍 ARCHAIC: Raw content:', rawContent)
-        console.log('🔍 ARCHAIC: Composed content:', composedContent)
+        console.log('🔍 Raw content:', rawContent)
+        console.log('🔍 Composed content:', composedContent)
         
-        // Check if the composed content contains archaic jamo that need special handling
-        console.log('🔍 ARCHAIC: Checking for archaic jamo in:', composedContent)
-        console.log('🔍 ARCHAIC: Composed content length:', composedContent.length)
-        console.log('🔍 ARCHAIC: Character breakdown:')
-        composedContent.split('').forEach((char, _index) => {
-          const code = char.charCodeAt(0)
-          console.log(`  ${_index}: "${char}" = U+${code.toString(16).toUpperCase().padStart(4, '0')} (${code})`)
-        })
+        // Set cursor position after state update
+        setTimeout(() => {
+          const newPosition = start + text.length
+          textarea.setSelectionRange(newPosition, newPosition)
+          textarea.focus()
+          setCursorPosition(newPosition)
+        }, 0)
         
-        // Check if we have archaic jamo by looking for specific Unicode ranges
-        // Archaic jamo can be in multiple ranges
-        const hasArchaicJamo = composedContent.split('').some(char => {
-          const code = char.charCodeAt(0)
-          // Check for archaic jamo in various ranges
-          return (code >= 0x1140 && code <= 0x1152) || // Hangul Jamo archaic initial consonants
-                 (code >= 0x1197 && code <= 0x11A2) || // Hangul Jamo archaic medial vowels
-                 (code >= 0x317F && code <= 0x318F) || // Compatibility Jamo archaic range
-                 (code >= 0xA97C && code <= 0xA97C)    // Special archaic character ꥼ
-        })
-        
-        console.log('🔍 ARCHAIC: Has archaic jamo:', hasArchaicJamo)
-        
-        // Also check if the composed content is different from raw content (indicating composition issues)
-        const hasCompositionIssues = composedContent !== rawContent && composedContent.length > 1
-        console.log('🔍 ARCHAIC: Has composition issues:', hasCompositionIssues)
-        
-        // Use either archaic jamo detection OR composition issues as trigger
-        const shouldUseArchaicHandling = hasArchaicJamo || hasCompositionIssues
-        console.log('🔍 ARCHAIC: Should use archaic handling:', shouldUseArchaicHandling)
-        
-        if (shouldUseArchaicHandling) {
-          console.log('🔍 ARCHAIC: Archaic jamo detected, using React state with Hangul Jamo conversion')
-          console.log('🔍 ARCHAIC: Original composed content:', composedContent)
-          
-          // Convert Compatibility Jamo to Hangul Jamo for proper rendering with context awareness
-          const hangulContent = convertCompatibilityToHangulJamoContextAware(composedContent)
-          console.log('🔍 ARCHAIC: Converted to Hangul Jamo:', hangulContent)
-          console.log('🔍 ARCHAIC: Conversion details:')
-          composedContent.split('').forEach((char, _index) => {
-            const converted = convertCompatibilityToHangulJamoContextAware(char)
-            if (char !== converted) {
-              console.log(`  "${char}" (U+${char.charCodeAt(0).toString(16)}) → "${converted}" (U+${converted.charCodeAt(0).toString(16)})`)
-            } else {
-              console.log(`  "${char}" (U+${char.charCodeAt(0).toString(16)}) → unchanged`)
-            }
-          })
-          
-          // Use React state management instead of DOM manipulation
-          // Set cursor position after state update
-          setTimeout(() => {
-            const newPosition = start + hangulContent.length
-            textarea.setSelectionRange(newPosition, newPosition)
-            textarea.focus()
-            setCursorPosition(newPosition)
-          }, 0)
-          
-          // Return the converted content for React state update
-          return hangulContent
-        } else {
-          // Normal cursor positioning for regular characters
-          setTimeout(() => {
-            const newPosition = start + text.length
-            textarea.setSelectionRange(newPosition, newPosition)
-            textarea.focus()
-            setCursorPosition(newPosition)
-          }, 0)
-          
-          return composedContent
-        }
+        return composedContent
       }
       return prev + text
     })
@@ -384,7 +320,7 @@ function App() {
   }, [])
 
   // Handle title input focus - manage keyboard visibility
-  const handleTitleFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+  const handleTitleFocus = useCallback((_e: React.FocusEvent<HTMLInputElement>) => {
     // Ensure our custom keyboard is visible on mobile
     if (isMobile) {
       setIsKeyboardVisible(true)
@@ -404,7 +340,7 @@ function App() {
   }, [])
 
   // Handle title input click - ensure keyboard is visible on mobile
-  const handleTitleClick = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
+  const handleTitleClick = useCallback((_e: React.MouseEvent<HTMLInputElement>) => {
     if (isMobile) {
       // Ensure our custom keyboard is visible when clicking on title input
       setIsKeyboardVisible(true)
