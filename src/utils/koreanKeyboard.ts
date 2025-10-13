@@ -23,6 +23,7 @@ export {
   COMPATIBILITY_TO_HANGUL_JAMO_FINAL,
   COMPATIBILITY_TO_HANGUL_JAMO_VOWEL,
   convertFinalToInitial,
+  convertCompatibilityToHangulJamoByContext,
   decomposeComplexFinal,
   isConsonant,
   isModernConsonant,

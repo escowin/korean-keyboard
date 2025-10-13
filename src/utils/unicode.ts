@@ -333,6 +333,34 @@ export function convertFinalToInitial(finalConsonant: string): string {
 }
 
 /**
+ * Convert Compatibility Jamo to Hangul Jamo based on context
+ * @param char - Compatibility Jamo character
+ * @param context - Current syllable context: 'initial', 'final', or 'auto'
+ * @returns Hangul Jamo character in the appropriate form
+ */
+export function convertCompatibilityToHangulJamoByContext(char: string, context: 'initial' | 'final' | 'auto' = 'auto'): string {
+  // Check if it's a consonant
+  if (char in COMPATIBILITY_TO_HANGUL_JAMO_INITIAL || char in COMPATIBILITY_TO_HANGUL_JAMO_FINAL) {
+    if (context === 'initial') {
+      return COMPATIBILITY_TO_HANGUL_JAMO_INITIAL[char] || char
+    } else if (context === 'final') {
+      return COMPATIBILITY_TO_HANGUL_JAMO_FINAL[char] || char
+    } else {
+      // Auto context: default to initial for consonants
+      return COMPATIBILITY_TO_HANGUL_JAMO_INITIAL[char] || char
+    }
+  }
+  
+  // Check if it's a vowel
+  if (char in COMPATIBILITY_TO_HANGUL_JAMO_VOWEL) {
+    return COMPATIBILITY_TO_HANGUL_JAMO_VOWEL[char]
+  }
+  
+  // Return as-is if no mapping found
+  return char
+}
+
+/**
  * Decompose a complex final consonant into its component parts
  * @param complexFinal - Complex final consonant
  * @returns Object with first and second components, or null if not a complex final

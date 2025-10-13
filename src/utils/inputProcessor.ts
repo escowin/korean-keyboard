@@ -6,7 +6,8 @@
 import { 
   isConsonant, 
   isVowel, 
-  convertFinalToInitial
+  convertFinalToInitial,
+  convertCompatibilityToHangulJamoByContext
 } from './unicode.js'
 import { 
   composeSyllable, 
@@ -48,23 +49,29 @@ export function processKoreanInput(input: string): string {
             // Cannot form complex final, complete current syllable and start new one
             console.log(`   ✅ Completing syllable with final, starting new with "${char}"`)
             result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
-            currentSyllable = { initial: char, medial: '', final: '' }
+            // Convert to initial for new syllable
+            const initialChar = convertCompatibilityToHangulJamoByContext(char, 'initial')
+            currentSyllable = { initial: initialChar, medial: '', final: '' }
           }
         } else {
-          // This is the final consonant
-          console.log(`   ✅ Adding final consonant "${char}"`)
-          currentSyllable.final = char
+          // This is the final consonant - convert to final form
+          const finalChar = convertCompatibilityToHangulJamoByContext(char, 'final')
+          console.log(`   ✅ Adding final consonant "${char}" → "${finalChar}"`)
+          currentSyllable.final = finalChar
         }
       } else if (currentSyllable.initial && !currentSyllable.medial) {
         // We have initial but no medial, this could be a double consonant
         // For now, treat as new initial (could be enhanced for double consonants)
         console.log(`   ✅ No medial found, treating "${char}" as new initial`)
         result += currentSyllable.initial
-        currentSyllable = { initial: char, medial: '', final: '' }
+        // Convert to initial for new syllable
+        const initialChar = convertCompatibilityToHangulJamoByContext(char, 'initial')
+        currentSyllable = { initial: initialChar, medial: '', final: '' }
       } else {
-        // This is the initial consonant
-        console.log(`   ✅ Setting initial consonant "${char}"`)
-        currentSyllable.initial = char
+        // This is the initial consonant - convert to initial form
+        const initialChar = convertCompatibilityToHangulJamoByContext(char, 'initial')
+        console.log(`   ✅ Setting initial consonant "${char}" → "${initialChar}"`)
+        currentSyllable.initial = initialChar
       }
     } else if (isVowel(char)) {
       if (currentSyllable.initial && currentSyllable.medial) {
@@ -82,10 +89,12 @@ export function processKoreanInput(input: string): string {
           // If we had a final consonant, convert it to initial for the new syllable
           if (currentSyllable.final) {
             const initialConsonant = convertFinalToInitial(currentSyllable.final)
-            currentSyllable = { initial: initialConsonant, medial: char, final: '' }
+            const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
+            currentSyllable = { initial: initialConsonant, medial: medialChar, final: '' }
             console.log(`   ✅ Converted final "${currentSyllable.final}" to initial "${initialConsonant}" for new syllable`)
           } else {
-            currentSyllable = { initial: '', medial: char, final: '' }
+            const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
+            currentSyllable = { initial: '', medial: medialChar, final: '' }
           }
         }
       } else if (currentSyllable.initial) {
@@ -96,21 +105,24 @@ export function processKoreanInput(input: string): string {
             // Replace the existing medial with the complex medial
             console.log(`   ✅ Forming complex medial: "${currentSyllable.medial}" + "${char}" = "${complexMedial}"`)
             currentSyllable.medial = complexMedial
-          } else {
-            // Cannot form complex medial, complete current syllable and start new one
-            console.log(`   ✅ Cannot form complex medial, completing syllable and starting new with "${char}"`)
-            result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
-            currentSyllable = { initial: '', medial: char, final: '' }
-          }
         } else {
-          // This is the first medial vowel
-          console.log(`   ✅ Adding medial vowel "${char}"`)
-          currentSyllable.medial = char
+          // Cannot form complex medial, complete current syllable and start new one
+          console.log(`   ✅ Cannot form complex medial, completing syllable and starting new with "${char}"`)
+          result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
+          const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
+          currentSyllable = { initial: '', medial: medialChar, final: '' }
+        }
+        } else {
+          // This is the first medial vowel - convert to medial form
+          const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
+          console.log(`   ✅ Adding medial vowel "${char}" → "${medialChar}"`)
+          currentSyllable.medial = medialChar
         }
       } else {
-        // Standalone vowel - with simplified approach, we don't need to handle previous final consonants
-        console.log(`   ✅ Standalone vowel "${char}"`)
-        result += char
+        // Standalone vowel - convert to medial form
+        const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
+        console.log(`   ✅ Standalone vowel "${char}" → "${medialChar}"`)
+        result += medialChar
       }
     } else {
       // Non-Korean character, complete current syllable if any
