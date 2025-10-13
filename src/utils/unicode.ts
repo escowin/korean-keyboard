@@ -137,35 +137,6 @@ export const COMPATIBILITY_TO_HANGUL_JAMO_VOWEL: { [key: string]: string } = {
   [String.fromCharCode(0x318E)]: String.fromCharCode(0x11A1), // ㆎ → ᆡ
 }
 
-// Archaic consonant mappings (Compatibility Jamo to Hangul Jamo)
-export const ARCHAIC_CONSONANT_MAPPINGS: { [key: string]: { initial: string, final?: string } } = {
-  // Archaic consonants with both initial and final forms
-  [String.fromCharCode(0x3165)]: { initial: String.fromCharCode(0x1114), final: String.fromCharCode(0x11FF) }, // ㅥ → ᄔ / ᇿ
-  [String.fromCharCode(0x3171)]: { initial: String.fromCharCode(0x111D), final: String.fromCharCode(0x11E2) }, // ㅱ → ᄝ / ᇢ
-  [String.fromCharCode(0x3178)]: { initial: String.fromCharCode(0x112B), final: String.fromCharCode(0x11E6) }, // ㅸ → ᄫ / ᇦ
-  [String.fromCharCode(0x317F)]: { initial: String.fromCharCode(0x1140), final: String.fromCharCode(0x11EB) }, // ㅿ → ᅀ / ᇫ
-  [String.fromCharCode(0x3181)]: { initial: String.fromCharCode(0x114C), final: String.fromCharCode(0x11F0) }, // ㆁ → ᅌ / ᇰ
-  [String.fromCharCode(0x3184)]: { initial: String.fromCharCode(0x1157), final: String.fromCharCode(0x11F4) }, // ㆄ → ᅗ / ᇴ
-  [String.fromCharCode(0x3186)]: { initial: String.fromCharCode(0x1159), final: String.fromCharCode(0x11F9) }, // ㆆ → ᅙ / ᇹ
-  
-  // Archaic consonants without final forms
-  [String.fromCharCode(0x3179)]: { initial: String.fromCharCode(0x112C) }, // ㅹ → ᄬ
-  [String.fromCharCode(0x3180)]: { initial: String.fromCharCode(0x1147) }, // ㆀ → ᅇ
-  [String.fromCharCode(0x3185)]: { initial: String.fromCharCode(0x1158) }, // ㆅ → ᅘ
-  
-  // Archaic consonants that only exist as initial
-  [String.fromCharCode(0x113C)]: { initial: String.fromCharCode(0x113C) }, // ᄼ → ᄼ
-  [String.fromCharCode(0x113D)]: { initial: String.fromCharCode(0x113D) }, // ᄽ → ᄽ
-  [String.fromCharCode(0x113E)]: { initial: String.fromCharCode(0x113E) }, // ᄾ → ᄾ
-  [String.fromCharCode(0x113F)]: { initial: String.fromCharCode(0x113F) }, // ᄿ → ᄿ
-  [String.fromCharCode(0x114E)]: { initial: String.fromCharCode(0x114E) }, // ᅎ → ᅎ
-  [String.fromCharCode(0x114F)]: { initial: String.fromCharCode(0x114F) }, // ᅏ → ᅏ
-  [String.fromCharCode(0x1150)]: { initial: String.fromCharCode(0x1150) }, // ᅐ → ᅐ
-  [String.fromCharCode(0x1151)]: { initial: String.fromCharCode(0x1151) }, // ᅑ → ᅑ
-  [String.fromCharCode(0xA97C)]: { initial: String.fromCharCode(0xA97C) }, // ꥼ → ꥼ
-}
-
-
 // Archaic complex medial mappings (ㆍ + vowel combinations)
 export const ARCHAIC_COMPLEX_MEDIAL_MAPPINGS: { [key: string]: string } = {
   // ㆍ + modern vowels = archaic complex medials (support both compatibility and Hangul jamo)
@@ -182,22 +153,6 @@ export const ARCHAIC_COMPLEX_MEDIAL_MAPPINGS: { [key: string]: string } = {
   [String.fromCharCode(0x1196) + String.fromCharCode(0x1166)]: String.fromCharCode(0xD7C6), // ᆞ + ᅦ = ퟆ
   [String.fromCharCode(0x1196) + String.fromCharCode(0x116E)]: String.fromCharCode(0x11A0), // ᆞ + ᅮ = ᆠ
   [String.fromCharCode(0x1196) + String.fromCharCode(0x1175)]: String.fromCharCode(0x11A1), // ᆞ + ᅵ = ᆡ
-}
-
-// Mapping from complex final consonants to their component parts
-export const COMPLEX_FINAL_TO_COMPONENTS: { [key: string]: { first: string, second: string } } = {
-  // Modern complex finals
-  [String.fromCharCode(0x11B0)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3131) }, // ㄺ → ㄹ + ㄱ
-  [String.fromCharCode(0x11B1)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3141) }, // ㄻ → ㄹ + ㅁ
-  [String.fromCharCode(0x11B2)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3142) }, // ㄼ → ㄹ + ㅂ
-  [String.fromCharCode(0x11AA)]: { first: String.fromCharCode(0x11A8), second: String.fromCharCode(0x3145) }, // ㄳ → ㄱ + ㅅ
-  [String.fromCharCode(0x11B3)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3145) }, // ㄽ → ㄹ + ㅅ
-  [String.fromCharCode(0x11B9)]: { first: String.fromCharCode(0x11B8), second: String.fromCharCode(0x3145) }, // ㅄ → ㅂ + ㅅ
-  [String.fromCharCode(0x11AC)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x3148) }, // ㄵ → ㄴ + ㅈ
-  [String.fromCharCode(0x11B4)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3137) }, // ㄾ → ㄹ + ㅌ
-  [String.fromCharCode(0x11B5)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x3147) }, // ㄿ → ㄹ + ㅍ
-  [String.fromCharCode(0x11AD)]: { first: String.fromCharCode(0x11AB), second: String.fromCharCode(0x314E) }, // ㄶ → ㄴ + ㅎ
-  [String.fromCharCode(0x11B6)]: { first: String.fromCharCode(0x11AF), second: String.fromCharCode(0x314E) }, // ㅀ → ㄹ + ㅎ
 }
 
 // Unicode ranges for Korean characters
@@ -287,20 +242,6 @@ export function convertCompatibilityToHangulJamoByContext(char: string, context:
   return char
 }
 
-/**
- * Decompose a complex final consonant into its component parts
- * @param complexFinal - Complex final consonant
- * @returns Object with first and second components, or null if not a complex final
- */
-export function decomposeComplexFinal(complexFinal: string): { first: string, second: string } | null {
-  const components = COMPLEX_FINAL_TO_COMPONENTS[complexFinal]
-  if (components) {
-    console.log(`🔍 Decomposing complex final "${complexFinal}" to: "${components.first}" + "${components.second}"`)
-    return components
-  }
-  console.log(`⚠️ "${complexFinal}" is not a complex final, returning null`)
-  return null
-}
 
 /**
  * Check if a character is a Korean consonant (modern or archaic)
@@ -446,88 +387,6 @@ export function convertCompatibilityToHangulJamo(text: string, preferInitial: bo
   }).join('')
 }
 
-/**
- * Convert Compatibility Jamo to Hangul Jamo with context awareness
- * Determines whether to use initial or final forms based on surrounding characters
- */
-export function convertCompatibilityToHangulJamoContextAware(text: string): string {
-  return text.split('').map((char, index) => {
-    // Check if this character should be a final consonant
-    const shouldBeFinal = shouldBeFinalConsonant(text, index)
-    
-    // Check if it's an archaic consonant first
-    const archaicMapping = ARCHAIC_CONSONANT_MAPPINGS[char]
-    if (archaicMapping) {
-      if (shouldBeFinal && archaicMapping.final) {
-        return archaicMapping.final
-      } else {
-        return archaicMapping.initial
-      }
-    }
-    
-    // Handle regular compatibility jamo
-    if (shouldBeFinal) {
-      const finalChar = COMPATIBILITY_TO_HANGUL_JAMO_FINAL[char]
-      if (finalChar) return finalChar
-    } else {
-      const initialChar = COMPATIBILITY_TO_HANGUL_JAMO_INITIAL[char]
-      if (initialChar) return initialChar
-    }
-    
-    // Fallback to vowel mapping
-    const vowelChar = COMPATIBILITY_TO_HANGUL_JAMO_VOWEL[char]
-    if (vowelChar) return vowelChar
-    
-    // Return original if no mapping exists
-    return char
-  }).join('')
-}
-
-/**
- * Determine if a character at a given position should be a final consonant
- */
-function shouldBeFinalConsonant(text: string, index: number): boolean {
-  const char = text[index]
-  
-  // Check if it's a regular compatibility jamo
-  const isRegularJamo = COMPATIBILITY_TO_HANGUL_JAMO_INITIAL[char]
-  // Check if it's an archaic consonant
-  const isArchaicConsonant = ARCHAIC_CONSONANT_MAPPINGS[char]
-  
-  // If it's neither, return false
-  if (!isRegularJamo && !isArchaicConsonant) return false
-  
-  // For archaic consonants, check if they have a final form
-  if (isArchaicConsonant && !isArchaicConsonant.final) {
-    // This archaic consonant doesn't have a final form, so it can't be final
-    return false
-  }
-  
-  // Look at the previous character to determine context
-  if (index > 0) {
-    const prevChar = text[index - 1]
-    const prevCode = prevChar.charCodeAt(0)
-    
-    // If previous character is a medial vowel (including archaic), this should be final
-    if ((prevCode >= 0x1161 && prevCode <= 0x1175) || // Modern medial vowels
-        (prevCode >= 0x1196 && prevCode <= 0x11A1)) { // Archaic medial vowels
-      return true
-    }
-    
-    // If previous character is an initial consonant (including archaic), this should also be final
-    if ((prevCode >= 0x1100 && prevCode <= 0x1116) || // Modern initial consonants
-        (prevCode >= 0x1113 && prevCode <= 0x1116) || // Extended initial consonants
-        (prevCode >= 0x1114 && prevCode <= 0x1159) || // Archaic initial consonants
-        (prevCode >= 0x113C && prevCode <= 0x113F) || // Additional archaic initials
-        (prevCode >= 0x114E && prevCode <= 0x1151) || // More archaic initials
-        prevCode === 0xA97C) { // ꥼ
-      return true
-    }
-  }
-  
-  // Default to initial consonant
-  return false
-}
 
 /**
  * Convert Compatibility Jamo to Hangul Jamo for initial consonants
@@ -567,41 +426,3 @@ export function isCompatibilityJamo(char: string): boolean {
          char in COMPATIBILITY_TO_HANGUL_JAMO_VOWEL
 }
 
-/**
- * Check if a character is an archaic jamo (cannot be composed using standard formula)
- */
-export function isArchaicJamo(char: string): boolean {
-  // Archaic medial vowels that cannot be composed using standard formula
-  const archaicMedials = ['ㆍ', 'ᆢ', 'ퟅ', 'ᆟ', 'ퟆ', 'ᆠ', 'ᆡ']
-  
-  // Archaic initial consonants
-  const archaicInitials = Object.keys(UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS)
-  
-  return archaicMedials.includes(char) || archaicInitials.includes(char)
-}
-
-/**
- * Check if a medial vowel is archaic (cannot use standard composition)
- */
-export function isArchaicMedialVowel(char: string): boolean {
-  const archaicMedials = ['ㆍ', 'ᆢ', 'ퟅ', 'ᆟ', 'ퟆ', 'ᆠ', 'ᆡ']
-  return archaicMedials.includes(char)
-}
-
-/**
- * Get precomposed archaic syllables for common combinations
- */
-export function getArchaicSyllable(initial: string, medial: string, final: string = ''): string | null {
-  // Map common archaic combinations to their precomposed forms
-  const archaicSyllables: { [key: string]: string } = {
-    // ㅎ + ㆍ = ᄒᆞ (precomposed)
-    'ㅎㆍ': 'ᄒᆞ',
-    'ㅎㆍㅇ': 'ᄒᆞᆼ', // if there's a final consonant
-    // ㅂ + ㆍ = ᄇᆞ (precomposed)
-    'ㅂㆍ': 'ᄇᆞ',
-    'ㅂㆍㅇ': 'ᄇᆞᆼ', // if there's a final consonant
-  }
-  
-  const key = initial + medial + final
-  return archaicSyllables[key] || null
-}

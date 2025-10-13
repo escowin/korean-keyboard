@@ -18,13 +18,11 @@ export {
 export { 
   UNICODE_RANGES,
   FINAL_TO_INITIAL_MAPPING,
-  COMPLEX_FINAL_TO_COMPONENTS,
   COMPATIBILITY_TO_HANGUL_JAMO_INITIAL,
   COMPATIBILITY_TO_HANGUL_JAMO_FINAL,
   COMPATIBILITY_TO_HANGUL_JAMO_VOWEL,
   convertFinalToInitial,
   convertCompatibilityToHangulJamoByContext,
-  decomposeComplexFinal,
   isConsonant,
   isModernConsonant,
   isVowel
