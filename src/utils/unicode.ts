@@ -6,9 +6,22 @@
 
 import type { KoreanUnicodeRanges } from '../types/korean.js';
 
+// Type definitions for the character tables
+type CharacterData = {
+  initial?: number | null
+  final?: number | null
+  medial?: number | null
+  compatibility?: number | null
+}
+
+type CharacterTable = { [key: string]: CharacterData }
+
 // Unified Korean character table - all characters treated equally
 // Based on official Unicode charts: consonant and vowel sort order
-const KOREAN_CHARACTER_TABLE = {
+const KOREAN_CHARACTER_TABLE: {
+  consonants: CharacterTable
+  vowels: CharacterTable
+} = {
   // Consonants (자음) - following official consonant sort order
   consonants: {
     'ㄱ': { initial: 0x1100, final: 0x11A8, compatibility: 0x3131 },
@@ -140,16 +153,16 @@ function generateMappings() {
   const finalToInitialMappings: { [key: string]: string } = {}
   
   // Generate consonant mappings
-  Object.entries(KOREAN_CHARACTER_TABLE.consonants).forEach(([char, data]) => {
-    if (data.compatibility !== null) {
+  Object.entries(KOREAN_CHARACTER_TABLE.consonants).forEach(([, data]) => {
+    if (data.compatibility !== null && data.compatibility !== undefined) {
       const compatibilityChar = getCharByCode(data.compatibility)
-      if (data.initial !== null) {
+      if (data.initial !== null && data.initial !== undefined) {
         initialMappings[compatibilityChar] = getCharByCode(data.initial)
       }
-      if (data.final !== null) {
+      if (data.final !== null && data.final !== undefined) {
         finalMappings[compatibilityChar] = getCharByCode(data.final)
         // Create final to initial mapping
-        if (data.initial !== null) {
+        if (data.initial !== null && data.initial !== undefined) {
           finalToInitialMappings[getCharByCode(data.final)] = getCharByCode(data.initial)
         }
       }
@@ -157,8 +170,9 @@ function generateMappings() {
   })
   
   // Generate vowel mappings
-  Object.entries(KOREAN_CHARACTER_TABLE.vowels).forEach(([char, data]) => {
-    if (data.compatibility !== null) {
+  Object.entries(KOREAN_CHARACTER_TABLE.vowels).forEach(([, data]) => {
+    if (data.compatibility !== null && data.compatibility !== undefined && 
+        data.medial !== null && data.medial !== undefined) {
       const compatibilityChar = getCharByCode(data.compatibility)
       vowelMappings[compatibilityChar] = getCharByCode(data.medial)
     }
@@ -181,24 +195,34 @@ function generateComplexMappings() {
   // Generate complex medial mappings
   Object.entries(COMPLEX_COMBINATIONS.medials).forEach(([combination, data]) => {
     const [first, second] = combination.split('')
-    const firstChar = getCharByCode(KOREAN_CHARACTER_TABLE.vowels[first].medial)
-    const secondChar = getCharByCode(KOREAN_CHARACTER_TABLE.vowels[second].compatibility)
-    const key = firstChar + secondChar
-    complexMedialMappings[key] = getCharByCode(data.medial)
+    const firstData = KOREAN_CHARACTER_TABLE.vowels[first]
+    const secondData = KOREAN_CHARACTER_TABLE.vowels[second]
+    
+    if (firstData?.medial && secondData?.compatibility) {
+      const firstChar = getCharByCode(firstData.medial)
+      const secondChar = getCharByCode(secondData.compatibility)
+      const key = firstChar + secondChar
+      complexMedialMappings[key] = getCharByCode(data.medial)
+    }
   })
   
   // Generate complex final mappings
   Object.entries(COMPLEX_COMBINATIONS.finals).forEach(([combination, data]) => {
     const [first, second] = combination.split('')
-    const firstChar = getCharByCode(KOREAN_CHARACTER_TABLE.consonants[first].final)
-    const secondChar = getCharByCode(KOREAN_CHARACTER_TABLE.consonants[second].compatibility)
-    const key = firstChar + secondChar
-    complexFinalMappings[key] = getCharByCode(data.final)
+    const firstData = KOREAN_CHARACTER_TABLE.consonants[first]
+    const secondData = KOREAN_CHARACTER_TABLE.consonants[second]
     
-    // Create decomposition mapping
-    complexFinalDecomposition[getCharByCode(data.final)] = {
-      first: getCharByCode(KOREAN_CHARACTER_TABLE.consonants[first].final),
-      second: getCharByCode(KOREAN_CHARACTER_TABLE.consonants[second].initial)
+    if (firstData?.final && secondData?.compatibility && firstData?.initial) {
+      const firstChar = getCharByCode(firstData.final)
+      const secondChar = getCharByCode(secondData.compatibility)
+      const key = firstChar + secondChar
+      complexFinalMappings[key] = getCharByCode(data.final)
+      
+      // Create decomposition mapping
+      complexFinalDecomposition[getCharByCode(data.final)] = {
+        first: getCharByCode(firstData.final),
+        second: getCharByCode(firstData.initial)
+      }
     }
   })
   
@@ -231,21 +255,23 @@ function generateUnicodeRanges(): KoreanUnicodeRanges {
   
   // Generate consonant ranges
   Object.entries(KOREAN_CHARACTER_TABLE.consonants).forEach(([char, data]) => {
-    if (data.initial !== null) {
-      if (data.compatibility !== null) {
+    if (data.initial !== null && data.initial !== undefined) {
+      if (data.compatibility !== null && data.compatibility !== undefined) {
         initialConsonants[char] = data.initial
       } else {
         archaicInitialConsonants[char] = data.initial
       }
     }
-    if (data.final !== null) {
+    if (data.final !== null && data.final !== undefined) {
       finalConsonants[char] = data.final
     }
   })
   
   // Generate vowel ranges
   Object.entries(KOREAN_CHARACTER_TABLE.vowels).forEach(([char, data]) => {
-    medialVowels[char] = data.medial
+    if (data.medial !== null && data.medial !== undefined) {
+      medialVowels[char] = data.medial
+    }
   })
   
   return {
@@ -257,7 +283,6 @@ function generateUnicodeRanges(): KoreanUnicodeRanges {
 }
 
 export const UNICODE_RANGES = generateUnicodeRanges()
-
 
 /**
  * Convert a final consonant to its corresponding initial consonant
