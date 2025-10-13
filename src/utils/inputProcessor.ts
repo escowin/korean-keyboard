@@ -37,7 +37,7 @@ export function processKoreanInput(input: string): string {
     
     if (isConsonant(char)) {
       if (currentSyllable.initial && currentSyllable.medial) {
-        // We have initial + medial, this could be final consonant
+        // Korean orthography rule: consonant after medial becomes final (initial-medial-final)
         if (currentSyllable.final) {
           // Already have final, check if we can form a complex final
           const complexFinal = canFormComplexFinal(currentSyllable.final, char)
@@ -54,9 +54,9 @@ export function processKoreanInput(input: string): string {
             currentSyllable = { initial: initialChar, medial: '', final: '' }
           }
         } else {
-          // This is the final consonant - convert to final form
+          // Korean orthography: consonant after medial → final form
           const finalChar = convertCompatibilityToHangulJamoByContext(char, 'final')
-          console.log(`   ✅ Adding final consonant "${char}" → "${finalChar}"`)
+          console.log(`   ✅ Korean orthography: consonant after medial → final "${char}" → "${finalChar}"`)
           currentSyllable.final = finalChar
         }
       } else if (currentSyllable.initial && !currentSyllable.medial) {
@@ -86,12 +86,12 @@ export function processKoreanInput(input: string): string {
           console.log(`   ✅ Cannot form complex medial, completing syllable and starting new with "${char}"`)
           result += composeSyllable(currentSyllable.initial, currentSyllable.medial, currentSyllable.final)
           
-          // If we had a final consonant, convert it to initial for the new syllable
+          // Korean orthography rule: medial after final → convert final to initial (initial-medial, initial-medial)
           if (currentSyllable.final) {
             const initialConsonant = convertFinalToInitial(currentSyllable.final)
             const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
             currentSyllable = { initial: initialConsonant, medial: medialChar, final: '' }
-            console.log(`   ✅ Converted final "${currentSyllable.final}" to initial "${initialConsonant}" for new syllable`)
+            console.log(`   ✅ Korean orthography: medial after final → final to initial "${currentSyllable.final}" → "${initialConsonant}"`)
           } else {
             const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
             currentSyllable = { initial: '', medial: medialChar, final: '' }
@@ -113,10 +113,18 @@ export function processKoreanInput(input: string): string {
           currentSyllable = { initial: '', medial: medialChar, final: '' }
         }
         } else {
-          // This is the first medial vowel - convert to medial form
-          const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
-          console.log(`   ✅ Adding medial vowel "${char}" → "${medialChar}"`)
-          currentSyllable.medial = medialChar
+          // Korean orthography rule: medial after final → convert final to initial (initial-medial, initial-medial)
+          if (currentSyllable.final) {
+            const initialConsonant = convertFinalToInitial(currentSyllable.final)
+            const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
+            currentSyllable = { initial: initialConsonant, medial: medialChar, final: '' }
+            console.log(`   ✅ Korean orthography: medial after final → final to initial "${currentSyllable.final}" → "${initialConsonant}"`)
+          } else {
+            // This is the first medial vowel - convert to medial form
+            const medialChar = convertCompatibilityToHangulJamoByContext(char, 'auto')
+            console.log(`   ✅ Adding medial vowel "${char}" → "${medialChar}"`)
+            currentSyllable.medial = medialChar
+          }
         }
       } else {
         // Standalone vowel - convert to medial form
