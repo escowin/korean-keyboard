@@ -297,7 +297,9 @@ export function decomposeComplexFinal(complexFinal: string): { first: string, se
  * @returns Whether the character is a Korean consonant
  */
 export function isConsonant(char: string): boolean {
-  return char in UNICODE_RANGES.INITIAL_CONSONANTS || char in UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS
+  return char in UNICODE_RANGES.INITIAL_CONSONANTS || 
+         char in UNICODE_RANGES.ARCHAIC_INITIAL_CONSONANTS ||
+         char in UNICODE_RANGES.FINAL_CONSONANTS
 }
 
 /**
