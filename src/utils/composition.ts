@@ -3,9 +3,6 @@
  * Handles syllable composition, complex medials, and complex finals
  */
 
-import { 
-  ARCHAIC_COMPLEX_MEDIAL_MAPPINGS
-} from './unicode.js'
 
 /**
  * Compose Korean syllable as Hangul Jamo sequence
@@ -45,23 +42,23 @@ export function composeSyllable(initial: string, medial: string, final: string =
 export function canFormComplexMedial(first: string, second: string): string | null {
   console.log(`🔍 canFormComplexMedial called with: "${first}" (U+${first.charCodeAt(0).toString(16).toUpperCase()}) + "${second}" (U+${second.charCodeAt(0).toString(16).toUpperCase()})`)
   
-  // Check for archaic complex medials first (ㆍ + vowel combinations)
-  const archaicCombination = first + second
-  const archaicResult = ARCHAIC_COMPLEX_MEDIAL_MAPPINGS[archaicCombination]
-  if (archaicResult) {
-    console.log(`🏛️ Archaic complex medial formed: "${first}" + "${second}" = "${archaicResult}" (U+${archaicResult.charCodeAt(0).toString(16).toUpperCase()})`)
-    return archaicResult
-  }
-  
-  // Check for modern complex medials
+  // Check for modern and archaic complex medials
   const complexMedials: { [key: string]: string } = {
+    // Modern complex medials
     [String.fromCharCode(0x1169) + String.fromCharCode(0x314F)]: String.fromCharCode(0x116A),  // ㅗ + ㅏ = ᅪ (Hangul Jamo)
     [String.fromCharCode(0x1169) + String.fromCharCode(0x3150)]: String.fromCharCode(0x116B),  // ㅗ + ㅐ = ᅫ (Hangul Jamo)
     [String.fromCharCode(0x1169) + String.fromCharCode(0x3163)]: String.fromCharCode(0x116C),  // ㅗ + ㅣ = ᅬ (Hangul Jamo)
     [String.fromCharCode(0x116E) + String.fromCharCode(0x3153)]: String.fromCharCode(0x116F),  // ㅜ + ㅓ = ᅯ (Hangul Jamo)
     [String.fromCharCode(0x116E) + String.fromCharCode(0x3154)]: String.fromCharCode(0x1170),  // ㅜ + ㅔ = ᅰ (Hangul Jamo)
     [String.fromCharCode(0x116E) + String.fromCharCode(0x3163)]: String.fromCharCode(0x1171),  // ㅜ + ㅣ = ᅱ (Hangul Jamo)
-    [String.fromCharCode(0x1173) + String.fromCharCode(0x3163)]: String.fromCharCode(0x1174)   // ㅡ + ㅣ = ᅴ (Hangul Jamo)
+    [String.fromCharCode(0x1173) + String.fromCharCode(0x3163)]: String.fromCharCode(0x1174),  // ㅡ + ㅣ = ᅴ (Hangul Jamo)
+    
+    // Archaic complex medials (ㆍ + vowel combinations)
+    [String.fromCharCode(0x119E) + String.fromCharCode(0x314F)]: String.fromCharCode(0xD7C5),  // ᆞ + ㅏ = ퟅ (Hangul Jamo)
+    [String.fromCharCode(0x119E) + String.fromCharCode(0x3153)]: String.fromCharCode(0x119F),  // ᆞ + ㅓ = ᆟ (Hangul Jamo)
+    [String.fromCharCode(0x119E) + String.fromCharCode(0x3154)]: String.fromCharCode(0xD7C6),  // ᆞ + ㅔ = ퟆ (Hangul Jamo)
+    [String.fromCharCode(0x119E) + String.fromCharCode(0x315C)]: String.fromCharCode(0x11A0),  // ᆞ + ㅜ = ᆠ (Hangul Jamo)
+    [String.fromCharCode(0x119E) + String.fromCharCode(0x3163)]: String.fromCharCode(0x11A1)   // ᆞ + ㅣ = ᆡ (Hangul Jamo)
   }
   
   const combination = first + second
