@@ -23,10 +23,7 @@ export {
   decomposeComplexFinal,
   isConsonant,
   isModernConsonant,
-  isVowel,
-  getInitialConsonantCode,
-  getMedialVowelCode,
-  getFinalConsonantCode
+  isVowel
 } from './unicode.js'
 
 // Re-export from composition module
@@ -38,10 +35,5 @@ export {
 
 // Re-export from input processor module
 export { 
-  resetCompositionState,
-  getCompositionState,
-  processKoreanCharacter,
-  completeCurrentComposition,
-  getCurrentCompositionDisplay,
   processKoreanInput
 } from './inputProcessor.js'
