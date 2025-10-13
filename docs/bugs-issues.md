@@ -1,8 +1,8 @@
 # Korean Keyboard - Bugs & Issues Tracking
 
-**Document Version:** 3.1  
-**Last Updated:** October 2025  
-**Status:** Typography Issues Resolved - Simplified Hangul Jamo Approach Complete
+**Document Version:** 3.2  
+**Last Updated:** October 13, 2025  
+**Status:** Unicode Schema Overhaul Complete - Unified Table-Based Approach
 
 ## 🚨 Critical Issues
 
@@ -41,7 +41,55 @@
 
 ---
 
-### 2. Complex Final Consonant Decomposition ✅ RESOLVED
+### 2. Unicode Schema Overhaul ✅ COMPLETED
+**Priority:** High  
+**Status:** Closed  
+**Description:** Complete restructuring of Unicode mappings using a unified table-based approach that treats all Korean characters equally.
+
+**Expected Behavior:**
+- All Unicode mappings should be centralized and maintainable
+- Modern and archaic characters should be treated equally
+- Complex combinations should work consistently
+- Code should follow official Unicode charts for sort order
+
+**Actual Behavior:**
+- Scattered Unicode mappings across multiple files
+- Duplicate `String.fromCharCode()` calls
+- Inconsistent handling of modern vs archaic characters
+- Complex medial formation failing after refactoring
+
+**Technical Details:**
+- Implemented `KOREAN_CHARACTER_TABLE` with unified consonant and vowel tables
+- Added `COMPLEX_COMBINATIONS` table for complex medials and finals
+- Auto-generated all existing mappings from centralized tables
+- Fixed complex medial formation for archaic characters (ᆞ + ㅣ = ᆡ)
+- Added proper TypeScript types and error handling
+
+**Resolution:**
+- ✅ Created unified table-based schema following official Unicode charts
+- ✅ All characters treated equally (no modern/archaic distinction)
+- ✅ Auto-generated mappings eliminate duplicate code
+- ✅ Fixed complex medial formation for archaic combinations
+- ✅ Added comprehensive TypeScript type safety
+- ✅ Single source of truth for all Unicode relationships
+
+**Benefits:**
+- 📊 Chart-based: Follows official Unicode standard exactly
+- 🔧 Maintainable: Easy to add new characters or fix mappings
+- 🎯 Unified: All characters treated equally
+- 📚 Self-documenting: Clear relationships between all Unicode forms
+- ⚡ Efficient: Eliminates duplicate code and repetitive mappings
+- 🔄 Backward Compatible: All existing exports still work
+
+**Test Cases:**
+- `ᆞ + ㅣ` → `ᆡ` ✅ (archaic complex medial)
+- `ㅗ + ㅏ` → `ㅘ` ✅ (modern complex medial)
+- `ㄱ + ㅅ` → `ㄳ` ✅ (complex final)
+- All existing mappings preserved ✅
+
+---
+
+### 3. Complex Final Consonant Decomposition ✅ RESOLVED
 **Priority:** High  
 **Status:** Closed  
 **Description:** When a syllable with a complex final consonant is followed by a vowel, the first component of the complex final is lost instead of being retained in the original syllable.
@@ -507,22 +555,31 @@
 
 ## 🎉 Major Milestone Achieved
 
-**✅ MODERN KOREAN KEYBOARD COMPLETE**  
-**Date:** December 2024  
-**Status:** All core modern Korean functionality working perfectly
+**✅ UNIFIED UNICODE SCHEMA COMPLETE**  
+**Date:** October 13, 2025  
+**Status:** All Korean functionality working with unified table-based approach
 
-The Korean keyboard now behaves exactly like a standard Korean keyboard for all modern letters. All major issues have been resolved:
+The Korean keyboard now uses a unified table-based Unicode schema that treats all characters equally and follows official Unicode standards:
 
-- ✅ **Syllable Composition**: Initial + Medial + Final combinations work correctly
-- ✅ **Complex Medials**: Diphthongs (ㅘ, ㅙ, ㅚ, ㅝ, ㅞ, ㅟ, ㅢ) compose properly
-- ✅ **Complex Finals**: Consonant clusters (ㄺ, ㄻ, ㄼ, ㄽ, ㄾ, ㄿ, ㅀ, ㄳ, ㄵ, ㄶ, ㅄ) work correctly
-- ✅ **Final-to-Initial Transition**: Final consonants properly become initials of next syllables
-- ✅ **Complex Final Decomposition**: Complex finals split correctly (앉ㅏ → 안자)
+- ✅ **Unified Schema**: Single source of truth for all Unicode mappings
+- ✅ **Table-Based Approach**: Follows official Unicode charts for sort order
+- ✅ **Equal Treatment**: Modern and archaic characters handled identically
+- ✅ **Complex Combinations**: All complex medials and finals work consistently
+- ✅ **Type Safety**: Comprehensive TypeScript types and error handling
+- ✅ **Maintainability**: Easy to add new characters or fix mappings
+
+**Technical Achievements:**
+- ✅ **KOREAN_CHARACTER_TABLE**: Unified consonant and vowel tables
+- ✅ **COMPLEX_COMBINATIONS**: Centralized complex medial and final mappings
+- ✅ **Auto-Generated Mappings**: All existing mappings generated from tables
+- ✅ **Chart-Based Organization**: Follows official Unicode sort order
+- ✅ **Backward Compatibility**: All existing exports preserved
 
 **Test Coverage:**
-- All 19 initial consonants ✅
-- All 21 medial vowels (including 7 complex medials) ✅
-- All 27 final consonants (including 11 complex finals) ✅
+- All modern Korean characters ✅
+- All archaic Korean characters ✅
+- All complex medials (modern + archaic) ✅
+- All complex finals ✅
 - All syllable transition scenarios ✅
 
 ## 🎯 Next Steps
