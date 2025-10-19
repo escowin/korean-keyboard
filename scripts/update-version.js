@@ -55,6 +55,25 @@ if (swContent.includes('CACHE_VERSION')) {
 fs.writeFileSync(swPath, swContent);
 console.log('✅ Updated service worker');
 
+// Update React version constant
+const versionPath = path.join(__dirname, '..', 'src', 'constants', 'version.ts');
+let versionContent = fs.readFileSync(versionPath, 'utf8');
+
+// Update APP_VERSION
+versionContent = versionContent.replace(
+  /export const APP_VERSION = '[^']*'/,
+  `export const APP_VERSION = '${version}'`
+);
+
+// Update BUILD_TIMESTAMP
+versionContent = versionContent.replace(
+  /export const BUILD_TIMESTAMP = '[^']*'/,
+  `export const BUILD_TIMESTAMP = '${timestamp}'`
+);
+
+fs.writeFileSync(versionPath, versionContent);
+console.log('✅ Updated React version constant');
+
 console.log(`🎉 PWA version updated successfully!`);
 console.log(`   Version: ${version}`);
 console.log(`   Cache: ${cacheVersion}`);

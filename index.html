@@ -9,7 +9,7 @@
   <link rel="manifest" href="/manifest.json">
   
   <!-- Font preloading for optimal performance -->
-  <link rel="preload" href="./fonts/ChironSungHK-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="/korean-keyboard/fonts/ChironSungHK-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin>
   
   <!-- Font loading optimization script -->
   <script>
@@ -21,7 +21,7 @@
       });
       
       // Preload the Korean font
-      const font = new FontFace('Chiron Sung HK', 'url(./fonts/ChironSungHK-VariableFont_wght.ttf)');
+      const font = new FontFace('Chiron Sung HK', 'url(/korean-keyboard/fonts/ChironSungHK-VariableFont_wght.ttf)');
       font.load().then(() => {
         document.fonts.add(font);
         console.log('Chiron Sung HK font loaded and ready');

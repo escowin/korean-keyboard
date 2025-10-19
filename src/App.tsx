@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import KoreanKeyboard from './components/KoreanKeyboard.tsx'
 import { processKoreanInput } from './utils/koreanKeyboard.js'
 import type { Note } from './types/korean.js'
+import { getVersionDisplay } from './constants/version.js'
 const iconSvg = '/korean-keyboard/icons/icon.svg'
 
 function App() {
@@ -375,7 +376,10 @@ function App() {
       <header className="app-header">
         <div className="app-title-container">
           <img src={iconSvg} alt="Archaic Korean Notetaker" className="app-icon" />
-          <h1 className="app-title">옛정음필기</h1>
+          <h1 className="app-title">
+            옛정음필기
+            <span className="version-badge">{getVersionDisplay()}</span>
+          </h1>
         </div>
         <div className="header-actions">
           <button className="button button--secondary" onClick={createNewNote}>

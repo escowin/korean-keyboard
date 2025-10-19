@@ -1,26 +1,25 @@
 // Service Worker for Korean Keyboard PWA
-const CACHE_NAME = 'korean-keyboard-pwa-v1-0-0-1760363289310'
-const CACHE_VERSION = 'korean-keyboard-pwa-v1-0-0-1760363289310'
+const CACHE_NAME = 'korean-keyboard-pwa-v1-0-0-1760880243927'
+const CACHE_VERSION = 'korean-keyboard-pwa-v1-0-0-1760880243927'
 
 // Cache strategies
 const CACHE_STRATEGIES = {
   // Fonts - cache first with long-term storage
   FONTS: [
-    '/fonts/ChironSungHK-VariableFont_wght.ttf',
-    '/fonts/ChironSungHK-Italic-VariableFont_wght.ttf'
+    '/korean-keyboard/fonts/ChironSungHK-VariableFont_wght.ttf'
   ],
   // Static assets - cache first
   STATIC: [
-    '/manifest.json',
-    '/pwa-192x192.png',
-    '/pwa-512x512.png',
-    '/favicon.svg',
-    '/apple-touch-icon.png'
+    '/korean-keyboard/manifest.json',
+    '/korean-keyboard/pwa-192x192.png',
+    '/korean-keyboard/pwa-512x512.png',
+    '/korean-keyboard/favicon.svg',
+    '/korean-keyboard/apple-touch-icon.png'
   ],
   // App shell - stale while revalidate
   APP_SHELL: [
-    '/',
-    '/index.html'
+    '/korean-keyboard/',
+    '/korean-keyboard/index.html'
   ],
   // Dynamic content - network first
   DYNAMIC: [
@@ -76,7 +75,8 @@ self.addEventListener('fetch', (event) => {
     caches.open(CACHE_NAME).then((cache) => {
       return cache.match(request).then((cachedResponse) => {
         // For fonts, use cache-first strategy (fonts rarely change)
-        if (CACHE_STRATEGIES.FONTS.some(path => url.pathname === path)) {
+        if (CACHE_STRATEGIES.FONTS.some(path => url.pathname === path) || 
+            url.pathname.endsWith('.ttf') || url.pathname.endsWith('.woff') || url.pathname.endsWith('.woff2')) {
           if (cachedResponse) {
             console.log('Font served from cache:', url.pathname)
             return cachedResponse
@@ -88,6 +88,10 @@ self.addEventListener('fetch', (event) => {
               console.log('Font cached for future use:', url.pathname)
             }
             return networkResponse
+          }).catch((error) => {
+            console.error('Failed to fetch font:', url.pathname, error)
+            // Return a fallback response or cached version if available
+            return cachedResponse || new Response('Font not available', { status: 404 })
           })
         }
         
