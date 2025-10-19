@@ -1,6 +1,6 @@
 // Service Worker for Korean Keyboard PWA
-const CACHE_NAME = 'korean-keyboard-pwa-v1-0-0-1760880243927'
-const CACHE_VERSION = 'korean-keyboard-pwa-v1-0-0-1760880243927'
+const CACHE_NAME = 'korean-keyboard-pwa-v1-0-1-1760880542468'
+const CACHE_VERSION = 'korean-keyboard-pwa-v1-0-1-1760880542468'
 
 // Cache strategies
 const CACHE_STRATEGIES = {
